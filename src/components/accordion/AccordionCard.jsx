@@ -1,0 +1,61 @@
+import React from 'react'
+import "../../App.css";
+import { motion, AnimatePresence } from 'framer-motion';
+import { LuCircleChevronDown  } from 'react-icons/lu';
+import {
+    IoSearchCircle   
+
+    } from "react-icons/io5";
+
+const AccordionCard = ({ title, children }) => {
+
+    const [isOpen, setIsOpen] = React.useState(false);
+
+    const toggleAccordion = () => {
+        setIsOpen(!isOpen);
+    };
+
+
+    return (
+        <div className={`w-full bg-white border rounded-xl border mb-1 ${isOpen ? 'border-blue-700/40' : 'border-neutral-800'}`}>
+            
+            {/* button */}
+            <button className={`flex items-center justify-between text-gray-600  w-full p-1 text-left ${isOpen ? "bg-green-700 rounded-t-xl" : "bg-green-700 rounded-xl"} ${isOpen ? "text-white" : "text-white"}`} onClick={toggleAccordion}>
+                <IoSearchCircle  className=" flex-initial w-10 mt-2 mx-2 text-white tsize-130 font-medium"  />
+                <span className="flex-initial w-full tsize-110 font-medium">{title}</span>
+
+                <motion.span
+                    initial={{ rotate: 0 }}
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: [0.87, 0, 0.13, 1] }}
+                >
+                    <LuCircleChevronDown  className={`flex-initial w-10 w-6 h-6 ${isOpen ? "text-gray-50" : "text-white"}`} />
+                </motion.span>
+                
+            </button>
+            
+
+            {/* content */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.87, 0, 0.13, 1] }}
+                        className='overflow-hidden'
+                    >
+                        <div className="p-2 rounded-b-xl">
+                            {children}
+                        </div>
+
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            
+
+        </div>
+    )
+}
+
+export default AccordionCard

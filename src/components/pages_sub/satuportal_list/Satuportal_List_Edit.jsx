@@ -6,13 +6,23 @@ import '../../styles/style_button.css';
 import '../../styles/style_design.css';
 import NavSub from "../../NavSub"
 
-import Select from 'react-select';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
+import { motion, useAnimation } from 'framer-motion';
 import axios from "axios";
-import { useNavigate, useParams,Link, NavLink } from "react-router-dom";
 import {Row,Col,Image} from 'react-bootstrap';
+import { useNavigate, useParams,Link, NavLink } from "react-router-dom";
+import "../../styles/Modal.css";
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from "@mui/icons-material/Clear";
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Modal from 'react-bootstrap/Modal';
+import "../../../App.css";
 import Swal from 'sweetalert2';
-import { motion, } from 'framer-motion';
+
 import { MdDashboard,MdDataset,MdOutlineErrorOutline,
         MdArrowCircleRight,MdEditSquare,
         MdOutlineMap,
@@ -24,15 +34,67 @@ import { MdDashboard,MdDataset,MdOutlineErrorOutline,
         MdOutlineToday,
         MdOutlineSave} from "react-icons/md";
 
-
-
 import useFetch from './useFeach';
 
 import _ from "lodash";
 
 const apiurl=process.env.REACT_APP_URL;
 
+const textFieldStyle = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: 50,
+    fontSize: "0.9rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
 
+const textFieldStyleMultiline = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: "auto",
+    fontSize: "0.9rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
 
 function Satuportal_listPengelolah() {
   const [satkerku, setsatkerku] = useState([""]);
@@ -235,32 +297,6 @@ function Satuportal_listPengelolah() {
 
 
 
-  const koleksidataOptions = [
-    { label: 'Peta Interaktif', value: 'Peta Interaktif' },
-    { label: 'Peta Layout', value: 'Peta Layout' }
-  ];
-
-  const satkerOptions = satkerku.map((row) => ({
-    label: row.nama_satker,
-    value: row.id_satker
-  }));
-
-  const bidangOptions = bidangku.map((row) => ({
-    label: row.nama_bidang_urusan,
-    value: row.id_bidang_urusan
-  }));
-
-  const locationOptions = locationku.map((row) => ({
-    label: row.nama_location,
-    value: row.id_location
-  }));
-
-  const statusOptions = [
-    { label: 'Publik', value: 'Publik' },
-    { label: 'Eksekutif', value: 'Eksekutif' }
-  ];
-
-
   const getDataById = async () => {
     const response = await axios.get(apiurl+`api/open-item/ekosistem_list_detail/${id}`);
     setid(response.data.id);
@@ -365,15 +401,15 @@ function Satuportal_listPengelolah() {
   const [validasi_linked, setvalidasi_linked] = useState(false);
 
   const handle_step1 = (event) => {
-    if (title.length<5) {setvalidasi_title(true);}else{setvalidasi_title(false);}
-    if (contents.length<5) {setvalidasi_contents(true);}else{setvalidasi_contents(false);}
-    if (linked.length<1) {setvalidasi_linked(true);}else{setvalidasi_linked(false);}
+    const validTitle = title && title.trim().length >= 5;
+    const validContents = contents && contents.trim().length >= 5;
+    const validLinked = linked && linked.trim().length >= 1;
 
-    if (
-      title?.length >= 5 &&
-      contents?.length >= 5 &&
-      linked?.length >= 1
-    ) {
+    setvalidasi_title(!validTitle);
+    setvalidasi_contents(!validContents);
+    setvalidasi_linked(!validLinked);
+
+    if (validTitle && validContents && validLinked) {
       nextStep();
     } else {
       console.warn('⛔ Tidak lolos validasi');
@@ -381,15 +417,15 @@ function Satuportal_listPengelolah() {
   };
 
   const handle_step2 = (event) => {
-    if (title_images_a.length<1) {setvalidasi_title_images_a(true);}else{setvalidasi_title_images_a(false);}
-    if (title_images_b.length<1) {setvalidasi_title_images_b(true);}else{setvalidasi_title_images_b(false);}
-    if (title_images_c.length<1) {setvalidasi_title_images_c(true);}else{setvalidasi_title_images_c(false);}
+    const validA = title_images_a && title_images_a.trim().length > 0;
+    const validB = title_images_b && title_images_b.trim().length > 0;
+    const validC = title_images_c && title_images_c.trim().length > 0;
 
-    if (
-      title_images_a?.length >= 1 &&
-      title_images_b?.length >= 1 &&
-      title_images_c?.length >= 1
-    ) {
+    setvalidasi_title_images_a(!validA);
+    setvalidasi_title_images_b(!validB);
+    setvalidasi_title_images_c(!validC);
+
+    if (validA && validB && validC) {
       nextStep();
     } else {
       console.warn('⛔ Tidak lolos validasi');
@@ -468,53 +504,94 @@ function Satuportal_listPengelolah() {
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             
                             <div className="sm:col-span-6 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineShortText className="mt-1 mx-2 text-cyan-500"  />Judul
-                              </label>
                               <div className="mt-0">
-                                  <textarea 
-                                    placeholder="Masukkan Judul"
-                                    value={title}
-                                    onChange={(e) => settitle(e.target.value)}
-                                    autoComplete="judul"
-                                    rows="2" 
-                                    className="input-green-2 tsize-110" 
-                                    >
-                                  </textarea>
-                                    {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 5 karakter...</p>}
+                                <TextField
+                                  label="Judul"
+                                  className="bg-input rad15 w-full"
+                                  value={title}
+                                  onChange={(e) => settitle(e.target.value)}
+                                  multiline   // <-- ini bikin jadi textarea
+                                  rows={1}    // <-- tinggi awal textarea
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
+                                  {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 5 karakter...</p>}
                               </div>
                             </div>
 
                             <div className="sm:col-span-6 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineShortText className="mt-1 mx-2 text-cyan-500"  />Konten
-                              </label>
                               <div className="mt-0">
-                                  <textarea 
-                                    placeholder="Masukkan Konten"
-                                    value={contents}
-                                    onChange={(e) => setcontents(e.target.value)}
-                                    autoComplete="konten"
-                                    rows="2" 
-                                    className="input-green-2 tsize-110" 
-                                    >
-                                  </textarea>
-                                    {validasi_contents && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 5 karakter...</p>}
+                                <TextField
+                                  label="Isi Konten"
+                                  className="bg-input rad15 w-full"
+                                  value={contents}
+                                  onChange={(e) => setcontents(e.target.value)}
+                                  multiline   // <-- ini bikin jadi textarea
+                                  rows={5}    // <-- tinggi awal textarea
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {contents && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setcontents("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyleMultiline(theme)}
+                                />
+                                  {validasi_contents && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 5 karakter...</p>}
                               </div>
                             </div>
                             
                             <div className="sm:col-span-6 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineToday className="mt-1 mx-2 text-cyan-500"  />Link Url
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                    placeholder="Tahun Rilis"
+                                  <TextField
+                                    label="Link Url"
+                                    className="bg-input rad15 w-full"
                                     value={linked}
                                     onChange={(e) => setlinked(e.target.value)}
-                                    type="text"
-                                    autoComplete="linked"
-                                    className="input-green-2 tsize-110"
+                                    InputProps={{
+                                      endAdornment: (
+                                        <>
+                                          {contents && (
+                                            <InputAdornment position="end">
+                                              <IconButton
+                                                onClick={() => setcontents("")}
+                                                edge="end"
+                                                size="small"
+                                              >
+                                                <ClearIcon />
+                                              </IconButton>
+                                            </InputAdornment>
+                                          )}
+                                        </>
+                                      ),
+                                    }}
+                                    sx={(theme) => textFieldStyle(theme)}
                                   />
                                   {validasi_linked && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
                               </div>
@@ -576,93 +653,195 @@ function Satuportal_listPengelolah() {
                           </div>
                           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-6 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdFileUpload className="mt-1 mx-2 text-cyan-500"  />UNGGAH LOGO 1
-                              </label>
                               <div className="mt-0">
-                                  <input
+                                <TextField
+                                  type="file"
+                                  label="Unggah Logo 1"
+                                  className="bg-input rad15 w-100"
+                                  inputProps={{
+                                    accept: "image/*", // hanya file gambar
+                                  }}
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
                                   onChange={loadImage_Logo_a}
-                                  type="file"
-                                  accept="image/*" // hanya file gambar
-                                  className="input-green2 tsize-110"
-                                  />
-                                  <span className="file-label">Pilih File .jpg dan .png</span>
-                                  {fileError && (
-                                    <p className="text-red-600 mt-2 d-flex">
-                                      <MdOutlineErrorOutline className="mt-1 me-2" />
-                                      {fileError}
-                                    </p>
-                                  )}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_logo_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_logo_a("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
+                                <span className="file-label">Pilih File .jpg dan .png</span>
+                                {fileError && (
+                                  <p className="text-red-600 mt-2 d-flex">
+                                    <MdOutlineErrorOutline className="mt-1 me-2" />
+                                    {fileError}
+                                  </p>
+                                )}
                               </div>
                             </div>
                             <div className="sm:col-span-6 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdFileUpload className="mt-1 mx-2 text-cyan-500"  />UNGGAH LOGO 2
-                              </label>
                               <div className="mt-0">
-                                  <input
+                                <TextField
+                                  type="file"
+                                  label="Unggah Logo 2"
+                                  className="bg-input rad15 w-100"
+                                  inputProps={{
+                                    accept: "image/*", // hanya file gambar
+                                  }}
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
                                   onChange={loadImage_Logo_b}
-                                  type="file"
-                                  accept="image/*" // hanya file gambar
-                                  className="input-green2 tsize-110"
-                                  />
-                                  <span className="file-label">Pilih File .jpg dan .png</span>
-                                  {fileError && (
-                                    <p className="text-red-600 mt-2 d-flex">
-                                      <MdOutlineErrorOutline className="mt-1 me-2" />
-                                      {fileError}
-                                    </p>
-                                  )}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_logo_b && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_logo_b("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
+                                <span className="file-label">Pilih File .jpg dan .png</span>
+                                {fileError && (
+                                  <p className="text-red-600 mt-2 d-flex">
+                                    <MdOutlineErrorOutline className="mt-1 me-2" />
+                                    {fileError}
+                                  </p>
+                                )}
                               </div>
                             </div>
                             <div className="sm:col-span-6 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdFileUpload className="mt-1 mx-2 text-cyan-500"  />UNGGAH LOGO 3
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                  onChange={loadImage_Logo_c}
+                                <TextField
                                   type="file"
-                                  accept="image/*" // hanya file gambar
-                                  className="input-green2 tsize-110"
-                                  />
-                                  <span className="file-label">Pilih File .jpg dan .png</span>
-                                  {fileError && (
-                                    <p className="text-red-600 mt-2 d-flex">
-                                      <MdOutlineErrorOutline className="mt-1 me-2" />
-                                      {fileError}
-                                    </p>
-                                  )}
+                                  label="Unggah Logo 3"
+                                  className="bg-input rad15 w-100"
+                                  inputProps={{
+                                    accept: "image/*", // hanya file gambar
+                                  }}
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
+                                  onChange={loadImage_Logo_c}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_logo_c && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_logo_c("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
+                                <span className="file-label">Pilih File .jpg dan .png</span>
+                                {fileError && (
+                                  <p className="text-red-600 mt-2 d-flex">
+                                    <MdOutlineErrorOutline className="mt-1 me-2" />
+                                    {fileError}
+                                  </p>
+                                )}
                               </div>
                             </div>
                             <div className="sm:col-span-3 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineToday className="mt-1 mx-2 text-cyan-500"  />SubList 1
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                    placeholder="Judul Gambar 1"
-                                    value={title_images_a}
-                                    onChange={(e) => settitle_image_a(e.target.value)}
-                                    type="text"
-                                    autoComplete="gambar1"
-                                    className="input-green-2 tsize-110"
-                                  />
+                                <TextField
+                                  label="SubList 1"
+                                  className="bg-input rad15 w-full"
+                                  value={title_images_a}
+                                  onChange={(e) => settitle_image_a(e.target.value)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title_images_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle_image_a("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />   
+                                
                                   {validasi_title_images_a && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
                               </div>
 
                             </div>
                             <div className="sm:col-span-3 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdFileUpload className="mt-1 mx-2 text-cyan-500"  />UNGGAH GAMBAR 1
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                  onChange={loadImage_Images_a}
+                                <TextField
                                   type="file"
-                                  accept="image/*" // hanya file gambar
-                                  className="input-green2 tsize-110"
-                                  />
+                                  label="Unggah Gambar 1"
+                                  className="bg-input rad15 w-100"
+                                  inputProps={{
+                                    accept: "image/*", // hanya file gambar
+                                  }}
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
+                                  onChange={loadImage_Images_a}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_images_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_images_a("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
                                   <span className="file-label">Pilih File .jpg dan .png</span>
                                   {fileError && (
                                     <p className="text-red-600 mt-2 d-flex">
@@ -673,33 +852,68 @@ function Satuportal_listPengelolah() {
                               </div>
                             </div>
                             <div className="sm:col-span-3 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineToday className="mt-1 mx-2 text-cyan-500"  />SubList 2
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                    placeholder="Judul Gambar2"
-                                    value={title_images_b}
-                                    onChange={(e) => settitle_image_b(e.target.value)}
-                                    type="text"
-                                    autoComplete="gambar2"
-                                    className="input-green-2 tsize-110"
-                                  />
+                                <TextField
+                                  label="SubList 2"
+                                  className="bg-input rad15 w-full"
+                                  value={title_images_b}
+                                  onChange={(e) => settitle_image_b(e.target.value)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title_images_b && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle_image_b("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                /> 
                                   {validasi_title_images_b && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
                               </div>
 
                             </div>
                             <div className="sm:col-span-3 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdFileUpload className="mt-1 mx-2 text-cyan-500"  />UNGGAH GAMBAR 2
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                  onChange={loadImage_Images_b}
+                                <TextField
                                   type="file"
-                                  accept="image/*" // hanya file gambar
-                                  className="input-green2 tsize-110"
-                                  />
+                                  label="Unggah Gambar 2"
+                                  className="bg-input rad15 w-100"
+                                  inputProps={{
+                                    accept: "image/*", // hanya file gambar
+                                  }}
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
+                                  onChange={loadImage_Images_b}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_images_b && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_images_b("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
                                   <span className="file-label">Pilih File .jpg dan .png</span>
                                   {fileError && (
                                     <p className="text-red-600 mt-2 d-flex">
@@ -710,33 +924,68 @@ function Satuportal_listPengelolah() {
                               </div>
                             </div>
                             <div className="sm:col-span-3 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineToday className="mt-1 mx-2 text-cyan-500"  />SubList 3
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                    placeholder="Judul Gambar 3"
-                                    value={title_images_c}
-                                    onChange={(e) => settitle_image_c(e.target.value)}
-                                    type="text"
-                                    autoComplete="gambar3"
-                                    className="input-green-2 tsize-110"
-                                  />
+                                <TextField
+                                  label="SubList 3"
+                                  className="bg-input rad15 w-full"
+                                  value={title_images_c}
+                                  onChange={(e) => settitle_image_c(e.target.value)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title_images_c && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle_image_c("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                /> 
                                   {validasi_title_images_c && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
                               </div>
 
                             </div>
                             <div className="sm:col-span-3 -mt-2">
-                              <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdFileUpload className="mt-1 mx-2 text-cyan-500"  />UNGGAH GAMBAR 3
-                              </label>
                               <div className="mt-0">
-                                  <input
-                                  onChange={loadImage_Logo_c}
+                                <TextField
                                   type="file"
-                                  accept="image/*" // hanya file gambar
-                                  className="input-green2 tsize-110"
-                                  />
+                                  label="Unggah Gambar 3"
+                                  className="bg-input rad15 w-100"
+                                  inputProps={{
+                                    accept: "image/*", // hanya file gambar
+                                  }}
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
+                                  onChange={loadImage_Images_c}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_images_c && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_images_c("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
                                   <span className="file-label">Pilih File .jpg dan .png</span>
                                   {fileError && (
                                     <p className="text-red-600 mt-2 d-flex">

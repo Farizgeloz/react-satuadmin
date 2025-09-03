@@ -6,6 +6,7 @@ import Image from 'react-bootstrap/Image';
 import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Tooltip from '@mui/material/Tooltip';
 
 
 
@@ -82,7 +83,7 @@ const Satuportal_listlist = () => {
   };
 
   const getSatuportal_listItem = async () => {
-    const response = await axios.get(apiurl + 'satupeta/map_item2');
+    const response = await axios.get(apiurl + 'api/satupeta/map_item2');
 
     const data = response.data;
     setsatker(response.data.resultsatker);
@@ -259,14 +260,13 @@ const Satuportal_listlist = () => {
       renderCell: (params) => (
         <div className="p-2">
           <Link
-            to={`/Komponen/Update/${slugify(params.row.title)}`}
+            to={`/Komponen-Statik/Update/${slugify(params.row.title)}`}
             className="flex items-center justify-center mb-[2px]"
           >
             <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
               <MdEditSquare className="mr-1" />
             </button>
           </Link>
-          <Satuportal_listModalDelete id={params.row.id} name={params.row.title} />
         </div>
       ),
     },
@@ -286,7 +286,7 @@ const Satuportal_listlist = () => {
   
   return (
     <div className="bg-slate-100  max-h-screen sm:pt-0  max-[640px]:mt-12 ">
-      <NavSub  title="Komponen" />
+      <NavSub  title="Komponen Statik" />
       
 
       <div className="col-span-3 rounded grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-6 drop-shadow-lg">
@@ -296,16 +296,11 @@ const Satuportal_listlist = () => {
               <MdDashboard className="mt-1 textsize8"/>Dashboard
             </NavLink> / 
             <NavLink to="/Komponen" className="text-link-sky mx-2 d-flex">
-              <MdDataset className="mt-1 textsize8" />Komponen
+              <MdDataset className="mt-1 textsize8" />Komponen Statik
             </NavLink>
           </p>
         </div>
         
-        
-        <div className="md:col-span-2 margin-0 px-10 mt-2">
-          <Satuportal_listModalTambah/>
-        
-        </div>
         
       </div>
 

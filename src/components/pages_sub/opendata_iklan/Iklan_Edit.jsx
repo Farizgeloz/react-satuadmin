@@ -15,6 +15,9 @@ import Swal from 'sweetalert2';
 import { motion, useAnimation } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from "@mui/icons-material/Clear";
 import { MdDashboard,MdDataset,MdOutlineErrorOutline,
         MdArrowCircleRight,MdEditSquare,
         MdOutlineQrCode,
@@ -38,7 +41,33 @@ import _ from "lodash";
 
 const apiurl=process.env.REACT_APP_URL;
 
-
+const textFieldStyle = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: 50,
+    fontSize: "0.9rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
 
 function IklanPengelolah() {
   const [satkerku, setProdukDataku] = useState([""]);
@@ -46,7 +75,7 @@ function IklanPengelolah() {
   const [idku, setid] = useState("");
   const [title, settitle] = useState("");
   const [linked, setlink] = useState("");
-  const [status, setstatus] = useState("");
+  const [visibilitas, setvisibilitas] = useState("");
   const [file, setfile] = useState("");
   const [images, setimages] = useState("");
 
@@ -79,7 +108,7 @@ function IklanPengelolah() {
     settitle(response.data.title);
     setimages(response.data.presignedUrl);
     setlink(response.data.linked);
-    setstatus(response.data.status);
+    setvisibilitas({ value: response.data.visibilitas, label: response.data.visibilitas });
     
   };
 
@@ -90,7 +119,7 @@ function IklanPengelolah() {
     formData.append("file",file);
     formData.append("title",title);
     formData.append("linked",linked);
-    formData.append("status",status);
+    formData.append("visibilitas",visibilitas.value);
     
     
     try {
@@ -154,13 +183,22 @@ function IklanPengelolah() {
   };
 
   const [validasi_title, setvalidasi_title] = useState(false);
-  const [validasi_status, setvalidasi_status] = useState(false);
+  const [validasi_visibilitas, setvalidasi_visibilitas] = useState(false);
 
-  const handle_step1 = () => {
-    setvalidasi_title(!title || title.length < 3);
-    setvalidasi_status(!status || status.length < 3);
+  const handle_step1 = (event) => {
+    if (title.length < 3) {
+      setvalidasi_title(true);
+    } else {
+      setvalidasi_title(false);
+    }
 
-    if (title?.length >= 3 && status?.length >= 3) {
+    if (!visibilitas) {
+      setvalidasi_visibilitas(true);
+    } else {
+      setvalidasi_visibilitas(false);
+    }
+
+    if (title.length >= 3 && (visibilitas)) {
       nextStep();
     }
   };
@@ -203,67 +241,130 @@ function IklanPengelolah() {
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                           
                           <div className="sm:col-span-6 -mt-4">
-                            <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                            <MdOutlineScale className="mt-1 mx-2 text-cyan-500"  />Judul Iklan
-                            </label>
                             <div className="mt-0">
-                                <input
-                                placeholder="Masukkan Judul"
+                              <TextField
+                                label="Judul Iklan"
+                                className="bg-input rad15 w-full"
                                 value={title}
                                 onChange={(e) => settitle(e.target.value)}
-                                type="text"
-                                autoComplete="title"
-                                className="input-gray tsize-110"
-                                />
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      {title && (
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                            onClick={() => settitle("")}
+                                            edge="end"
+                                            size="small"
+                                          >
+                                            <ClearIcon />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                                sx={(theme) => textFieldStyle(theme)}
+                              /> 
                                   {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
                             </div>
                             
                           </div>
                           <div className="sm:col-span-3 -mt-4">
-                            <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                            <MdOutlineScale className="mt-1 mx-2 text-cyan-500"  />Link Url
-                            </label>
                             <div className="mt-0">
-                                <input
-                                placeholder="Masukkan Link"
+                              <TextField
+                                label="Link Url"
+                                className="bg-input rad15 w-full"
                                 value={linked}
                                 onChange={(e) => setlink(e.target.value)}
-                                type="text"
-                                autoComplete="linked"
-                                className="input-gray tsize-110"
-                                />
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      {linked && (
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                            onClick={() => settitle("")}
+                                            edge="end"
+                                            size="small"
+                                          >
+                                            <ClearIcon />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                                sx={(theme) => textFieldStyle(theme)}
+                              /> 
                             </div>
                             
                           </div>
                           <div className="sm:col-span-3 -mt-4">
-                            <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                            <MdPermDeviceInformation className="mt-1 mx-2 text-cyan-500"  />Status
-                            </label>
                             <div className="mt-0">
-                              <select
-                                value={status}
-                                onChange={(e) => setstatus(e.target.value)}
-                                autoComplete="wilayah"
-                                className="input-gray tsize-110"
-                                >
-                                <option value="">Pilih Status</option>
-                                <option value="Private">Private</option>
-                                <option value="Publik">Publik</option>
-                              </select>
-                              {validasi_status && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih...</p>}
+                              <Autocomplete
+                                className="tsize-110"
+                                isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                id="combo-box-location"
+                                options={[
+                                  { label: "Privat", value: "Privat" },
+                                  { label: "Publik", value: "Publik" }
+                                ]}
+                                getOptionLabel={(option) => option.label || ""}
+                                value={visibilitas}
+                                onChange={(event, newValue) => setvisibilitas(newValue)}
+                                clearOnEscape
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Visibilitas"
+                                    variant="outlined"
+                                    sx={(theme) => textFieldStyle(theme)}
+                                  />
+                                )}
+                                sx={{
+                                  width: "100%",
+                                  "& .MuiAutocomplete-popupIndicator": {
+                                    color: "#1976d2",
+                                    transition: "transform 0.3s",
+                                  },
+                                  "& .MuiAutocomplete-popupIndicatorOpen": {
+                                    transform: "rotate(180deg)",
+                                  },
+                                }}
+                              />
+                              {validasi_visibilitas && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih...</p>}
                             </div>
                           </div>
                           
                           <div className="sm:col-span-5 -mt-4">
-                            <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                            <MdFileUpload  className="mt-1 mx-2 text-cyan-500"  />UNGGAH GAMBAR
-                            </label>
                             <div className="mt-0">
-                                <input
-                                onChange={loadImage}
+                              <TextField
                                 type="file"
-                                className="input-gray tsize-110"
-                                />
+                                label="Unggah Gambar"
+                                className="bg-input rad15 w-100"
+                                InputLabelProps={{
+                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                }}
+                                onChange={loadImage}
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      {file && (
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                            onClick={() => setfile("")}
+                                            edge="end"
+                                            size="small"
+                                          >
+                                            <ClearIcon />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                                sx={(theme) => textFieldStyle(theme)}
+                              />
                               
                                
                             </div>

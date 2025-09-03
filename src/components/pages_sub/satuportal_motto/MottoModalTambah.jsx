@@ -4,30 +4,75 @@ import axios from "axios";
 import { useNavigate,Link, NavLink } from "react-router-dom";
 import "../../styles/Modal.css";
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import ClearIcon from "@mui/icons-material/Clear";
 
-import { MdAddCircle,MdErrorOutline,MdOutlineArrowCircleLeft,MdOutlineArrowCircleRight,
-        MdOutlineQrCode,MdOutlineMap,MdOutlinePerson4,MdPermDeviceInformation,MdAccessibility,
-        MdCalendarMonth,MdOutlineShortText,MdOutlineTag,MdOutlineScale,MdDescription,MdFileUpload, 
-        MdDisabledVisible,
-        MdOutlineSave,
-        MdCategory} from "react-icons/md";
+import { MdAddCircle,MdErrorOutline,MdOutlineArrowCircleLeft,MdOutlineArrowCircleRight,MdOutlineSave} from "react-icons/md";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import "../../../App.css";
 import Swal from 'sweetalert2';
 
-import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-} from "@material-tailwind/react";
 
 const apiurl=process.env.REACT_APP_URL;
 
+const textFieldStyle = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: 50,
+    fontSize: "0.9rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
+
+const textFieldStyleMultiline = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: "auto",
+    fontSize: "0.9rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
 
 function ModalTambahUser() {
   const [satkerku, setprodukdataku] = useState([]);
@@ -37,17 +82,16 @@ function ModalTambahUser() {
   const [title, settitle] = useState("");
   const [contents, setcontents] = useState("");
   const [file, setfile] = useState("");
+  const [images, setimages] = useState("");
 
   
-
-  useEffect(() => {
-    
-  }, [title]);
-  
-
   const loadImage = (e) =>{
     const image = e.target.files[0];
     setfile(image);
+    if (image) {
+      setimages(URL.createObjectURL(image)); // buat URL sementara
+    } else {
+    }
   }
 
   const navigate = useNavigate();
@@ -183,82 +227,130 @@ function ModalTambahUser() {
                 <div className="container max-w-screen-xl mx-auto my-auto relative flex flex-col w-4/5">
                    
                     {step === 1 && (
-                        <motion.div
-                            key={step} // Add this line
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.3 }}
-                            className="md:w-full mx-auto">
-                            
-                            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                              
-                              <div className="sm:col-span-6 -mt-4">
-                                <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                                <MdOutlineScale className="mt-1 mx-2 text-cyan-500"  />Judul Motto
-                                </label>
-                                <div className="mt-0">
-                                    <input
-                                    placeholder="Masukkan Judul"
-                                    value={title}
-                                    onChange={(e) => settitle(e.target.value)}
-                                    type="text"
-                                    autoComplete="title"
-                                    className="input-gray tsize-110"
-                                    />
-                                     {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
-                                </div>
-                                
-                              </div>
-                              <div className="sm:col-span-6 -mt-4">
-                                <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                                <MdOutlineShortText  className="mt-1 mx-2 text-cyan-500"  />Isi Konten
-                                </label>
-                                <div className="mt-0">
-                                   
-                                    <textarea 
-                                      placeholder="Masukkan Konten"
-                                      value={contents}
-                                      onChange={(e) => setcontents(e.target.value)}
-                                      autoComplete="contents"
-                                      rows="3" 
-                                      className="input-gray-2 tsize-110" 
-                                      >
-
-                                    </textarea>
-                                     {validasi_contents && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
-                                </div>
+                      <motion.div
+                          key={step} // Add this line
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3 }}
+                          className="md:w-full mx-auto">
+                          
+                          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <div className="sm:col-span-6 -mt-4">
+                              <div className="mt-0">
+                                <TextField
+                                  label="Judul Motto"
+                                  className="bg-input rad15 w-full"
+                                  value={title}
+                                  onChange={(e) => settitle(e.target.value)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                /> 
+                                  {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
                               </div>
                               
-                              
-                              <div className="sm:col-span-6 -mt-4">
-                                <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                                <MdFileUpload  className="mt-1 mx-2 text-cyan-500"  />UNGGAH GAMBAR
-                                </label>
-                                <div className="mt-0">
-                                    <input
-                                    onChange={loadImage}
-                                    type="file"
-                                    className="input-gray tsize-110"
-                                    />
-                                    <span className="file-label">Pilih File Gambar</span>
-                                    {validasi_file && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Menyertakan Gambar...</p>}
-                                </div>
-                              </div>
-                              
-                              
-                          </div>
-                            <div className="flex justify-center mt-5">
-
-                              <button type="button"
-                                onClick={() => {
-                                  handle_step1();
-                                }}  
-                                className="bg-green-500 hover:bg-green-400 text-white font-bold py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
-                                  <span>Lanjut</span><MdOutlineArrowCircleRight  className='mt-1 mx-1'  />
-                              </button>
                             </div>
-                        </motion.div>
+                            <div className="sm:col-span-6 -mt-4">
+                              <div className="mt-0">
+                                  <TextField
+                                    label="Isi Konten"
+                                    className="bg-input rad15 w-full"
+                                    value={contents}
+                                    onChange={(e) => setcontents(e.target.value)}
+                                    multiline   // <-- ini bikin jadi textarea
+                                    rows={5}    // <-- tinggi awal textarea
+                                    InputProps={{
+                                      endAdornment: (
+                                        <>
+                                          {contents && (
+                                            <InputAdornment position="end">
+                                              <IconButton
+                                                onClick={() => setcontents("")}
+                                                edge="end"
+                                                size="small"
+                                              >
+                                                <ClearIcon />
+                                              </IconButton>
+                                            </InputAdornment>
+                                          )}
+                                        </>
+                                      ),
+                                    }}
+                                    sx={(theme) => textFieldStyleMultiline(theme)}
+                                  />
+
+                                    {validasi_contents && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
+                              </div>
+                            </div>
+                            <div className="sm:col-span-5 -mt-4">
+                              <div className="mt-0">
+                                <TextField
+                                  type="file"
+                                  label="Unggah Gambar"
+                                  className="bg-input rad15 w-100"
+                                  alt=""
+                                  InputLabelProps={{
+                                    shrink: true, // biar label tetap tampil di atas saat file dipilih
+                                  }}
+                                  onChange={loadImage}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
+                                {validasi_file && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
+                                  
+                              </div>
+                            </div>
+                            <div className="sm:col-span-1 -mt-4">
+                                <img
+                                    src={images}
+                                    alt="gambar"
+                                    style={{ maxwidth: "80%", objectFit: "contain" }}
+                                    className="rounded border p-1"
+                                  />
+                            </div>
+                          </div>
+                          <div className="flex justify-center mt-5">
+                            <button type="button"
+                              onClick={() => {
+                                handle_step1();
+                              }}  
+                              className="bg-green-500 hover:bg-green-400 text-white font-bold py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
+                                <span>Lanjut</span><MdOutlineArrowCircleRight  className='mt-1 mx-1'  />
+                            </button>
+                          </div>
+                      </motion.div>
                     )}
                     {step === 2 && (
                         <motion.div

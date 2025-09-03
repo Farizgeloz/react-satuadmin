@@ -92,7 +92,7 @@ function Satuportal_listPengelolah() {
           setkomponen(response.data.komponen);
           setkode(response.data.kode);
           setkategori(response.data.kategori);
-          setorganisasi(response.data.nama_satker);
+          setorganisasi(response.data.nama_opd);
           setsifat_data(response.data.sifat_data);
           setfrekuensi(response.data.frekuensi);
           setcreatedAt(convertDate(response.data.createdAt));

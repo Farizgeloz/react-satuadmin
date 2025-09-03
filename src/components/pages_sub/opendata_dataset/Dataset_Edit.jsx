@@ -43,7 +43,33 @@ import _ from "lodash";
 
 const apiurl=process.env.REACT_APP_URL;
 
-
+const textFieldStyle = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: 50,
+    fontSize: "0.9rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
 
 function DatasetPengelolah() {
   const [satkerku, setProdukDataku] = useState([""]);
@@ -53,13 +79,13 @@ function DatasetPengelolah() {
   const [wilayah, setwilayah] = useState("");
   const [kategori, setkategori] = useState("");
   const [kategorinama, setkategorinama] = useState("");
-  const [komponen, setkomponen] = useState("");
+  const [nama_dataset, setnama_dataset] = useState("");
   const [satker, setsatker] = useState("");
   const [satkernama, setsatkernama] = useState("");
   
   
   const [sifat_data, setsifat_data] = useState("");
-  const [frekuensi, setfrekuensi] = useState("");
+  const [kategori_data, setkategori_data] = useState("");
   const [kegiatan_statistik, setkegiatan_statistik] = useState("");
   const [klasifikasi, setklasifikasi] = useState("");
   const [konsep, setkonsep] = useState("");
@@ -68,7 +94,7 @@ function DatasetPengelolah() {
   const [ukuran, setukuran] = useState("");
   const [keterangan, setketerangan] = useState("");
   const [tag, settag] = useState("");
-  const [status, setstatus] = useState("");
+  const [visibilitas, setvisibilitas] = useState("");
   //const [createdAt, setcreatedAt] = useState("");
   //const [createdAt, setcreatedAt] = useState("");
   const [updatedAt, setupdatedAt] = useState("");
@@ -122,12 +148,12 @@ function DatasetPengelolah() {
     setkode(response.data.kode);
     setwilayah(response.data.wilayah);
     setkategori(response.data.kategori);
-    setkategorinama(response.data.nama_bidang_urusan);
-    setsatker(response.data.id_satker);
-    setsatkernama(response.data.nama_satker);
-    setkomponen(response.data.komponen);
+    setkategorinama(response.data.nama_sektor);
+    setsatker(response.data.id_opd);
+    setsatkernama(response.data.nama_opd);
+    setnama_dataset(response.data.nama_dataset);
     setsifat_data(response.data.sifat_data);
-    setfrekuensi(response.data.frekuensi);
+    setkategori_data(response.data.kategori_data);
     //setcreatedAt(formatUTCDateToLocal(response.data.createdAt));
    
     
@@ -140,7 +166,7 @@ function DatasetPengelolah() {
     setsatuan(response.data.satuan);
     setketerangan(response.data.keterangan);
     settag(response.data.tag);
-    setstatus(response.data.status);
+    setvisibilitas(response.data.visibilitas);
   };
 
 
@@ -148,9 +174,9 @@ function DatasetPengelolah() {
     e.preventDefault();
     const formData = new FormData();
     formData.append("file",file);
-    formData.append("komponen",komponen);
+    formData.append("nama_dataset",nama_dataset);
     formData.append("sifat_data",sifat_data);
-    formData.append("frekuensi",frekuensi);
+    formData.append("kategori_data",kategori_data);
     formData.append("kegiatan_statistik",kegiatan_statistik);
     formData.append("klasifikasi",klasifikasi);
     formData.append("konsep",konsep);
@@ -229,7 +255,7 @@ function DatasetPengelolah() {
   const [validasi_satker, setvalidasi_satker] = useState(false);
   const [validasi_kategori, setvalidasi_kategori] = useState(false);
   const [validasi_sifatdata, setvalidasi_sifatdata] = useState(false);
-  const [validasi_frekuensi, setvalidasi_frekuensi] = useState(false);
+  const [validasi_kategori_data, setvalidasi_kategori_data] = useState(false);
 
   
 
@@ -239,27 +265,27 @@ function DatasetPengelolah() {
     if (kategorinama==="" || kategorinama===null ) {setvalidasi_kategori(true);}else{setvalidasi_kategori(false);}
     if (satkernama==="" || satkernama===null) {setvalidasi_satker(true);}else{setvalidasi_satker(false);}
     if (sifat_data.length<3) {setvalidasi_sifatdata(true);}else{setvalidasi_sifatdata(false);}
-    if (frekuensi.length<3) {setvalidasi_frekuensi(true);}else{setvalidasi_frekuensi(false);}
+    if (kategori_data.length<3) {setvalidasi_kategori_data(true);}else{setvalidasi_kategori_data(false);}
 
-    if(kode.length>=3 && wilayah.length>=3 && ((kategorinama!=="")||(kategorinama!==null)) && ((satkernama!=="")||(satkernama!==null)) && sifat_data.length>=3 && frekuensi.length>=3){
+    if(kode.length>=3 && wilayah.length>=3 && ((kategorinama!=="")||(kategorinama!==null)) && ((satkernama!=="")||(satkernama!==null)) && sifat_data.length>=3 && kategori_data.length>=3){
       nextStep();
     }
   };
 
-  const [validasi_komponen, setvalidasi_komponen] = useState(false);
+  const [validasi_nama_dataset, setvalidasi_nama_dataset] = useState(false);
   const [validasi_kegiatanstatistik, setvalidasi_kegiatanstatistik] = useState(false);
   const [validasi_konsep, setvalidasi_konsep] = useState(false);
   const [validasi_klasifikasi, setvalidasi_klasifikasi] = useState(false);
   const [validasi_definisi, setvalidasi_definisi] = useState(false);
 
   const handle_step2 = (event) => {
-    if (komponen.length==="") {setvalidasi_komponen(true);}else{setvalidasi_komponen(false);}
+    if (nama_dataset.length==="") {setvalidasi_nama_dataset(true);}else{setvalidasi_nama_dataset(false);}
     if (kegiatan_statistik.length==="") {setvalidasi_kegiatanstatistik(true);}else{setvalidasi_kegiatanstatistik(false);}
     if (konsep.length==="") {setvalidasi_konsep(true);}else{setvalidasi_konsep(false);}
     if (klasifikasi.length==="") {setvalidasi_klasifikasi(true);}else{setvalidasi_klasifikasi(false);}
     if (definisi.length==="") {setvalidasi_definisi(true);}else{setvalidasi_definisi(false);}
 
-    if(komponen.length>=3 && kegiatan_statistik.length!=="" && konsep.length!=="" && klasifikasi.length!=="" && definisi.length!==""){
+    if(nama_dataset.length>=3 && kegiatan_statistik.length!=="" && konsep.length!=="" && klasifikasi.length!=="" && definisi.length!==""){
       nextStep();
     }
   };
@@ -301,7 +327,7 @@ function DatasetPengelolah() {
             
             <Col md={12} sm={12} className=' bg-linear-9 align-middle justify-content-center align-self-center mt-1 rad15'>
               
-              <p className='text-white textsize14 text-left p-2 rad15 align-middle mb-1 line-hight-1'>{komponen}</p>
+              <p className='text-white textsize14 text-left p-2 rad15 align-middle mb-1 line-hight-1'>{nama_dataset}</p>
               <p className='text-white textsize9 text-center font_weight600 bg-red max-width-180 rad15'>{kode}</p>
             </Col>
             
@@ -326,36 +352,36 @@ function DatasetPengelolah() {
                         className="w-100 mx-auto">
                         
                         
-                          <div className="mt-3 flex">
+                        <div className="mt-3 flex">
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-white py-1">
+                                1
+                              </p>
+                            </div>
+                          </div>
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-gray-500 py-1">
+                                2
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-gray-500 py-1">
+                                3
+                              </p>
+                            </div>
+                          </div>
                             <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-white py-1">
-                                  1
-                                </p>
-                              </div>
+                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-gray-500 py-1">
+                                4
+                              </p>
                             </div>
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-gray-500 py-1">
-                                  2
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-gray-500 py-1">
-                                  3
-                                </p>
-                              </div>
-                            </div>
-                              <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-gray-500 py-1">
-                                  4
-                                </p>
-                              </div>
-                            </div>
+                          </div>
                             
                         </div>
                         <div className="-mt-5 w-full h-2 bg-cyan-200">
@@ -413,8 +439,8 @@ function DatasetPengelolah() {
                                     isOptionEqualToValue={(option, value) => option?.label === value?.label}
                                     id="combo-box-demo"
                                     options={kategoriku.map((row) => ({
-                                      label: row.nama_bidang_urusan,  // Ganti sesuai properti nama di datamu
-                                      value: row.nama_bidang_urusan
+                                      label: row.nama_sektor,  // Ganti sesuai properti nama di datamu
+                                      value: row.nama_sektor
                                     }))}
                                    
                                     defaultValue=""
@@ -453,8 +479,8 @@ function DatasetPengelolah() {
                                     isOptionEqualToValue={(option, value) => option?.value === value?.value}
                                     id="combo-box-demo"
                                     options={satkerku.map((row) => ({
-                                      label: row.nama_satker,  // Ganti sesuai properti nama di datamu
-                                      value: row.nama_satker
+                                      label: row.nama_opd,  // Ganti sesuai properti nama di datamu
+                                      value: row.nama_opd
                                     }))}
                                     defaultValue=""
                                     value={satkernama}
@@ -508,17 +534,16 @@ function DatasetPengelolah() {
                               </label>
                               <div className="mt-0">
                                 <select
-                                  value={frekuensi}
-                                  onChange={(e) => setfrekuensi(e.target.value)}
+                                  value={kategori_data}
+                                  onChange={(e) => setkategori_data(e.target.value)}
                                   autoComplete="wilayah"
                                   className="input-gray tsize-110"
                                   >
-                                  <option value="">Pilih Frekuensi</option>
-                                  <option value="Harian">Harian</option>
-                                  <option value="Bulanan">Bulanan</option>
-                                  <option value="Tahunan">Tahunan</option>
+                                  <option value="">Pilih Kategori Data</option>
+                                  <option value="agregat">agregat</option>
+                                  <option value="individual">individual</option>
                                 </select>
-                                {validasi_frekuensi && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Frekuensi Harus Dipilih.</p>}
+                                {validasi_kategori_data && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Kategori Data Harus Dipilih.</p>}
                                   
                               </div>
                             </div>
@@ -549,35 +574,35 @@ function DatasetPengelolah() {
                         className="md:w-full mx-auto">
                         
                         <div className="mt-3 flex">
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-white py-1">
-                                  1
-                                </p>
-                              </div>
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-white py-1">
+                                1
+                              </p>
                             </div>
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-white py-1">
-                                  2
-                                </p>
-                              </div>
+                          </div>
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-white py-1">
+                                2
+                              </p>
                             </div>
-                            
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-gray-500 py-1">
-                                  3
-                                </p>
-                              </div>
+                          </div>
+                          
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-gray-500 py-1">
+                                3
+                              </p>
                             </div>
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
-                              <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-gray-500 py-1">
-                                  4
-                                </p>
-                              </div>
+                          </div>
+                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
+                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
+                              <p className=" text-center text-gray-500 py-1">
+                                4
+                              </p>
                             </div>
+                          </div>
                             
                         </div>
                         <div className="-mt-5 w-full h-2 bg-cyan-200">
@@ -586,19 +611,19 @@ function DatasetPengelolah() {
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                           <div className="sm:col-span-3 -mt-2">
                             <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                            <MdOutlineShortText className="mt-1 mx-2 text-cyan-500"  />KOMPONEN
+                            <MdOutlineShortText className="mt-1 mx-2 text-cyan-500"  />Nama Dataset
                             </label>
                             <div className="mt-0">
                                 <textarea 
-                                  placeholder="Masukkan Komponen"
-                                  value={komponen}
-                                  onChange={(e) => setkomponen(e.target.value)}
-                                  autoComplete="komponen"
+                                  placeholder="Masukkan Nama Dataset"
+                                  value={nama_dataset}
+                                  onChange={(e) => setnama_dataset(e.target.value)}
+                                  autoComplete="nama_dataset"
                                   rows="3" 
                                   className="input-gray-2 tsize-110" 
                                   >
                                 </textarea>
-                                  {validasi_komponen && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter...</p>}
+                                  {validasi_nama_dataset && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter...</p>}
                             </div>
                           </div>
                           <div className="sm:col-span-3 -mt-2">

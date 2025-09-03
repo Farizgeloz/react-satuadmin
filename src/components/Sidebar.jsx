@@ -278,9 +278,45 @@ const Sidebar = (props) => {
         {/* isi collapse */}
         <ul
           className={`pl-5 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
-            collapsed_satupeta ? "max-h-0" : "max-h-40"
+            collapsed_satupeta ? "max-h-0" : "max-h-50"
           }`}
         >
+          <li>
+            <a
+              href="/Satupeta/Locations"
+              className="tsize-70 block py-1 text-white-a flex"
+            >
+              <FaMapMarkerAlt className="mt-1 text-white tsize-150" />
+              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                Satu Peta Locations
+              </span>
+              
+            </a>
+          </li>
+          <li>
+            <a
+              href="/Satupeta/Location_Maplist"
+              className="tsize-70 block py-1 text-white-a flex"
+            >
+              <FaMapMarkerAlt className="mt-1 text-white tsize-150" />
+              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                Satu Peta Location Maplist
+              </span>
+              
+            </a>
+          </li>
+          <li>
+            <a
+              href="/Satupeta/LocationPoint"
+              className="tsize-70 block py-1 text-white-a flex"
+            >
+              <FaMapMarkerAlt className="mt-1 text-white tsize-150" />
+              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                Satu Peta Location Point
+              </span>
+              
+            </a>
+          </li>
           <li>
             <a
               href="/Satupeta/Iklan"
@@ -289,6 +325,18 @@ const Sidebar = (props) => {
               <FaMapMarkerAlt className="mt-1 text-white tsize-150" />
               <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                 Satu Peta Iklan
+              </span>
+              
+            </a>
+          </li>
+          <li>
+            <a
+              href="/Satupeta/Berita"
+              className="tsize-70 block py-1 text-white-a flex"
+            >
+              <FaMapMarkerAlt className="mt-1 text-white tsize-150" />
+              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                Satu Peta Berita
               </span>
               
             </a>
@@ -310,98 +358,19 @@ const Sidebar = (props) => {
 
 
        
-        <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Komponen">
-              <MdDataset className="mt-1 text-red-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Komponen</span>
-          </a>
-        </li>
-        <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Data-Images">
-              <MdDataset className="mt-1 text-red-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Images</span>
-          </a>
-        </li>
-        <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Data-Location_Maplist">
-              <MdDataset className="mt-1 text-red-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Location Maplist</span>
-          </a>
-        </li>
         
-        <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Data-Satkercode">
-              <MdDataset className="mt-1 text-red-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Satker Code</span>
-          </a>
-        </li>
+       
+      
 
 
-        <p className={`text-sage-light  textsize8 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
-        <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Data-Bio">
-              <MdCategory className="mt-1 text-cyan-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Bio</span>
-          </a>
-        </li>
-        <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Data-Kategori">
-              <MdCategory className="mt-1 text-cyan-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Kategori Sektoral</span>
-          </a>
-        </li>
-         <li className={`-right-20 `}>
-          {/* button */}
-          <a className="side-li flex tsize-70" href="/Data-Produsen">
-              <FaBuildingColumns className="mt-1 text-cyan-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Produsen</span>
-          </a>
-        </li>
-
-        <li className={`-right-20 `}>
-            {/* a */}
-            <a className="side-li flex tsize-70" onClick={toggleAccordion}>
-                <LuDatabase  className="mt-1 text-sky-500 tsize-150"  />
-                <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Kependudukan</span>
-                <motion.span
-                    initial={{ rotate: 0 }}
-                    animate={{ rotate: isOpenPenduduk ? 180 : 0 }}
-                    transition={{ duration: 0.3, ease: [0.87, 0, 0.13, 1] }}>
-                    <LuChevronDown  className={`${!open && "hidden"} tsize-50 w-6 h-4 ${isOpenPenduduk ? "text-gray-50" : "text-white"}`} />
-                </motion.span>
-            </a>
-            <AnimatePresence>
-              {isOpenPenduduk && (
-                <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: [0.87, 0, 0.13, 1] }}
-                    className='overflow-hidden'>
-                    <ul className='-ml-5'>
-                      <li>
-                        <a className="side-li flex tsize-70" href="/Data-Penduduk">
-                            <LuDatabase className="mt-1 text-sky-500 tsize-150"  />
-                            <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Data Penduduk</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a className="side-li flex tsize-70" href="/Data-Penduduk-Kecamatan">
-                            <LuDatabase className="mt-1 text-sky-500 tsize-150"  />
-                            <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Data Per Kecamatan</span>
-                        </a>
-                      </li>
-                    </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-        </li>
+      <p className={`text-sage-light  textsize8 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
+      <li className={`-right-20 `}>
+        {/* button */}
+        <a className="side-li flex tsize-70" href="/Komponen-Statik">
+            <MdDataset className="mt-1 text-red-500 tsize-150"  />
+            <span className={`${!open && "hidden"} origin-left duration-300 -ml-3`}>Komponen Statik</span>
+        </a>
+      </li>
         
       </ul>
     </div>

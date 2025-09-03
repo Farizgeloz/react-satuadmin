@@ -207,7 +207,7 @@ const Location_Maplistlist = () => {
       headerClasses: 'bg-blue',
       formatter: (cell, row) => {
         //console.log(row);
-        if(row.status!=="Publik"){
+        if(row.visibilitas!=="Publik"){
            return <div className="">
             <p className="text-red-a2 flex textsize10"> {`${row.title}`}</p>
           </div>;
@@ -241,7 +241,7 @@ const Location_Maplistlist = () => {
       headerClasses: 'bg-blue',
       formatter: (cell, row) => {
         //console.log(row);
-        if(row.status!=="Publik"){
+        if(row.visibilitas!=="Publik"){
            return <div className="">
             <p className="text-red-a2 flex textsize10"> {`${row.nama_location}`}</p>
           </div>;

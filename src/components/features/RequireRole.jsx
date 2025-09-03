@@ -7,14 +7,17 @@ const RequireRole = ({ allowedRoles, children }) => {
 
   const [role, setRole] = useState(null);
   const [user, setUser] = useState(null);
+  const [opdid, setSatkerId] = useState(null);
 
   useEffect(() => {
     // Ambil data dari localStorage
     const storedRole = localStorage.getItem('role');
     const storedUser = localStorage.getItem('user');
+    const storedSatker = localStorage.getItem('opd_id');
 
     setRole(storedRole);
     setUser(storedUser ? JSON.parse(storedUser) : null);
+    setSatkerId(storedSatker ? JSON.parse(storedSatker) : null);
 
     // Cek role
     if (!allowedRoles.includes(storedRole)) {

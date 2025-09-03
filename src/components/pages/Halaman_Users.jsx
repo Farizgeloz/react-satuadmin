@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import Layout from "./Layout";
 import Main_User from "../pages_sub/user/UserMain";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { getMe } from "../features/authSlice";
+import '../styles/style_font.css';
+import '../styles/style_bg.css';
+import '../styles/style_button.css';
+import '../styles/style_design.css';
 
 const Users = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { isError, user } = useSelector((state) => state.auth);
 
   /*useEffect(() => {
     dispatch(getMe());

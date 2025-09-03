@@ -42,7 +42,7 @@ function ModalTambahUser() {
   const [location_id, setlocation_id] = useState("");
   const [tahun, settahun] = useState("");
   const [nama_location, setnama_location] = useState("");
-  const [status, setstatus] = useState("");
+  const [visibilitas, setvisibilitas] = useState("");
   const [file, setfile] = useState("");
   const [fileError, setFileError] = useState("");
 
@@ -108,7 +108,7 @@ function ModalTambahUser() {
     formData.append("bidang_urusan_id",bidang_urusan_id);
     formData.append("location_id",location_id);
     formData.append("tahun_rilis",tahun);
-    formData.append("status",status);
+    formData.append("visibilitas",visibilitas);
 
     try {
       await axios.post(apiurl + 'satupeta/locationmaplist_add', formData);
@@ -183,7 +183,7 @@ function ModalTambahUser() {
   const [validasi_bidang_urusan_id, setvalidasi_bidang_urusan_id] = useState(false);
   const [validasi_location_id, setvalidasi_location_id] = useState(false);
   const [validasi_tahun, setvalidasi_tahun] = useState(false);
-  const [validasi_status, setvalidasi_status] = useState(false);
+  const [validasi_visibilitas, setvalidasi_visibilitas] = useState(false);
 
   const handle_step1 = (event) => {
     if (koleksi_data.length<1) {setvalidasi_koleksi_data(true);}else{setvalidasi_koleksi_data(false);}
@@ -192,7 +192,7 @@ function ModalTambahUser() {
     if (bidang_urusan_id==="" || bidang_urusan_id===null) {setvalidasi_bidang_urusan_id(true);}else{setvalidasi_bidang_urusan_id(false);}
     if (location_id.length<1) {setvalidasi_location_id(true);}else{setvalidasi_location_id(false);}
     if (tahun.length !== 4) {setvalidasi_tahun(true);}else{setvalidasi_tahun(false);}
-    if (status.length<1) {setvalidasi_status(true);}else{setvalidasi_status(false);}
+    if (visibilitas.length<1) {setvalidasi_visibilitas(true);}else{setvalidasi_visibilitas(false);}
 
     if (
       koleksi_data?.length >= 1 &&
@@ -200,7 +200,7 @@ function ModalTambahUser() {
       satker_id?.toString().trim() !== "" &&
       bidang_urusan_id !== null &&
       tahun?.toString().length === 4 &&
-      status?.length >= 1
+      visibilitas?.length >= 1
     ) {
       nextStep();
     } else {
@@ -228,7 +228,7 @@ function ModalTambahUser() {
     value: row.id_location
   }));
 
-  const statusOptions = [
+  const visibilitasOptions = [
     { label: 'Publik', value: 'Publik' },
     { label: 'Eksekutif', value: 'Eksekutif' }
   ];
@@ -521,18 +521,18 @@ function ModalTambahUser() {
                             </div>
                             <div className="sm:col-span-3 -mt-2">
                               <label htmlFor="first-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                                <MdOutlineMap className="mt-1 mx-2 text-cyan-500"  />Status
+                                <MdOutlineMap className="mt-1 mx-2 text-cyan-500"  />Visibilitas
                               </label>
                               <div className="mt-1">
                                   <Select
                                     className="basic-single tsize-110"
                                     classNamePrefix="select"
-                                    value={statusOptions.find((opt) => opt.value === status) || null}
+                                    value={visibilitasOptions.find((opt) => opt.value === visibilitas) || null}
                                     isSearchable={true}
-                                    name="status"
-                                    options={statusOptions}
+                                    name="visibilitas"
+                                    options={visibilitasOptions}
                                     onChange={(selectedOption) => {
-                                      setstatus(selectedOption ? selectedOption.value : '');
+                                      setvisibilitas(selectedOption ? selectedOption.value : '');
                                     }}
                                     styles={{
                                       control: (base,state) => ({
@@ -559,7 +559,7 @@ function ModalTambahUser() {
                                     }}
                                   /> 
                                   
-                                  {validasi_status && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
+                                  {validasi_visibilitas && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
                             

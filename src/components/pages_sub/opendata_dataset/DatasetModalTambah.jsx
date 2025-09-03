@@ -38,10 +38,10 @@ function ModalTambahUser() {
   const [kodefile, setkodefile] = useState("");
   const [wilayah, setwilayah] = useState("");
   const [kategori, setkategori] = useState("");
-  const [komponen, setkomponen] = useState("");
+  const [nama_dataset, setnama_dataset] = useState("");
   const [satker, setsatker] = useState("");
   const [sifat_data, setsifat_data] = useState("");
-  const [frekuensi, setfrekuensi] = useState("");
+  const [kategori_data, setkategori_data] = useState("");
   const [kegiatan_statistik, setkegiatan_statistik] = useState("");
   const [klasifikasi, setklasifikasi] = useState("");
   const [konsep, setkonsep] = useState("");
@@ -110,10 +110,10 @@ function ModalTambahUser() {
     formData.append("kodefile", kodefile);
     formData.append("wilayah", wilayah);
     formData.append("kategori", kategori?.value);
-    formData.append("komponen", komponen);
+    formData.append("nama_dataset", nama_dataset);
     formData.append("satker", satker?.value); // ambil value ID
     formData.append("sifat_data", sifat_data);
-    formData.append("frekuensi", frekuensi);
+    formData.append("kategori_data", kategori_data);
     formData.append("kegiatan_statistik", kegiatan_statistik);
     formData.append("klasifikasi", klasifikasi);
     formData.append("konsep", konsep);
@@ -196,7 +196,7 @@ function ModalTambahUser() {
   const [validasi_kategori, setvalidasi_kategori] = useState(false);
   const [validasi_satker, setvalidasi_satker] = useState(false);
   const [validasi_sifatdata, setvalidasi_sifatdata] = useState(false);
-  const [validasi_frekuensi, setvalidasi_frekuensi] = useState(false);
+  const [validasi_kategori_data, setvalidasi_kategori_data] = useState(false);
 
   const handle_step1 = (event) => {
     if (kode.length<3) {setvalidasi_kode(true);}else{setvalidasi_kode(false);}
@@ -205,14 +205,14 @@ function ModalTambahUser() {
     
     if (satker===""||satker===null) {setvalidasi_satker(true);}else{setvalidasi_satker(false);}
     if (sifat_data.length<3) {setvalidasi_sifatdata(true);}else{setvalidasi_sifatdata(false);}
-    if (frekuensi.length<3) {setvalidasi_frekuensi(true);}else{setvalidasi_frekuensi(false);}
+    if (kategori_data.length<3) {setvalidasi_kategori_data(true);}else{setvalidasi_kategori_data(false);}
 
-    if(kode.length>=3 && wilayah.length>3 && (satker!==""||satker!==null) && sifat_data.length>3 && frekuensi.length>3){
+    if(kode.length>=3 && wilayah.length>3 && (satker!==""||satker!==null) && sifat_data.length>3 && kategori_data.length>3){
       nextStep();
     }
   };
 
-  const [validasi_komponen, setvalidasi_komponen] = useState(false);
+  const [validasi_nama_dataset, setvalidasi_nama_dataset] = useState(false);
   const [validasi_kegiatanstatistik, setvalidasi_kegiatanstatistik] = useState(false);
   const [validasi_konsep, setvalidasi_konsep] = useState(false);
   const [validasi_klasifikasi, setvalidasi_klasifikasi] = useState(false);
@@ -220,13 +220,13 @@ function ModalTambahUser() {
   const [validasi_keterangan, setvalidasi_keterangan] = useState(false);
 
   const handle_step2 = (event) => {
-    if (komponen.length<3) {setvalidasi_komponen(true);}else{setvalidasi_komponen(false);}
+    if (nama_dataset.length<3) {setvalidasi_nama_dataset(true);}else{setvalidasi_nama_dataset(false);}
     if (kegiatan_statistik.length<1) {setvalidasi_kegiatanstatistik(true);}else{setvalidasi_kegiatanstatistik(false);}
     if (konsep.length<1) {setvalidasi_konsep(true);}else{setvalidasi_konsep(false);}
     if (klasifikasi.length<1) {setvalidasi_klasifikasi(true);}else{setvalidasi_klasifikasi(false);}
     if (definisi.length<1) {setvalidasi_definisi(true);}else{setvalidasi_definisi(false);}
 
-    if(komponen.length>=3 && kegiatan_statistik.length>=1 && konsep.length>=1 && klasifikasi.length>=1 && definisi.length>=1){
+    if(nama_dataset.length>=3 && kegiatan_statistik.length>=1 && konsep.length>=1 && klasifikasi.length>=1 && definisi.length>=1){
       nextStep();
     }
   };
@@ -342,8 +342,8 @@ function ModalTambahUser() {
                                       isOptionEqualToValue={(option, value) => option?.label === value?.label}
                                       id="combo-box-demo"
                                       options={kategoriku.map((row) => ({
-                                        label: row.nama_bidang_urusan,  // Ganti sesuai properti nama di datamu
-                                        value: row.id_bidang_urusan
+                                        label: row.nama_sektor,  // Ganti sesuai properti nama di datamu
+                                        value: row.id_sektor
                                       }))}
                                       defaultValue=""
                                       value={kategori}
@@ -378,8 +378,8 @@ function ModalTambahUser() {
                                       id="combo-box-demo"
                                       
                                       options={satkerku.map((row) => ({
-                                        label: row.nama_satker,  // Ganti sesuai properti nama di datamu
-                                        value: row.id_satker
+                                        label: row.nama_opd,  // Ganti sesuai properti nama di datamu
+                                        value: row.id_opd
                                       }))}
                                       defaultValue=""
                                       value={satker}
@@ -452,21 +452,20 @@ function ModalTambahUser() {
                               </div>
                               <div className="sm:col-span-2 -mt-2">
                                 <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                                <MdPermDeviceInformation className="mt-1 mx-2 text-cyan-500"  />FREKUENSI
+                                <MdPermDeviceInformation className="mt-1 mx-2 text-cyan-500"  />KATEGORI DATA
                                 </label>
                                 <div className="mt-0">
                                   <select
-                                    value={frekuensi}
-                                    onChange={(e) => setfrekuensi(e.target.value)}
+                                    value={kategori_data}
+                                    onChange={(e) => setkategori_data(e.target.value)}
                                     autoComplete="wilayah"
                                     className="input-gray tsize-110 h-7v"
                                     >
-                                    <option value="">Pilih Frekuensi</option>
-                                    <option value="Harian">Harian</option>
-                                    <option value="Bulanan">Bulanan</option>
-                                    <option value="Tahunan">Tahunan</option>
+                                    <option value="">Pilih Kategori Data</option>
+                                    <option value="agregat">agregat</option>
+                                    <option value="individual">individual</option>
                                   </select>
-                                  {validasi_frekuensi && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Frekuensi Harus Dipilih</p>}
+                                  {validasi_kategori_data && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Kategori Data Harus Dipilih</p>}
                                    
                                 </div>
                               </div>
@@ -548,19 +547,19 @@ function ModalTambahUser() {
                           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="sm:col-span-3 -mt-2">
                               <label htmlFor="last-name" className="block text-sm/6 font-semibold text-gray-600 d-flex">
-                              <MdOutlineShortText className="mt-1 mx-2 text-cyan-500"  />KOMPONEN
+                              <MdOutlineShortText className="mt-1 mx-2 text-cyan-500"  />NAMA DATASET
                               </label>
                               <div className="mt-0">
                                   <textarea 
-                                    placeholder="Masukkan Komponen"
-                                    value={komponen}
-                                    onChange={(e) => setkomponen(e.target.value)}
-                                    autoComplete="komponen"
+                                    placeholder="Masukkan Nama Dataset"
+                                    value={nama_dataset}
+                                    onChange={(e) => setnama_dataset(e.target.value)}
+                                    autoComplete="nama_dataset"
                                     rows="2" 
                                     className="input-gray-2 tsize-110" 
                                     >
                                   </textarea>
-                                   {validasi_komponen && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 3 karakter.</p>}
+                                   {validasi_nama_dataset && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 3 karakter.</p>}
                               </div>
                             </div>
                             <div className="sm:col-span-3 -mt-2">

@@ -8,6 +8,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavSub from "../../NavSub";
 import IklanModalDelete from "./VisitorModalDelete";
 import { IoTrash } from "react-icons/io5";
+import { Col, Container, Row } from "react-bootstrap";
 
 const apiurl = process.env.REACT_APP_URL;
 
@@ -150,6 +151,11 @@ export default function Iklanlist() {
     }
   ];
 
+  const filteredRows = dataku.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
 
   return (
     <div className="bg-slate-100 w-full max-h-screen sm:pt-0 max-[640px]:mt-12">
@@ -176,85 +182,80 @@ export default function Iklanlist() {
             
           </div>
 
-          {loading ? (
-            <Spinner />
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="mb-3">
-                {selectedIds.length > 0 && (
-                
-                <button 
-                  onClick={handleDeleteMultiple}
-                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-3 rounded-xl flex items-center">
-                        <IoTrash   /> Hapus Terpilih ({selectedIds.length})
-                </button>
-              )}
-              </div>
-
-              <div style={{ height: 500, width: "100%" }}>
-                 <ThemeProvider theme={theme}>
-                  <DataGrid
-                    rows={rowsFiltered}
-                    columns={columns}
-                    getRowId={(row) => row.id}
-                    disableSelectionOnClick
-                    // Versi MUI baru (v5.17+ atau v6) → pakai ini
-                    pageSizeOptions={[5, 10, 50,100]}
-                    initialState={{
-                      pagination: {
-                        paginationModel: { pageSize: 10, page: 0 }
-                      }
-                    }}
-                    // Styling agar versi lama tetap aman
-                    sx={{
-                      "& .custom-header": {
-                        backgroundColor: "#1886ca",
-                        color: "white",
-                        fontWeight: "bold",
-                        textTransform: "uppercase",
-                        fontSize: "0.9rem"
-                      },
-                      "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon": {
-                        opacity: 1,
-                        visibility: "visible",
-                        width: "auto",
-                        color: "#fff"
-                      },
-                      "& .MuiDataGrid-columnHeader:hover .MuiDataGrid-menuIcon": {
-                        opacity: 1
-                      },
-                      "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button svg": {
-                        fill: "#fff"
-                      },
-                      "& .MuiTablePagination-select option:not([value='5']):not([value='10']):not([value='20'])": {
-                        display: "none" // sembunyikan opsi default MUI yang tidak diinginkan
-                      },
-                      "& .MuiTablePagination-selectLabel": {
-                        color: "#444",
-                        fontWeight: "bold",
-                        marginTop: "15px"
-                      },
-                      "& .MuiTablePagination-displayedRows": {
-                        color: "#666",
-                        marginTop: "15px"
-                      },
-                      "& .MuiTablePagination-select": {
-                        color: "#000",
-                        fontWeight: "600",
-                        backgroundColor: "#dbdbdb",
-                        borderRadius: "6px"
-                      }
-                    }}
-                  />
-                 </ThemeProvider>
-
-              </div>
-            </motion.div>
-          )}
+          <Container fluid>
+            <Row className='portfoliolist'>
+              <Col sm={12}>
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  <ThemeProvider theme={theme}>
+                    <DataGrid
+                      loading={loading}
+                      rows={filteredRows}
+                      columns={columns}
+                      pageSizeOptions={[5, 10, 50, 100]}
+                      initialState={{
+                        pagination: {
+                          paginationModel: { pageSize: 10, page: 0 }
+                        }
+                      }}
+                    
+                      disableSelectionOnClick
+                      getRowHeight={() => 'auto'}
+                      
+                      sx={{
+                        "& .custom-header": {
+                          backgroundColor: "#1886ca",
+                          color: "white",
+                          fontWeight: "bold",
+                          textTransform: "uppercase",
+                          fontSize: "80%"
+                        },
+                        "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon": {
+                          opacity: 1,
+                          visibility: "visible",
+                          width: "auto",
+                          color: "#fff"
+                        },
+                        "& .MuiDataGrid-columnHeader:hover .MuiDataGrid-menuIcon": {
+                          opacity: 1
+                        },
+                        "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button svg": {
+                          fill: "#fff"
+                        },
+                        '& .MuiDataGrid-cell': {
+                          whiteSpace: 'normal', // biar teks wrap
+                          lineHeight: '1.2rem',  // lebih rapat
+                          padding: '8px'
+                        },
+                        "& .MuiTablePagination-select option:not([value='5']):not([value='10']):not([value='20'])": {
+                          display: "none" // sembunyikan opsi default MUI yang tidak diinginkan
+                        },
+                        "& .MuiTablePagination-selectLabel": {
+                          color: "#444",
+                          fontWeight: "bold",
+                          marginTop: "15px"
+                        },
+                        "& .MuiTablePagination-displayedRows": {
+                          color: "#666",
+                          marginTop: "15px"
+                        },
+                        "& .MuiTablePagination-select": {
+                          color: "#000",
+                          fontWeight: "600",
+                          backgroundColor: "#dbdbdb",
+                          borderRadius: "6px"
+                        }
+                      }}
+                    />
+                  </ThemeProvider>
+                </motion.div>
+              </Col>
+            </Row>
+          </Container>
         </section>
       </div>
     </div>

@@ -76,6 +76,11 @@
   min-width: 95%;
 } 
 
+.my-modal6 {
+  width: 98%;    /* Occupy the 90% of the screen width */
+  min-width: 98%;
+} 
+
 .openModalBtn {
   width: 200px;
   height: 40px;

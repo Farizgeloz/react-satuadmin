@@ -42,7 +42,7 @@ const apiurl=process.env.REACT_APP_URL;
 
 
 function MottoPengelolah() {
-  const [satkerku, setProdukDataku] = useState([""]);
+  const [opdku, setProdukDataku] = useState([""]);
   const [kategoriku, setkategoriku] = useState([""]);
   const [idku, setid] = useState("");
   const [email, setemail] = useState('');

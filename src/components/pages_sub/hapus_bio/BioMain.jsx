@@ -56,7 +56,7 @@ const Biolist = () => {
   const [search_satuan, setsearch_satuan] = useState("");
   const [search_ukuran, setsearch_ukuran] = useState("");
   const [search_tag, setsearch_tag] = useState("");
-  const [search_status, setsearch_status] = useState("");
+  const [search_visibilitas, setsearch_visibilitas] = useState("");
   const [search_updatedAt, setsearch_updatedAt] = useState("");
 
   const [kategoriku, setBioKategori] = useState([]);

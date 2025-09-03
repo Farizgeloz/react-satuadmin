@@ -40,7 +40,13 @@ const Nav = (props) => {
         localStorage.removeItem('user');
 
         // Tampilkan pesan sukses lalu redirect
-        Swal.fire('Berhasil Logout!', '', 'success').then(() => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Berhasil Logout!',
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true
+        }).then(() => {
           navigate('/Login');
         });
       }

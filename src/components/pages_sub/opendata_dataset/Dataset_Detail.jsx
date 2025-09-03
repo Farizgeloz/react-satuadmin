@@ -55,12 +55,12 @@ const Spinner = () => <div className="loader "></div>;
 function DatasetPengelolah() {
   const [loading, setLoading] = useState(true);
   const [idd, setid] = useState("");
-  const [komponen, setkomponen] = useState("");
+  const [nama_dataset, setnama_dataset] = useState("");
   const [kode, setkode] = useState("");
   const [kategori, setkategori] = useState("");
   const [organisasi, setorganisasi] = useState("");
   const [sifat_data, setsifat_data] = useState("");
-  const [frekuensi, setfrekuensi] = useState("");
+  const [kategori_data, setkategori_data] = useState("");
   const [createdAt, setcreatedAt] = useState("");
   const [updatedAt, setupdatedAt] = useState("");
   const [kegiatan_statistik, setkegiatan_statistik] = useState("");
@@ -107,12 +107,12 @@ function DatasetPengelolah() {
         try {
           const response = await axios.get(apiurl+`api/opendata/dataset_data_detail/${id}`);
           setid(response.data.id);
-          setkomponen(response.data.komponen);
+          setnama_dataset(response.data.nama_dataset);
           setkode(response.data.kode);
           setkategori(response.data.kategori);
-          setorganisasi(response.data.nama_satker);
+          setorganisasi(response.data.nama_opd);
           setsifat_data(response.data.sifat_data);
-          setfrekuensi(response.data.frekuensi);
+          setkategori_data(response.data.kategori_data);
           setcreatedAt(convertDate(response.data.createdAt));
           setupdatedAt(convertDate(response.data.updatedAt));
           setkegiatan_statistik(response.data.kegiatan_statistik);
@@ -395,7 +395,7 @@ function DatasetPengelolah() {
       "Kode":kode
     },
      {
-      "Komponen":komponen
+      "nama_dataset":nama_dataset
     },
   ]
   //console.log(metadata);
@@ -455,7 +455,7 @@ const downloadxls = ()=>{
 
     let ws2 = XLSX.utils.aoa_to_sheet(
       [
-        [komponen],
+        [nama_dataset],
         [""],
         [""],
         ["Metadata Info :"],
@@ -463,7 +463,7 @@ const downloadxls = ()=>{
          ["Kategori",": "+kategori],
         ["Produsen Data",": "+organisasi],
         ["Sifat Data",": "+sifat_data],
-        ["Frekuensi",": "+frekuensi],
+        ["Kategori Data",": "+kategori_data],
         ["Konsep",": "+konsep],
         ["Klasifikasi",": "+klasifikasi],
         ["Tanggal Unggah",": "+createdAt],
@@ -550,7 +550,7 @@ const downloadxls = ()=>{
     //XLSX.utils.decode_range("A8:B8");
     let buf = XLSX.write(wb, {bookType:'xlsx', type:'buffer'}); // generate a nodejs buffer
     let str = XLSX.write(wb, {bookType:'xlsx', type:'binary'}); // generate a binary string in web browser
-    XLSX.writeFile(wb, `${kode}-${komponen}-${updatedAt}.xlsx`);
+    XLSX.writeFile(wb, `${kode}-${nama_dataset}-${updatedAt}.xlsx`);
   }
 
 
@@ -602,7 +602,7 @@ const downloadxls = ()=>{
                       transition={{ duration: 0.3 }}
                       viewport={{ once: true }}
                     >
-                      <p className='text-white textsize14 text-left p-2 rad15 align-middle mb-1 line-hight-1'>{komponen}</p>
+                      <p className='text-white textsize14 text-left p-2 rad15 align-middle mb-1 line-hight-1'>{nama_dataset}</p>
                       <p className='text-white textsize9 text-center font_weight600 bg-red max-width-180 rad15'>{kategori}</p>
                     </motion.div>
                   )}
@@ -648,10 +648,10 @@ const downloadxls = ()=>{
                       </Col>
                       
                       <Col md={5} sm={5} className='bg-silver'>
-                        <p className='textsize9 font_weight600'>Frekuensi Data</p>
+                        <p className='textsize9 font_weight600'>Kategori Data</p>
                       </Col>
                       <Col md={7} sm={7} className='bg-silver'>
-                        <p className='textsize9 '>{frekuensi}</p>
+                        <p className='textsize9 '>{kategori_data}</p>
                       </Col>
                       <Col md={5} sm={5} className=''>
                         <p className='textsize9 font_weight600'>Konsep</p>
@@ -1130,7 +1130,7 @@ const downloadxls = ()=>{
                     <thead className='rad15 bg-linear-9'>
                       <tr className=' py-2 text-center text-light'>
                         <th rowSpan={2} className='bg-sky-600 bg-border4'>Kode</th>
-                        <th rowSpan={2} className='bg-sky-600 bg-border4'>Komponen</th>
+                        <th rowSpan={2} className='bg-sky-600 bg-border4'>Nama Dataset</th>
                         <th colSpan={100}
 
                         className='bg-border4 bg-sky-600'>Tahun</th>
@@ -1144,7 +1144,7 @@ const downloadxls = ()=>{
                     <tbody>
                         <tr>
                           <td className='bg-border3'> {kode}</td>
-                          <td className='bg-border3'> {komponen}</td>
+                          <td className='bg-border3'> {nama_dataset}</td>
                           {Object.entries(groupedSums_a) ? Object.entries(groupedSums_a).map(([group, total]) => (
                             <td className='bg-border3' key={group}>
                              
@@ -1170,7 +1170,7 @@ const downloadxls = ()=>{
               <Tab eventKey="raws" title="Data Raw" className='w-full  overflow-xx-auto'>
                 <div className=' max-w-full'>
                   <div className="text-center">
-                    <p className="text-sage textsize8">Pencarian berdasarkan Komponen, Dimensi dan Prioritas Data.</p>
+                    <p className="text-sage textsize8">Pencarian berdasarkan Nama Dataset, Dimensi dan Prioritas Data.</p>
                     <div className="mb-3 max-w-full px-2">
                       <input
                         type="text"
@@ -1250,7 +1250,7 @@ const downloadxls = ()=>{
               <Tab eventKey="aksi" title="Aksi">
                 <div className='w-100 d-flex'>
                   
-                  <Link to={ `/Opendata/Dataset/Update/${komponen}` } className="col-span-4 max-[640px]:col-span-3 tsize-100 font-semibold text-white-a flex-right p-2">
+                  <Link to={ `/Opendata/Dataset/Update/${nama_dataset}` } className="col-span-4 max-[640px]:col-span-3 tsize-100 font-semibold text-white-a flex-right p-2">
                     <button 
                         className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-1 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-xl d-flex">
                           <FaPenToSquare  className='mt-1 mx-1' /><span>Edit</span>
@@ -1258,7 +1258,7 @@ const downloadxls = ()=>{
                   </Link>
                   <UserModalDelete
                         id={idd}
-                        name={komponen}
+                        name={nama_dataset}
                         
                     />
                   

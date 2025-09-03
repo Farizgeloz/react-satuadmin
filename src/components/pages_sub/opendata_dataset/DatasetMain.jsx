@@ -60,23 +60,29 @@ const Datasetlist = () => {
   const [sifat_dataku, setDatasetSifatData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [searchRes, itemRes] = await Promise.all([
-          axios.get(apiurl + 'api/opendata/dataset_data'),
-          axios.get(apiurl + 'api/opendata/dataset_item')
-        ]);
-        setDatasetSearch(searchRes.data || []);
-        setDatasetSifatData(itemRes.data?.resultSifatData || []);
-        setDatasetProdukData(itemRes.data?.resultSatker || []);
-        setDatasetKategori(itemRes.data?.resultBidangUrusan || []);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    setTimeout(() => {
+      const fetchData = async () => {
+        try {
+          const [searchRes, itemRes] = await Promise.all([
+            axios.get(apiurl + 'api/opendata/dataset_data'),
+            axios.get(apiurl + 'api/opendata/dataset_item')
+          ]);
+          setDatasetSearch(searchRes.data || []);
+          setDatasetSifatData(itemRes.data?.resultSifatData || []);
+          setDatasetProdukData(itemRes.data?.resultSatker || []);
+          setDatasetKategori(itemRes.data?.resultBidangUrusan || []);
+        } catch (error) {
+          console.error('Failed to fetch data:', error);
+        } finally {
+          
+        
+            setLoading(false);
+          
+        }
+      };
+      
+      fetchData();
+    }, 2000);
   }, []);
 
   // Data untuk DataGrid
@@ -85,7 +91,7 @@ const Datasetlist = () => {
         id: index + 1,
         no: index + 1,
         ...row,
-        komponen_nama_satker: `${row.komponen ?? ''} ${row.nama_satker ?? ''}`
+        nama_dataset_nama_opd: `${row.nama_dataset ?? ''} ${row.nama_opd ?? ''}`
       }))
     : [];
     
@@ -98,7 +104,7 @@ const Datasetlist = () => {
       headerClassName: "custom-header", // kelas custom
     },
     { 
-      field: "nama_bidang_urusan", 
+      field: "nama_sektor", 
       headerName: "Dimensi", 
       flex: 1,
       minWidth: 100,
@@ -115,28 +121,28 @@ const Datasetlist = () => {
                 style={{ maxWidth: 100, objectFit: "contain" }}
               />
             )}
-            {row.nama_bidang_urusan && (
-              <p className="textsize10 text-center">{row.nama_bidang_urusan}</p>
+            {row.nama_sektor && (
+              <p className="textsize10 text-center">{row.nama_sektor}</p>
             )}
           </div>
         );
       }
     },
     { 
-      field: "komponen_nama_satker", 
-      headerName: "Komponen & Satker", 
+      field: "nama_dataset_nama_opd", 
+      headerName: "nama_dataset & Satker", 
       flex: 4,
       filterable: true,
       headerClassName: "custom-header", // kelas custom
       minWidth: 100,
       renderCell: (params) => {
         const row = params.row;
-        const textColor = row.status !== "Publik" ? "text-red-a2" : "text-sky-a2";
+        const textColor = row.visibilitas !== "Publik" ? "text-red-a2" : "text-sky-a2";
         return (
           <div>
-            <p className={`${textColor} my-1 textsize10`}>{row.komponen}</p>
+            <p className={`${textColor} my-1 textsize10`}>{row.nama_dataset}</p>
             <p className="textsize8 rounded my-1 px-2 py-1 d-inline-block text-white bg-orange-600">
-              {row.nama_satker}
+              {row.nama_opd}
             </p>
             <p className="textsize8">
               <span className="font_weight600">Diperbaharui Tanggal: </span>{convertDate(row.updatedAt)}
@@ -167,15 +173,15 @@ const Datasetlist = () => {
       }
     },
     { 
-      field: "status", 
-      headerName: "Status", 
+      field: "visibilitas", 
+      headerName: "Visibilitas", 
       flex: 1,
       minWidth: 100,
       headerAlign: 'center',
       headerClassName: "custom-header", // kelas custom
       renderCell: (params) => {
-        const textColor = params.row.status !== "Publik" ? "text-red-a2" : "text-sky-a2";
-        return <p className={`${textColor} textsize10 text-center`}>{params.row.status}</p>;
+        const textColor = params.row.visibilitas !== "Publik" ? "text-red-a2" : "text-sky-a2";
+        return <p className={`${textColor} textsize10 text-center`}>{params.row.visibilitas}</p>;
       }
     },
     {
@@ -191,20 +197,20 @@ const Datasetlist = () => {
       renderCell: (params) => (
         <div>
           <Tooltip title="Lihat detail dataset" arrow>
-            <Link to={`/Opendata/Dataset/Detail/${params.row.komponen}`} className="flex items-center justify-center mb-[2px]">
+            <Link to={`/Opendata/Dataset/Detail/${params.row.nama_dataset}`} className="flex items-center justify-center mb-[2px]">
               <button className="bg-slate-500 hover:bg-slate-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
                 <MdInfoOutline className="mr-1" />
               </button>
             </Link>
           </Tooltip>
           <Tooltip title="Edit dataset" arrow>
-            <Link to={`/Opendata/Dataset/Update/${params.row.komponen}`} className="flex items-center justify-center mb-[2px]">
+            <Link to={`/Opendata/Dataset/Update/${params.row.nama_dataset}`} className="flex items-center justify-center mb-[2px]">
               <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
                 <MdEditSquare className="mr-1" />
               </button>
             </Link>
           </Tooltip>
-          <DatasetModalDelete id={params.row.id} name={params.row.komponen} />
+          <DatasetModalDelete id={params.row.id} name={params.row.nama_dataset} />
         </div>
       ),
     },
@@ -239,7 +245,7 @@ const Datasetlist = () => {
       <div className='drop-shadow-lg overflow-xx-auto mb-9 p-2'>
         <section id="teams" className="block py-3 rad15 shaddow1 bg-white">
           <div className="text-center">
-            <p className="text-sage textsize8">Pencarian berdasarkan Komponen, Dimensi dan Prioritas Data.</p>
+            <p className="text-sage textsize8">Pencarian berdasarkan Nama Dataset, Dimensi dan Prioritas Data.</p>
             <div className="mb-3">
               <input
                 type="text"

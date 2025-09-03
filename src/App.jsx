@@ -15,11 +15,11 @@ import Satuportal_List_Detail from "./components/pages/Halaman_Satuportal_List_D
 import Satuportal_List_Update from "./components/pages/Halaman_Satuportal_List_Update";
 import Satuportal_Setting from "./components/pages/Halaman_Satuportal_Setting";
 
-import Images from "./components/pages/Halaman_Images";
-import Images_Update from "./components/pages/Halaman_Images_Update";
+/* import Images from "./components/pages/Halaman_Images";
+import Images_Update from "./components/pages/Halaman_Images_Update"; 
 import Location_Maplist from "./components/pages/Halaman_Location_Maplist";
 import Location_Maplist_Detail from "./components/pages/Halaman_Location_Maplist_Detail";
-import Location_Maplist_Update from "./components/pages/Halaman_Location_Maplist_Update";
+import Location_Maplist_Update from "./components/pages/Halaman_Location_Maplist_Update";*/
 
 
 import Opendata_Dataset from "./components/pages/Halaman_Opendata_Dataset";
@@ -29,15 +29,23 @@ import Opendata_Iklan from "./components/pages/Halaman_Opendata_Iklan";
 import Opendata_Iklan_Update from "./components/pages/Halaman_Opendata_Iklan_Update";
 import Opendata_Setting from "./components/pages/Halaman_Opendata_Setting";
 
+import Satupeta_Locations from "./components/pages/Halaman_Satupeta_Locations";
+import Satupeta_Locations_Update from "./components/pages/Halaman_Satupeta_Locations_Update";
+import Satupeta_Location_Maplist from "./components/pages/Halaman_Satupeta_Location_Maplist";
+import Satupeta_Location_Maplist_Update from "./components/pages/Halaman_Satupeta_Location_Maplist_Update";
+import Satupeta_Locationpoint from "./components/pages/Halaman_Satupeta_Locationpoint";
+import Satupeta_Locationpoint_Update from "./components/pages/Halaman_Satupeta_Locationpoint_Update";
 import Satupeta_Iklan from "./components/pages/Halaman_Satupeta_Iklan";
 import Satupeta_Iklan_Update from "./components/pages/Halaman_Satupeta_Iklan_Update";
+import Satupeta_Berita from "./components/pages/Halaman_Satupeta_Berita";
+import Satupeta_Berita_Update from "./components/pages/Halaman_Satupeta_Berita_Update";
 import Satupeta_Setting from "./components/pages/Halaman_Satupeta_Setting";
 
 import Komponen from "./components/pages/Halaman_Komponen";
 import Komponen_Detail from "./components/pages/Halaman_Komponen_Detail";
 import Komponen_Update from "./components/pages/Halaman_Komponen_Update";
 
-import Satkercode from "./components/pages/Halaman_Satkercode";
+/*import Satkercode from "./components/pages/Halaman_Satkercode";
 import Satkercode_Detail from "./components/pages/Halaman_Satkercode_Detail";
 import Satkercode_Update from "./components/pages/Halaman_Satkercode_Update";
 import Bio from "./components/pages/Halaman_Bio";
@@ -45,12 +53,12 @@ import Bio_Update from "./components/pages/Halaman_Bio_Update";
 import Bio_Detail from "./components/pages/Halaman_Bio_Detail";
 import Kategori from "./components/pages/Halaman_Kategori";
 import Produsen from "./components/pages/Halaman_Produsen";
-import Produsen_Edit from "./components/pages/Halaman_Produsen_Update";
+import Produsen_Edit from "./components/pages/Halaman_Produsen_Update";*/
 
 
 
-import Penduduk from "./components/pages/Halaman_Penduduk";
-import Penduduk_Kecamatan from "./components/pages/Halaman_Penduduk_Kecamatan";
+/* import Penduduk from "./components/pages/Halaman_Penduduk";
+import Penduduk_Kecamatan from "./components/pages/Halaman_Penduduk_Kecamatan"; */
 
 //import RequireAdmin from './components/features/RequireAdmin';
 import RequireRole from './components/features/RequireRole';
@@ -111,9 +119,9 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="Satuportal/Motto" element={
+          <Route path="/Satuportal/Motto" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['Super Admin']}>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Satuportal_Motto />
               </RequireRole>
             </ProtectedRoute>
@@ -127,7 +135,7 @@ function App() {
             </ProtectedRoute>
             }
           />
-          <Route path="Satuportal/Iklan" element={
+          <Route path="/Satuportal/Iklan" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Satuportal_Iklan />
@@ -235,7 +243,57 @@ function App() {
             </ProtectedRoute>
             }
           />
-          <Route path="Satupeta/Iklan" element={
+
+          <Route path="/Satupeta/Locations" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin','Super Admin']}>
+                <Satupeta_Locations />
+              </RequireRole>
+            </ProtectedRoute>
+          }
+          />
+          
+          <Route path="/Satupeta/Locations/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin','Super Admin']}>
+                <Satupeta_Locations_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />  
+          <Route path="/Satupeta/Location_Maplist" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin','Super Admin']}>
+                <Satupeta_Location_Maplist />
+              </RequireRole>
+            </ProtectedRoute>
+          }
+          />
+          <Route path="/Satupeta/Location_Maplist/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin','Super Admin']}>
+                <Satupeta_Location_Maplist_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />  
+          <Route path="/Satupeta/LocationPoint" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin','Super Admin']}>
+                <Satupeta_Locationpoint />
+              </RequireRole>
+            </ProtectedRoute>
+          }
+          />
+          <Route path="/Satupeta/LocationPoint/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin','Super Admin']}>
+                <Satupeta_Locationpoint_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/Satupeta/Iklan" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Satupeta_Iklan />
@@ -251,6 +309,22 @@ function App() {
             </ProtectedRoute>
             }
           />
+          <Route path="/Satupeta/Berita" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
+                <Satupeta_Berita />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/Satupeta/Berita/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
+                <Satupeta_Berita_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
           <Route path="/Satupeta/Setting" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
@@ -260,7 +334,7 @@ function App() {
             }
           />
 
-          <Route path="/Komponen" element={
+          <Route path="/Komponen-Statik" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Komponen />
@@ -268,7 +342,7 @@ function App() {
             </ProtectedRoute>
             }
           />
-          <Route path="/Komponen/Detail/:id" element={
+          <Route path="/Komponen-Statik/Detail/:id" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Komponen_Detail />
@@ -276,9 +350,9 @@ function App() {
             </ProtectedRoute>
             }
           />
-          <Route path="/Komponen/Update/:id" element={
+          <Route path="/Komponen-Statik/Update/:id" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['Super Admin']}>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Komponen_Update />
               </RequireRole>
             </ProtectedRoute>
@@ -287,25 +361,10 @@ function App() {
           
 
 
-          <Route path="/Data-Images" element={
-            <ProtectedRoute>
-              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
-                <Images />
-              </RequireRole>
-            </ProtectedRoute>
-            }
-          />
-          <Route path="/Data-Images/Update/:id" element={
-            <ProtectedRoute>
-              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
-                <Images_Update />
-              </RequireRole>
-            </ProtectedRoute>
-            }
-          />
+          
 
 
-          <Route path="/Data-Location_Maplist" element={
+          {/*<Route path="/Data-Location_Maplist" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Location_Maplist />
@@ -332,7 +391,7 @@ function App() {
 
 
           
-          <Route path="/Data-Satkercode" element={
+           <Route path="/Data-Satkercode" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Satkercode />
@@ -389,7 +448,7 @@ function App() {
           <Route path="/Data-Produsen/Update/:id" element={<Produsen_Edit />} />
 
           <Route path="/Data-Penduduk" element={<Penduduk />} />
-          <Route path="/Data-Penduduk-Kecamatan" element={<Penduduk_Kecamatan />} />
+          <Route path="/Data-Penduduk-Kecamatan" element={<Penduduk_Kecamatan />} /> */}
         </Routes>
       </BrowserRouter>
     </div>

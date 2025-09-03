@@ -28,7 +28,7 @@ function ModalDelete(props) {
   const deleteUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(apiurl+`backend_users/${id}`);
+      await axios.delete(apiurl+`api/open-user/user/delete/${id}`);
       //navigate("/");
       setShow(false);
       sweetsuccess();

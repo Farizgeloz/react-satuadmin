@@ -8,6 +8,9 @@ import filterFactory, { textFilter,selectFilter, Comparator } from 'react-bootst
 import ToolkitProvider, {  CSVExport,Search } from 'react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min';
 import {Container,Row,Col} from 'react-bootstrap';
 import { motion } from "framer-motion";
+import Image from 'react-bootstrap/Image';
+import { DataGrid } from "@mui/x-data-grid";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 
 
@@ -30,6 +33,15 @@ import { FaBuilding, FaEnvira, FaGraduationCap, FaPeopleArrows, FaUsers } from "
 const apiurl=process.env.REACT_APP_URL;
 
 const Spinner = () => <div className="loader "></div>;
+const theme = createTheme({
+  components: {
+    MuiTablePagination: {
+      defaultProps: {
+        labelRowsPerPage: "Data per halaman:"
+      }
+    }
+  }
+});
 
 const { SearchBar } = Search;
 const { ExportCSVButton } = CSVExport;
@@ -38,7 +50,10 @@ const Imageslist = () => {
   
 
   const [loading, setLoading] = useState(true);
-  const [datasetku, setImagesSearch] = useState([]);
+  const [dataku, setImagesSearch] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+  const [rowsFiltered, setRowsFiltered] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sizePerPage, setSizePerPage] = useState(10);
@@ -61,205 +76,130 @@ const Imageslist = () => {
     );
     //console.log(response.data.resultsearch);
     setImagesSearch(response.data);
+    setRowsFiltered(response.data);
   };
 
-
-  function HeadFormatter(column, colIndex, { sortElement, filterElement }) {
-    return (
-      <div style={ { display: 'flex', flexDirection: 'column' } }>
-         { column.text }
-        { filterElement }
-       
-        { sortElement }
-      </div>
-    );
-  }
-
-  const pagecustomTotal = (from, to, size) => (
-    <span className="react-bootstrap-table-pagination-total px-2">
-      Menampilkan { from } Sampai { to } dari { size } data
-    </span>
-  );
-  const pageoptions = {
-    paginationSize: 4,
-    pageStartIndex: 1,
-    firstPageText: 'Awal',
-    prePageText: 'Kembali',
-    nextPageText: 'Lanjut',
-    lastPageText: 'Akhir',
-    nextPageTitle: 'Page Awal',
-    prePageTitle: 'Page Akhir',
-    firstPageTitle: 'Page Awal',
-    lastPageTitle: 'Page Akhir',
-    showTotal: true,
-    onPageChange: (page) => setCurrentPage(page),
-    onSizePerPageChange: (size, page) => {
-      setSizePerPage(size);
-      setCurrentPage(page);
-    },
-    sizePerPageList: [
-      { text: '10', value: 10 },
-      { text: '20', value: 20 },
-      { text: '50', value: 50 },
-      { text: '100', value: 100 },
-      { text: 'All', value: datasetku.length }
-    ]
+  const handleSearch = (value) => {
+    setSearchText(value);
+    if (value === "") {
+      setRowsFiltered(dataku);
+    } else {
+      const filtered = dataku.filter(
+        (item) =>
+          item.title?.toLowerCase().includes(value.toLowerCase()) ||
+          item.contents?.toLowerCase().includes(value.toLowerCase())
+      );
+      setRowsFiltered(filtered);
+    }
   };
 
   const columns =[
     {
-      dataField: 'nomor',
-      text: 'No',
+      field: "no",
+      headerName: "No",
+      headerClassName: "custom-header",
+      width: 70,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => {
+        // Cari index row saat ini
+        return params.api.getAllRowIds().indexOf(params.id) + 1;
+      },
+    },
+    { 
+      field: "kategori", 
+      headerName: "Kategori", 
+      flex: 2,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100 
+    },
+    { 
+      field: "title", 
+      headerName: "Judul", 
+      flex: 2,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100 
+    },
+    { 
+      field: "contents", 
+      headerName: "Konten", 
+      flex: 3,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100 
+    },
+    { 
+      field: "presignedUrl1", 
+      headerName: "Gambar", 
+      flex: 1,  // 30%
+      headerClassName: "custom-header", // kelas custom
       headerAlign: 'center',
-      headerFormatter: HeadFormatter,
-      formatter: (cell, row, rowIndex) => (rowIndex + 1) + ((currentPage - 1) * sizePerPage),
-      style: { width: '5%', textAlign: 'center' },
-      csvExport: false,
-      sort: false
+      minWidth: 100,
+      disableColumnMenu: true,
+      filterable: false,
+      sortable: false,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <>
+            <div style={{ textAlign: "center", width: "100%" }}>
+              {row.presignedUrl1 && (
+                <Image
+                  src={row.presignedUrl1}
+                  className="rad15 px-3"
+                  style={{ maxwidth: "80%", objectFit: "contain" }}
+                />
+              )}
+            </div>
+            <div style={{ textAlign: "center", width: "100%" }}>
+              {row.presignedUrl2 && (
+                <Image
+                  src={row.presignedUrl2}
+                  className="rad15 px-3"
+                  style={{ maxwidth: "80%", objectFit: "contain" }}
+                />
+              )}
+            </div>
+            <div style={{ textAlign: "center", width: "100%" }}>
+              {row.presignedUrl3 && (
+                <Image
+                  src={row.presignedUrl3}
+                  className="rad15 px-3"
+                  style={{ maxwidth: "80%", objectFit: "contain" }}
+                />
+              )}
+              
+            </div>
+          </>
+        );
+      }
     },
-    {
-      dataField:'kategori',
-      text:"Kategori",
-      filter: textFilter({
-        style:{display:'block',color:'#334856'},
-        placeholder: 'Cari Kategori',
-      }),
-      headerAlign: (column, colIndex) => 'center',
-      headerFormatter: HeadFormatter,
-      formatter: (cell, row) => (
-        <p className="px-2"> {row.kategori}</p>
-      ),
-      style: {
-        'width': '35%'
-      },
-      sort: true
-    },
-    {
-      dataField:'title',
-      text:"Judul",
-      filter: textFilter({
-        style:{display:'block',color:'#334856'},
-        placeholder: 'Cari Judul',
-      }),
-      headerAlign: (column, colIndex) => 'center',
-      headerFormatter: HeadFormatter,
-      formatter: (cell, row) => (
-        <p className=" px-2"> {row.title}</p>
-      ),
-      style: {
-        'width': '35%'
-      },
-      sort: true
-    },
-    {
-      dataField:'contents',
-      text:"Konten",
-      filter: textFilter({
-        style:{display:'block',color:'#334856'},
-        placeholder: 'Cari Konten',
-      }),
-      headerAlign: (column, colIndex) => 'center',
-      headerFormatter: HeadFormatter,
-      formatter: (cell, row) => (
-        <p className="px-2"> {row.contents}</p>
-      ),
-      style: {
-        'width': '35%'
-      },
-      sort: true
-    },
-    {
-      dataField:'presignedUrl1',
-      text:"Gambar 1",
-      headerAlign: (column, colIndex) => 'center',
-      headerFormatter: HeadFormatter,
-      headerClasses: 'bg-blue',
-      formatter: (cell, row) => (
-        <img
-          src={row.presignedUrl1}
-          alt="gambar"
-          style={{ maxwidth: "80%", objectFit: "contain" }}
-          className="rounded border p-1"
-        />
-      ),
-      style: {
-        'width': '15%'
-      },
-      sort: false
-    },
-    {
-      dataField:'presignedUrl2',
-      text:"Gambar 2",
-      headerAlign: (column, colIndex) => 'center',
-      headerFormatter: HeadFormatter,
-      headerClasses: 'bg-blue',
-      formatter: (cell, row) => (
-        <img
-          src={row.presignedUrl2}
-          alt="gambar2"
-          style={{ maxwidth: "80%", objectFit: "contain" }}
-          className="rounded border p-1"
-        />
-      ),
-      style: {
-        'width': '15%'
-      },
-      sort: false
-    },
-    {
-      dataField:'presignedUrl3',
-      text:"Gambar 3",
-      headerAlign: (column, colIndex) => 'center',
-      headerFormatter: HeadFormatter,
-      headerClasses: 'bg-blue',
-      formatter: (cell, row) => (
-        <img
-          src={row.presignedUrl3}
-          alt="gambar3"
-          style={{ maxwidth: "80%", objectFit: "contain" }}
-          className="rounded border p-1"
-        />
-      ),
-      style: {
-        'width': '15%'
-      },
-      sort: false
-    }
     
-    
-  ];
-
-  const rowStyle = { fontSize: '80%' };
-
-  const selectRow = {
-    mode: 'checkbox',
-    clickToSelect: true
-  };
-  
-
-  const afterSearch = (newResult) => {
-    console.log(newResult);
-  };
-
-  const expandRow = {
-    onlyOneExpanding: true,
-    renderer: row => (
-      <div className="bg-sky-100 p-2 transisi cekkk rad-bottom10 hover:bg-sky-50" ke={ `${row.id}` }>
-      
-        <div className="d-flex">
+    {
+      field: "aksi",
+      headerName: "Aksi",
+      flex: 1, // 20%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <div className="p-2">
+          <Link
+            to={ `/Data-Images/Update/${params.row.kategori}` }
+            className="flex items-center justify-center mb-[2px]"
+          >
+            <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
+              <MdEditSquare className="mr-1" />
+            </button>
+          </Link>
           
-        
-        <Link to={ `/Data-Images/Update/${row.kategori}` } className="col-span-4 max-[640px]:col-span-3 tsize-100 font-semibold text-white-a flex-right p-2">
-          <button 
-            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-1 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-xl d-flex">
-              <MdEditSquare className="mt-1 mx-1" /><span>Edit</span>
-          </button>
-        </Link>
         </div>
-        
-      </div>
-    )
-  };
+      ),
+    },
+  ];
+  
 
   function convertDate(datePicker) {
       const selectedDate = new Date(datePicker);
@@ -283,7 +223,7 @@ const Imageslist = () => {
   
   return (
     <div className="bg-slate-100  max-h-screen sm:pt-0  max-[640px]:mt-12 ">
-      <NavSub  title="Images" />
+      <NavSub  title="Komponen Lainnya" />
       
 
       <div className="col-span-3 rounded grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-6 drop-shadow-lg">
@@ -293,7 +233,7 @@ const Imageslist = () => {
               <MdDashboard className="mt-1 textsize8"/>Dashboard
             </NavLink> / 
             <NavLink to="/Data-Images" className="text-link-sky mx-2 d-flex">
-              <MdDataset className="mt-1 textsize8" />Images
+              <MdDataset className="mt-1 textsize8" />Komponen Lainnya
             </NavLink>
           </p>
         </div>
@@ -311,7 +251,16 @@ const Imageslist = () => {
         <section id="teams" className="block   py-3 rad15 shaddow1 bg-white">
           
           <div className="text-center">
-            <p className="text-sage textsize8 ">Pencarian berdasarkan Judul, Kategori Sektoral atau Penghasil Data.</p>
+            <p className="text-sage textsize8 ">Pencarian berdasarkan Judul, Kategori dan Isi Konten.</p>
+            <div className="mb-3">
+              <input
+                type="text"
+                value={searchText}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="Cari data..."
+                className="border p-2 rounded w-64 input-green2"
+              />
+            </div>
           </div>
           <Container fluid>
             <Row className='portfoliolist'>
@@ -326,41 +275,67 @@ const Imageslist = () => {
                       transition={{ duration: 0.3 }}
                       viewport={{ once: true }}
                     >
-                      <BootstrapTable 
-                      keyField='id' 
-                      data={ datasetku } 
-                      columns={ columns } 
-                      rowStyle={ rowStyle }
-                      exportCSV={ { onlyExportFiltered: true, exportAll: false } }
-                      filter={ filterFactory() }
-                      search={ { afterSearch } }
-                      pagination={paginationFactory({
-                        ...pageoptions,
-                        paginationTotalRenderer: pagecustomTotal,
-                        page: currentPage,
-                        sizePerPage: sizePerPage
-                      })}
-                      expandRow={ expandRow }
-                      hover 
-                      
-                      >
-                        {
-                          props => (
-                            <div>
-                              
-                              <SearchBar { ...props.searchProps } className="widthtt" placeholder="Cari Data" />
-                              <hr />
-                              <BootstrapTable
-                                { ...props.baseProps }
-                                //pagination={ paginationFactory(pageoptions) }
-                                expandRow={ expandRow }
-                              />
-                            </div>
-                          )
-                        }
-
-                       
-                      </BootstrapTable>
+                      <ThemeProvider theme={theme}>
+                        <DataGrid
+                          rows={rowsFiltered}
+                          columns={columns}
+                          getRowId={(row) => row.id}
+                          disableSelectionOnClick
+                          // Versi MUI baru (v5.17+ atau v6) → pakai ini
+                          pageSizeOptions={[5, 10, 50,100]}
+                          initialState={{
+                            pagination: {
+                              paginationModel: { pageSize: 10, page: 0 }
+                            }
+                          }}
+                          getRowHeight={() => 'auto'} // otomatis menyesuaikan konten
+                          // Styling agar versi lama tetap aman
+                          sx={{
+                            "& .custom-header": {
+                              backgroundColor: "#1886ca",
+                              color: "white",
+                              fontWeight: "bold",
+                              textTransform: "uppercase",
+                              fontSize: "0.9rem"
+                            },
+                            "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon": {
+                              opacity: 1,
+                              visibility: "visible",
+                              width: "auto",
+                              color: "#fff"
+                            },
+                            "& .MuiDataGrid-columnHeader:hover .MuiDataGrid-menuIcon": {
+                              opacity: 1
+                            },
+                            "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button svg": {
+                              fill: "#fff"
+                            },
+                            '& .MuiDataGrid-cell': {
+                              whiteSpace: 'normal', // biar teks wrap
+                              lineHeight: '1.2rem',  // lebih rapat
+                              padding: '8px'
+                            },
+                            "& .MuiTablePagination-select option:not([value='5']):not([value='10']):not([value='20'])": {
+                              display: "none" // sembunyikan opsi default MUI yang tidak diinginkan
+                            },
+                            "& .MuiTablePagination-selectLabel": {
+                              color: "#444",
+                              fontWeight: "bold",
+                              marginTop: "15px"
+                            },
+                            "& .MuiTablePagination-displayedRows": {
+                              color: "#666",
+                              marginTop: "15px"
+                            },
+                            "& .MuiTablePagination-select": {
+                              color: "#000",
+                              fontWeight: "600",
+                              backgroundColor: "#dbdbdb",
+                              borderRadius: "6px"
+                            }
+                          }}
+                        />
+                      </ThemeProvider>
                    </motion.div>
                           )}
                   {/*<ToolkitProvider

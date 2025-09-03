@@ -34,11 +34,11 @@ const Nav = (props) => {
     ];
     let [open,setOpen]=useState(false);
   return (
-    <div className='bg-teal-600 drop-shadow-lg w-full top-0 left-0 font-[Poppins]  height1 min-[680px]:hidden max-[640px]:fixed z-10'>
+    <div className='bg-blue-700 drop-shadow-lg w-full top-0 left-0 font-[Poppins]  height1 min-[680px]:hidden max-[640px]:fixed z-10'>
       <div className='md:flex items-center justify-between  py-2 md:px-10 px-7  height1'>
         <div className='w-70 font-bold cursor-pointer flex items-center font-[Poppins] '>
           <img src="/assetku/logo-kab-probolinggo.png" className=" img-30 cursor-pointer duration-500 mr-2" />
-          <p className='md:mt-3 text-white textsize10'>SATU DATA</p>
+          <p className='md:mt-3 text-white textsize10'>SATU ADMIN</p>
           <p className='ml-2 md:mt-3 max-[640px]:hiddenku text-gray-50'>KAB. PROBOLINGGO</p>
         </div>
       

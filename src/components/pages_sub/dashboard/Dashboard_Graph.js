@@ -64,7 +64,7 @@ const DatasetGraph = () => {
   
   const data_kecamatan2= row_graph.map((rows, index) => (
   {
-      name: [rows.nama_satker],
+      name: [rows.nama_opd],
       y: rows.count_satker
       
   }));

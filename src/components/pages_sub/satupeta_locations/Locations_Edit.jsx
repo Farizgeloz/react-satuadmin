@@ -341,7 +341,7 @@ function DatasetPengelolah() {
                               </div>
                             </div>
                             
-                            <div className="sm:col-span-4 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                   
                                 <Autocomplete
@@ -375,7 +375,7 @@ function DatasetPengelolah() {
                                   {validasi_satker && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                 <Autocomplete
                                   className='tsize-110'

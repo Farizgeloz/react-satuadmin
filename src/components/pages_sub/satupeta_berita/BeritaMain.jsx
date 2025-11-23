@@ -213,7 +213,7 @@ export default function Iklanlist() {
       <NavSub title="Satu Peta Artikel" />
 
       <div className="col-span-3 grid grid-cols-1 md:grid-cols-6 gap-4">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
             <NavLink to="/Dashboard" className="text-silver-a mr-2 flex textsize10">
               <MdDashboard className="mt-1" /> Dashboard

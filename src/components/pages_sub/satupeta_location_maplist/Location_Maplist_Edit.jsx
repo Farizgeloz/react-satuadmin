@@ -394,7 +394,7 @@ function DatasetPengelolah() {
                         </div>
 
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-3 -mt-2">
                               
                               <div className="mt-0 transisiku">
                                 <Autocomplete
@@ -457,7 +457,7 @@ function DatasetPengelolah() {
                                     {validasi_koleksi_data && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-3 -mt-2">
                               
                               <div className="mt-0 transisiku">
                                 
@@ -502,7 +502,7 @@ function DatasetPengelolah() {
                                 {validasi_tipe && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-3 -mt-2">
                               
                               <div className="mt-0">
                                   
@@ -569,7 +569,7 @@ function DatasetPengelolah() {
                               </div>
                             </div>
 
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               
                               <div className="mt-0">
                                   
@@ -604,7 +604,7 @@ function DatasetPengelolah() {
                                   {validasi_satker && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                   <Autocomplete
                                     className='tsize-110'
@@ -621,7 +621,7 @@ function DatasetPengelolah() {
                                     renderInput={(params) => (
                                       <TextField
                                         {...params}
-                                        label="Bidang Urusan"
+                                        label="Sektor"
                                         variant="outlined"
                                         sx={(theme) => textFieldStyle(theme)}
                                       />
@@ -641,7 +641,7 @@ function DatasetPengelolah() {
                               </div>
                             </div>
                             
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-3 -mt-2">
                               
                               <div className="mt-0 transisiku">
                                 <Autocomplete
@@ -680,7 +680,7 @@ function DatasetPengelolah() {
                                     {validasi_periode && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-3 -mt-2">
                               <div className="mt-0 transisiku">
                                 <TextField
                                   label="Tahun Rilis"
@@ -725,7 +725,7 @@ function DatasetPengelolah() {
                                   {validasi_sektor && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
+                            <div className="sm:col-span-3 -mt-2">
                               
                               <div className="mt-0 transisiku">
                                 <Autocomplete

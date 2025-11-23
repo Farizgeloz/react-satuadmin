@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Button from './Button';
 import { IoNotificationsOutline,IoPersonCircleOutline } from "react-icons/io5";
@@ -146,17 +146,23 @@ const Nav = (props) => {
           <p className={`text-sage-light  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
           <li className={`-right-20 `}>
             {/* button */}
-            <a className="side-li flex tsize-100 text-silver-a" href="/Dashboard">
+            <Link
+              to={`/Dashboard`}
+              className="side-li flex tsize-100 text-silver-a"
+            >
                 <MdDashboard  className="mt-1 text-orange-500 tsize-150"  />
                 <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Dashboard</span>
-            </a>
+            </Link>
           </li>
           <li className={`-right-20 mt-2`}>
             {/* button */}
-            <a className="side-li flex tsize-100 text-silver-a" href="/Data-User">
+            <Link
+              to={`/Data-User`}
+              className="side-li flex tsize-100 text-silver-a"
+            >
                 <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
                 <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Data Pengguna</span>
-            </a>
+            </Link>
           </li>
 
 
@@ -460,10 +466,14 @@ const Nav = (props) => {
         <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
         <li className={`-right-20 mb-5`}>
           {/* button */}
-          <a className="side-li flex tsize-100 text-silver-a" href="/Komponen-Statik">
+          
+          <Link
+            to={`/Komponen-Statik`}
+            className="side-li flex tsize-100 text-silver-a"
+          >
               <MdDataset className="mt-1 text-red-500 tsize-150"  />
               <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
-          </a>
+          </Link>
         </li>
               
             

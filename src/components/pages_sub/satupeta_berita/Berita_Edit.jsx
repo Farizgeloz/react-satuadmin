@@ -327,7 +327,6 @@ function IklanPengelolah() {
         
         
         <Row className='margin-t3 bg-white pb-5 mx-5 shaddow1'>
-          <p> idku {idku}</p>
           <form onSubmit={updateIklan}>
             <div className="relative flex px-5">
               <div className="container max-w-screen-xl mx-auto my-auto relative flex flex-col w-4/5">
@@ -356,7 +355,7 @@ function IklanPengelolah() {
                           </div>
                           
                         </div>
-                        <div className="sm:col-span-3 -mt-4">
+                        <div className="sm:col-span-6 -mt-4">
                           <div className="mt-0">
                             <TextField
                               label="Sumber"
@@ -369,7 +368,7 @@ function IklanPengelolah() {
                           </div>
                           
                         </div>
-                        <div className="sm:col-span-3 -mt-4">
+                        <div className="sm:col-span-6 -mt-4">
                           <div className="mt-0">
                             <Autocomplete
                               className="tsize-110"

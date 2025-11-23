@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from "react-router-dom";
 import "../../styles/App.css";
 import { motion, AnimatePresence } from 'framer-motion';
 import { LuCircleChevronDown  } from 'react-icons/lu';
@@ -20,7 +21,11 @@ const AccordionMenu = ({ title, children }) => {
         <li className={`w-full border rounded-xl border mb-1`}>
             
             {/* button */}
-            <a className={`flex items-center justify-between text-gray-100  w-full p-1 text-left ${isOpen ? "rounded-t-xl" : "rounded-xl"} ${isOpen ? "text-white" : "text-white"}`} onClick={toggleAccordion}>
+            <Link
+            to={`/Log`}
+            className={`flex items-center justify-between text-gray-100  w-full p-1 text-left ${isOpen ? "rounded-t-xl" : "rounded-xl"} ${isOpen ? "text-white" : "text-white"}`} 
+            onClick={toggleAccordion}
+            >
                 <IoSearchCircle  className=" flex-initial w-10 mt-2 mx-2 text-white tsize-70 font-medium"  />
                 <span className="flex-initial w-full tsize-70 font-medium">{title}</span>
 
@@ -31,8 +36,7 @@ const AccordionMenu = ({ title, children }) => {
                 >
                     <LuCircleChevronDown  className={`flex-initial w-10 w-6 h-6 ${isOpen ? "text-gray-50" : "text-white"}`} />
                 </motion.span>
-                
-            </a>
+            </Link>
             <AnimatePresence>
                 {isOpen && (
                     <motion.div

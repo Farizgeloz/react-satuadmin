@@ -271,7 +271,7 @@ const Datasetlist = () => {
       <NavSub title="Satupeta Koleksi Peta" />
       <Row className="rounded g-4 drop-shadow-lg">
         {/* Breadcrumb */}
-        <Col md={4} xs={12}>
+        <Col md={8} xs={12}>
           <p className="textsize10 font-semibold text-gray-300 d-flex pt-2 mt-2 mx-3 mb-0">
             <NavLink
               to="/Dashboard"
@@ -294,7 +294,7 @@ const Datasetlist = () => {
         {/* Tambah Dataset */}
         <Col md={4} xs={12}>
           <Row className="g-4 drop-shadow-lg">
-            <Col xs={6}>
+            <Col xs={12}>
               <DatasetModalTambah />
             </Col>
             <Col xs={6}>

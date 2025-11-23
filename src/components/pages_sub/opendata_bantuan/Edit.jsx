@@ -232,7 +232,7 @@ function IklanPengelolah() {
 
   return (
     <div className="bg-gray-100  h-95    overflow-auto z-5 max-[640px]:mt-10">
-      <NavSub  title="Open Data Iklan Edit" />
+      <NavSub  title="Open Data Bantuan" />
       <div className="col-span-6">
         <p className=" textsize10 font-semibold text-gray-300 flex pt-2 mt-1 mx-3 mb-0">
           <NavLink to="/Dashboard" className="text-silver-a mr-2 d-flex">
@@ -296,7 +296,7 @@ function IklanPengelolah() {
                             </div>
                             
                           </div>
-                          <div className="sm:col-span-2 -mt-4">
+                          <div className="sm:col-span-3 -mt-4">
                             <div className="mt-0">
                               <Autocomplete
                                 className="tsize-110"
@@ -332,7 +332,7 @@ function IklanPengelolah() {
                               {validasi_kategori && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih...</p>}
                             </div>
                           </div>
-                          <div className="sm:col-span-2 -mt-4">
+                          <div className="sm:col-span-3 -mt-4">
                             <div className="mt-0">
                               <TextField
                                 label="Kode Seksi"
@@ -362,7 +362,7 @@ function IklanPengelolah() {
                             </div>
                             
                           </div>
-                          <div className="sm:col-span-2 -mt-4">
+                          <div className="sm:col-span-6 -mt-4">
                             <div className="mt-0">
                               <Autocomplete
                                 className="tsize-110"

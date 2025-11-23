@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import axios from "axios";
-//import AccordionMenu from './accordion/AccordionMenu'
-import { motion, AnimatePresence } from 'framer-motion';
-import { LuChevronDown, LuDatabase, LuLayoutDashboard, LuCircleUser  } from 'react-icons/lu';
-import { FaBuildingColumns, FaCircleUser, FaClipboardUser, FaPeopleLine } from "react-icons/fa6";
+import { Link } from "react-router-dom";
+import { FaPeopleLine } from "react-icons/fa6";
 import {
     IoSearchCircle   
 
@@ -97,19 +94,26 @@ const Sidebar = (props) => {
         <p className={`text-sage-light  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
         <li className={`-right-20 `}>
           {/* button */}
-          <a className="side-li flex tsize-100 text-white-a" href="/Dashboard">
+          <Link
+            to={`/Dashboard`}
+            className="side-li flex tsize-100 text-white-a"
+          >
               <MdDashboard  className="mt-1 text-orange-500 tsize-150"  />
               <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Dashboard</span>
-          </a>
+          </Link>
+         
         </li>
         {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
           <>
           <li className={`-right-20 mt-2`}>
             {/* button */}
-            <a className="side-li flex tsize-100 text-white-a" href="/Data-User">
+            <Link
+              to={`/Data-User`}
+              className="side-li flex tsize-100 text-white-a"
+            >
                 <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
                 <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Data Pengguna</span>
-            </a>
+            </Link>
           </li>
           </>
         ) : null
@@ -150,66 +154,61 @@ const Sidebar = (props) => {
               }`}
             >
               <li>
-                <a
-                  href="/Satuportal/Motto"
+                <Link
+                  to={`/Satuportal/Motto`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Satu Portal Motto
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Satuportal/Iklan"
+                <Link
+                  to={`/Satuportal/Iklan`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Satu Portal Iklan
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
               <>
               <li>
-                <a
-                  href="/Satuportal/Visitor"
+                <Link
+                  to={`/Satuportal/Visitor`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Satu Portal Visitor
                   </span>
-                
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Satuportal/List"
+                <Link
+                  to={`/Satuportal/List`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Satu Portal List
                   </span>
-                
-                </a>
+                </Link>
               </li>
               <li className='mb-3'>
-                <a
-                  href="/Satuportal/Color"
+                <Link
+                  to={`/Satuportal/Color`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Satu Portal Color
                   </span>
-                
-                </a>
+                </Link>
               </li>
               </>
               ) : null
@@ -262,16 +261,15 @@ const Sidebar = (props) => {
               {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='CS' ? (
               <>
               <li>
-                <a
-                  href="/Opendata/Dataset/Permohonan"
+                <Link
+                  to={`/Opendata/Dataset/Permohonan`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Permohonan
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               </>
               ) : null
@@ -279,52 +277,48 @@ const Sidebar = (props) => {
               {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
               <>
               <li>
-                <a
-                  href="/Opendata/Iklan"
+                <Link
+                  to={`/Opendata/Iklan`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Iklan
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Opendata/Artikel"
+                <Link
+                  to={`/Opendata/Artikel`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Artikel
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Opendata/Infografik"
+                <Link
+                  to={`/Opendata/Infografik`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Infografik
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Opendata/Bantuan"
+                <Link
+                  to={`/Opendata/Bantuan`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Bantuan
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               
               </>
@@ -333,28 +327,26 @@ const Sidebar = (props) => {
               {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
               <>
               <li>
-                <a
-                  href="/Opendata/Color"
+                <Link
+                  to={`/Opendata/Color`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Color
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li className='mb-3'>
-                <a
-                  href="/Opendata/Feedback"
+                <Link
+                  to={`/Opendata/Feedback`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Feedback
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               </>
               ) : null
@@ -415,16 +407,15 @@ const Sidebar = (props) => {
           {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
             <>
               <li>
-                <a
-                  href="/Satupeta/Lokasi-Peta"
+                <Link
+                  to={`/Satupeta/Lokasi-Peta`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Lokasi Peta
                   </span>
-                  
-                </a>
+                </Link>
               </li>
             </>
           ) : null
@@ -432,28 +423,26 @@ const Sidebar = (props) => {
           {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd' ? (
             <>
               <li>
-                <a
-                  href="/Satupeta/Koleksi-Peta"
+                <Link
+                  to={`/Satupeta/Koleksi-Peta`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Koleksi Peta
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Satupeta/Titik-Lokasi-Peta"
+                <Link
+                  to={`/Satupeta/Titik-Lokasi-Peta`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Titik Lokasi Peta
                   </span>
-                  
-                </a>
+                </Link>
               </li>
             </>
           ) : null
@@ -461,40 +450,37 @@ const Sidebar = (props) => {
           {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
             <>
               <li>
-                <a
-                  href="/Satupeta/Iklan"
+                <Link
+                  to={`/Satupeta/Iklan`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-white-a`}>
+                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Iklan
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Satupeta/Artikel"
+                <Link
+                  to={`/Satupeta/Artikel`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Artikel
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="/Satupeta/Bantuan"
+                <Link
+                  to={`/Satupeta/Bantuan`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Bantuan
                   </span>
-                  
-                </a>
+                </Link>
               </li>
             
             </>
@@ -503,28 +489,26 @@ const Sidebar = (props) => {
             {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
             <>
               <li>
-                <a
-                  href="/Satupeta/Color"
+                <Link
+                  to={`/Satupeta/Color`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Color
                   </span>
-                  
-                </a>
+                </Link>
               </li>
               <li className='mb-3'>
-                <a
-                  href="/Satupeta/Feedback"
+                <Link
+                  to={`/Satupeta/Feedback`}
                   className="tsize-100 block py-1 btn-white-a flex"
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Feedback
                   </span>
-                  
-                </a>
+                </Link>
               </li>
             </>
           ) : null
@@ -546,17 +530,23 @@ const Sidebar = (props) => {
       <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
       <li className={`-right-20 mb-1`}>
         {/* button */}
-        <a className="side-li flex tsize-100 text-white-a" href="/Komponen-Statik">
+        <Link
+          to={`/Komponen-Statik`}
+          className="side-li flex tsize-100 text-white-a"
+        >
             <MdDataset className="mt-1 text-red-500 tsize-150"  />
             <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
-        </a>
+        </Link>
       </li>
       <li className={`-right-20 mb-5`}>
         {/* button */}
-        <a className="side-li flex tsize-100 text-white-a" href="/Log">
+        <Link
+          to={`/Log`}
+          className="side-li flex tsize-100 text-white-a"
+        >
             <MdDataset className="mt-1 text-red-500 tsize-150"  />
             <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Aktivitas</span>
-        </a>
+        </Link>
       </li>
       
         </>

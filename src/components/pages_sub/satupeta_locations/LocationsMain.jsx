@@ -237,7 +237,7 @@ const Datasetlist = () => {
     <div className="bg-slate-100 max-h-screen sm:pt-0 max-[640px]:mt-12">
       <NavSub title="Satupeta Lokasi Peta" />
       <div className="rounded grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-6 drop-shadow-lg">
-        <div className="col-span-2">
+        <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
             <NavLink to="/Dashboard" className="text-silver-a mr-2 d-flex textsize10">
               <MdDashboard className="mt-1 textsize10" />Dashboard

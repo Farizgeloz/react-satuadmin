@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/Modal.css";
 import "../../../App.css";
 
@@ -100,12 +100,17 @@ function ModalDelete(props) {
 
     <>
 
-         <a href="#" onClick={handleShow} className="col-span-4 max-[640px]:col-span-3 tsize-100 font-semibold text-white-a flex-right">
+         
+        <Link
+          to={`#`}
+           onClick={handleShow} 
+           className="col-span-4 max-[640px]:col-span-3 tsize-100 font-semibold text-white-a flex-right"
+        >
             <button 
                   className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
                     <IoTrash   />
             </button>
-          </a>
+        </Link>
         
   
         <Modal dialogClassName="my-modal"

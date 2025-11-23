@@ -483,10 +483,10 @@ function convertDate(datePicker) {
                                     const href = part.startsWith("http") ? part : `http://${part}`;
 
                                     return (
-                                      <a
-                                        key={index}
-                                        href={href}
+                                      <Link
+                                        to={`/Dashboard`}
                                         target="_blank"
+                                        key={index}
                                         rel="noopener noreferrer"
                                         style={{
                                           textDecoration: "underline",
@@ -498,8 +498,8 @@ function convertDate(datePicker) {
                                           zIndex: 10,
                                         }}
                                       >
-                                        {part}
-                                      </a>
+                                          {part}
+                                      </Link>
                                     );
                                   })}
                                 </div>

@@ -362,7 +362,7 @@ function DatasetPengelolah() {
                         </div>
 
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                   
                                   <Autocomplete
@@ -396,7 +396,7 @@ function DatasetPengelolah() {
                                   {validasi_location && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0 transisiku">
                                 <TextField
                                   label="Lokasi Point"
@@ -425,7 +425,7 @@ function DatasetPengelolah() {
                                   {validasi_nama_location_point && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                 <TextField
                                   label="Koordinat Longitude"
@@ -454,7 +454,7 @@ function DatasetPengelolah() {
                                   {validasi_coordinatlon && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Diisi.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                 <TextField
                                   label="Koordinat Latitude"
@@ -483,7 +483,7 @@ function DatasetPengelolah() {
                                   {validasi_coordinatlat && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Diisi.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                   
                                   <Autocomplete
@@ -518,7 +518,7 @@ function DatasetPengelolah() {
                                   {validasi_kecamatan && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
-                            <div className="sm:col-span-3 -mt-2">
+                            <div className="sm:col-span-6 -mt-2">
                               <div className="mt-0">
                                   
                                   <Autocomplete

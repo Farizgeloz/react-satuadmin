@@ -98,8 +98,8 @@ export default function Iklanlist() {
               </p>
             )}
             {row.presignedUrl_download_file && (
-              <a
-                href={params.row.presignedUrl_download_file}
+              <Link
+                to={params.row.presignedUrl_download_file}
                 target="_blank"
                 className="text_white_a"
                 style={{textDecorationLine:"none"}}
@@ -109,7 +109,7 @@ export default function Iklanlist() {
                   <MdOutlineFileDownload className="mr-1" />
                   Download
                 </button>
-              </a>
+              </Link>
             )}
           </div>
         );

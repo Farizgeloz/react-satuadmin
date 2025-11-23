@@ -474,7 +474,6 @@ function Satuportal_listPengelolah() {
         
       <main>
         <div className=' shaddow1 rad15 mx-0'>
-          <p>logo {idku}</p>
           <Row className='p-1 mx-2'>
             
             <Col md={12} sm={12} className=' bg-linear-9 align-middle justify-content-center align-self-center mt-1 rad15'>

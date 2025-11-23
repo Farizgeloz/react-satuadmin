@@ -385,7 +385,7 @@ function ModalTambahMulti() {
                         
                         <div key={index} className="mt-4">
                             <div className="grid grid-cols-1 gap-x-2 gap-y-8 sm:grid-cols-6">
-                                <div className="sm:col-span-1 -mt-4">
+                                <div className="sm:col-span-2 -mt-4">
                                     
                                   <div className="mt-0 transisiku">
                                       <Autocomplete
@@ -424,7 +424,7 @@ function ModalTambahMulti() {
                                       
                                   </div>
                                 </div>
-                                <div className="sm:col-span-1 -mt-4">
+                                <div className="sm:col-span-2 -mt-4">
                                     
                                     <div className="mt-0">
                                         <Autocomplete
@@ -497,7 +497,7 @@ function ModalTambahMulti() {
                                       />
                                     </div>
                                 </div>
-                                <div className="sm:col-span-2 -mt-4">
+                                <div className="sm:col-span-3 -mt-4">
                                     <div className="mt-0">
                                       <TextField
                                         label="Judul Maplist"
@@ -527,7 +527,7 @@ function ModalTambahMulti() {
                                       /> 
                                     </div>
                                 </div>
-                                <div className="sm:col-span-4 -mt-4">
+                                <div className="sm:col-span-3 -mt-4">
                                     <div className="mt-0">
                                       <Autocomplete
                                         className='tsize-110'
@@ -597,7 +597,7 @@ function ModalTambahMulti() {
                                         
                                     </div>
                                 </div>
-                                <div className="sm:col-span-1 -mt-4">               
+                                <div className="sm:col-span-2 -mt-4">               
                                   <div className="mt-0 transisiku">
                                     <Autocomplete
                                       className="tsize-110"
@@ -638,7 +638,7 @@ function ModalTambahMulti() {
                                   </div>
                                 </div>
                                 
-                                <div className="sm:col-span-1 -mt-4">
+                                <div className="sm:col-span-2 -mt-4">
                                   <div className="mt-0 transisiku">
                                     <TextField
                                       label="Tahun Rilis"
@@ -702,7 +702,7 @@ function ModalTambahMulti() {
                                       />
                                   </div>
                                 </div>
-                                <div className="sm:col-span-1 -mt-4">
+                                <div className="sm:col-span-3 -mt-4">
                                     <div className="mt-0">
                                         <Autocomplete
                                           className="tsize-110"

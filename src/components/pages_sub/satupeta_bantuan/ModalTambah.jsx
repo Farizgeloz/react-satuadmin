@@ -266,7 +266,7 @@ function ModalTambahUser() {
                             </div>
                             
                           </div>
-                          <div className="sm:col-span-2 -mt-4">
+                          <div className="sm:col-span-3 -mt-4">
                             <div className="mt-0">
                               <Autocomplete
                                 className="tsize-110"
@@ -302,7 +302,7 @@ function ModalTambahUser() {
                               {validasi_kategori && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih...</p>}
                             </div>
                           </div>
-                          <div className="sm:col-span-2 -mt-4">
+                          <div className="sm:col-span-3 -mt-4">
                             <div className="mt-0">
                               <TextField
                                 label="Kode Seksi"
@@ -332,7 +332,7 @@ function ModalTambahUser() {
                             </div>
                             
                           </div>
-                          <div className="sm:col-span-2 -mt-4">
+                          <div className="sm:col-span-6 -mt-4">
                             <div className="mt-0">
                               <Autocomplete
                                 className="tsize-110"

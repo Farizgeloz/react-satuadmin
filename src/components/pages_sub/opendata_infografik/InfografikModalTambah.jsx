@@ -410,7 +410,7 @@ function ModalTambahUser() {
                           </div>
                           
                         </div>
-                        <div className="sm:col-span-2 -mt-2">
+                        <div className="sm:col-span-3 -mt-4">
                           <div className="mt-0">
                               <Autocomplete
                                 className='tsize-110'

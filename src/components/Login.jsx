@@ -110,13 +110,13 @@ const Login = () => {
       <div className=" grid grid-cols-1 md:grid-cols-6 h-100v justify-center bg-gray-200">
        
          <div className="col-span-3 h-100v p-5 my-auto  max-[670px]:hidden" style={{backgroundColor:"#0D47A1"}}>
-          <Image data-aos="zoom-in-up" className=" margin-t10" src='/assetku/login.png' />
+          <Image data-aos="zoom-in-up" className=" margin-t10" src='./assetku/login.png' />
          </div>
         <div className="col-span-3 grid grid-cols-6 gap-1 w-full bg-white text-center  h-100v pt-5">
           <div className="col-span-6 sm:mx-auto sm:w-full sm:max-w-sm margin-t10">
             <img
               alt="Kabupaten Probolinggo"
-              src={image2}
+              src={`./logo.png`}
               className="mx-auto h-25 w-auto"
             />
             <p className="col-span-6 mt-2 text-center textsize20 font-bold tracking-tight text-gray-900">

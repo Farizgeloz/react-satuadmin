@@ -22,9 +22,7 @@ import { MdAddCircle,MdErrorOutline,MdOutlineArrowCircleLeft,MdOutlineArrowCircl
         MdArrowCircleRight} from "react-icons/md";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
+
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -55,6 +53,10 @@ const textFieldStyle = (theme) => ({
 });
 
 function DatasetModalTambahFile() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);

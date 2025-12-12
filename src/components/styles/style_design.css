@@ -724,3 +724,13 @@ filter: progid:DXImageTransform.Microsoft.gradient(
   text-align: center;
 }
  
+.modal-fullwidth {
+  width: 95vw;
+  max-width: 95vw;
+}
+
+.active-menu {
+  background: rgba(255,255,255,0.15);
+  border-left: 4px solid #f97316; /* orange */
+  color: #fff;
+}

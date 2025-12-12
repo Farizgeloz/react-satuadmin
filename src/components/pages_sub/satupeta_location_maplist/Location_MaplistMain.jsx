@@ -21,9 +21,6 @@ import { FaBuildingColumns } from "react-icons/fa6";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
 
 // Theme MUI custom label pagination
 const theme = createTheme({
@@ -62,9 +59,15 @@ function convertDate(datePicker) {
 
 
 const Datasetlist = () => {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
   const [dataku, setDatasetSearch] = useState([]);
+  const [datakustatus, setDatasetSearchStatus] = useState([]);
   const [searchText, setSearchText] = React.useState("");
+  const [searchTextStatus, setSearchTextStatus] = React.useState("");
 
  
 
@@ -72,10 +75,11 @@ const Datasetlist = () => {
     const fetchData = async () => {
       try {
         const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
-          params: { search_satker:userloginsatker }
+          params: { search_satker:userloginsatker,search_role:rolelogin }
         });
     
         setDatasetSearch(searchRes.data?.resultlocationmaplistUrls || []);
+        setDatasetSearchStatus(searchRes.data?.resultlocationmapliststatus || []);
         
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -97,7 +101,49 @@ const Datasetlist = () => {
         tahun_visibilitas: `${row.tahun_rilis ?? ''} ${row.visibilitas ?? ''}`
       }))
     : [];
+
+  const rowskustatus = Array.isArray(datakustatus)
+    ? datakustatus.map((row, index) => ({
+        id: index + 1,
+        no: index + 1,
+        ...row,
+        koleksi_tipe: `${row.koleksi_data ?? ''} ${row.tipe ?? ''}`,
+        title_lokasi: `${row.title ?? ''} ${row.nama_location ?? ''}`,
+        sektor_satker: `${row.nama_sektor ?? ''} ${row.nama_opd ?? ''}`,
+        tahun_visibilitas: `${row.tahun_rilis ?? ''} ${row.visibilitas ?? ''}`
+      }))
+    : [];
     
+  const visibilitasStyle = {
+    draft: "bg-gray-200 text-gray-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    verified: "bg-green-100 text-green-700",
+    publik: "bg-blue-100 text-blue-700",
+    privat: "bg-red-100 text-red-700",
+  };
+
+  const statusFlow = ["draft", "pending", "verified"];
+  const endingStatus = ["publik", "privat"];
+
+  const getStatusIndex = (status) =>
+  statusFlow.indexOf(status?.toLowerCase());
+
+  const statusStyle = {
+    draft: "bg-gray-600 text-white border border-gray-400",
+    pending: "bg-yellow-600 text-white border border-yellow-400",
+    verified: "bg-green-600 text-white border border-green-500",
+    publik: "bg-blue-600 text-white border border-blue-500",
+    privat: "bg-red-600 text-white border border-red-500",
+  };
+
+
+  const activeStatusStyle = {
+    draft: "bg-gray-600 text-white border border-gray-400",
+    pending: "bg-yellow-600 text-white border border-yellow-400",
+    verified: "bg-green-600 text-white border border-green-500",
+    publik: "bg-blue-600 text-white border border-blue-500",
+    privat: "bg-red-600 text-white border border-red-500",
+  };
 
   const columns = [
     { 
@@ -109,7 +155,7 @@ const Datasetlist = () => {
     { 
       field: "koleksi_tipe", 
       headerName: "Koleksi", 
-      flex: 2,
+      flex: 1,
       minWidth: 100,
       filterable: true,
       headerAlign: 'left',
@@ -179,7 +225,7 @@ const Datasetlist = () => {
     { 
       field: "nama_location", 
       headerName: "Lokasi", 
-      flex: 2,
+      flex: 1,
       filterable: true,
       headerClassName: "custom-header", // kelas custom
       minWidth: 100,
@@ -205,7 +251,7 @@ const Datasetlist = () => {
     },
     { 
       field: "tahun_visibilitas", 
-      headerName: "Tahun & Visibilitas", 
+      headerName: "Tahun & Status", 
       flex: 1,
       minWidth: 100,
       filterable: true,
@@ -215,8 +261,15 @@ const Datasetlist = () => {
         const row = params.row;
         return (
           <div className="">
-           <p className={` my-1 textsize10 mb-0`}>{row.tahun_rilis}</p>
-           <p className={` my-2 textsize10`}>{row.visibilitas}</p>
+            <p className={` my-1 textsize10 mb-0`}>{row.tahun_rilis}</p>
+            <p
+              className={`
+                px-2 py-1 textsize10 rounded-lg font-semibold inline-block w-fit
+                ${visibilitasStyle[row.visibilitas?.toLowerCase()] || "bg-gray-100 text-gray-600"}
+              `}
+            >
+              {row.visibilitas}
+            </p>
           </div>
         );
       }
@@ -241,9 +294,149 @@ const Datasetlist = () => {
               </button>
             </Link>
           </Tooltip>
-          <DatasetModalDelete id={params.row.id_maplist} name={params.row.title} />
+          {(rolelogin === "Super Admin" || rolelogin === "Admin") && (
+            <DatasetModalDelete id={params.row.id_maplist} name={params.row.title} />
+          )}
         </div>
       ),
+    },
+  ];
+
+  const columns_satus = [
+    { 
+      field: "no", 
+      headerName: "No", 
+      width: 70,
+      headerClassName: "custom-header", // kelas custom
+    },
+    { 
+      field: "koleksi_tipe", 
+      headerName: "Koleksi", 
+      flex: 1,
+      minWidth: 100,
+      filterable: true,
+      headerAlign: 'left',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div className="">
+            <p className={` my-1 textsize10 mb-0`}>{row.koleksi_data}</p>
+            <p
+              className={`my-0 textsize10 ${
+                row.tipe === "Geomap"
+                  ? "bg-orange-600 text-white px-1 rounded"
+                  : row.tipe === "Marker"
+                  ? "bg-teal-600 text-white px-1 rounded"
+                  : row.tipe === "Layout"
+                  ? "bg-sky-600 text-white px-1 rounded"
+                  : ""
+              }`}
+            >
+              ({row.tipe})
+            </p>
+          </div>
+        );
+      }
+    },
+    { 
+      field: "title_lokasi", 
+      headerName: "Nama & Lokasi", 
+      flex: 2,
+      minWidth: 100,
+      filterable: true,
+      headerAlign: 'left',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div className="">
+           {row.title && (
+              <p className="textsize12 mb-0 d-flex"> <span>{row.title}</span></p>
+              
+            )}
+            {row.nama_location && (
+              <p className={`my-3 textsize10  d-flex`} style={{color:"#"+row.sektor_color}}> ({row.nama_location})</p>
+             )}
+          </div>
+        );
+      }
+    },
+    
+    { 
+      field: "nama_opd", 
+      headerName: "Opd", 
+      flex: 2,
+      filterable: true,
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div className="d-flex">
+            <FaBuildingColumns size={25} className="mt-1 mr-2" />  <p className={`my-1 textsize10`}>{row.nama_opd}</p>
+           
+            
+          </div>
+        );
+      }
+    },
+    { 
+      field: "visibilitas", 
+      headerName: "Story Map", 
+      flex: 3,
+      minWidth: 100,
+      filterable: true,
+      headerAlign: 'center',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const currentStatus = params.row.visibilitas?.toLowerCase();
+        const statusFlow = ["draft", "pending", "verified"];
+        const endingStatus = ["publik", "privat"];
+
+        return (
+          <div className="flex items-center flex-wrap gap-1" style={{marginLeft:"20px"}}>
+            {/* FLOW */}
+            {statusFlow.map((status, index) => (
+              <div key={status} className="flex items-center gap-1">
+                <span
+                  className={`
+                    px-3 py-0.5 textsize10 rounded-full capitalize
+                    ${statusStyle[status]}
+                    ${currentStatus === status ? "font-bold opacity-100" : "opacity-50"}
+                  `}
+                >
+                  {status}
+                </span>
+
+                {index < statusFlow.length - 1 && (
+                  <span className="text-gray-600 textsize10">→</span>
+                )}
+              </div>
+            ))}
+
+            {/* ENDING */}
+            {endingStatus.includes(currentStatus) && (
+              <>
+                <span className="text-gray-400 textsize10">→</span>
+                <span
+                  className={`
+                    px-2 py-0.5 textsize10 rounded-full capitalize font-bold
+                    ${statusStyle[currentStatus]}
+                  `}
+                >
+                  {currentStatus === "publik" && "🌍 "}
+                  {currentStatus === "privat" && "🔒 "}
+                  {currentStatus}
+                </span>
+              </>
+            )}
+          </div>
+        );
+      }
+
+
+
     },
   ];
 
@@ -251,6 +444,11 @@ const Datasetlist = () => {
   const filteredRows = rowsku.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+  const filteredRowsStatus = rowskustatus.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchTextStatus.toLowerCase())
     )
   );
 
@@ -411,10 +609,166 @@ const Datasetlist = () => {
                   </Col>
                 </Row>  
               </Tab>
+              <Tab eventKey="storymap" title="Story Map">
+                <div className="text-center p-2">
+                  <p className="text-sage textsize10">Pencarian berdasarkan Nama Lokasi, Satker dan Sektor.</p>
+                  <div className="mb-3 w-100">
+                    <input
+                      type="text"
+                      value={searchTextStatus}
+                      onChange={(e) => setSearchTextStatus(e.target.value)}
+                      placeholder="Cari data..."
+                      className="border p-2 rounded w-100 input-gray textsize10"
+                    />
+                  </div>
+                </div>  
+                <Row className='portfoliolist'>
+                  <Col sm={12}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      viewport={{ once: true }}
+                    >
+                      <ThemeProvider theme={theme}>
+                        <DataGrid
+                          loading={loading}
+                          rows={filteredRowsStatus}
+                          columns={columns_satus}
+                          pageSizeOptions={[5, 10, 50, 100]}
+                          initialState={{
+                            pagination: {
+                              paginationModel: { pageSize: 10, page: 0 }
+                            }
+                          }}
+                        
+                          disableSelectionOnClick
+                          getRowHeight={() => 'auto'}
+                          
+                          sx={{
+                            "& .custom-header": {
+                              backgroundColor: "#1886ca",
+                              color: "white",
+                              fontWeight: "bold",
+                              textTransform: "uppercase",
+                              fontSize: "100%"
+                            },
+                            "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon": {
+                              opacity: 1,
+                              visibility: "visible",
+                              width: "auto",
+                              color: "#fff"
+                            },
+                            "& .MuiDataGrid-columnHeader:hover .MuiDataGrid-menuIcon": {
+                              opacity: 1
+                            },
+                            "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button svg": {
+                              fill: "#fff"
+                            },
+                            '& .MuiDataGrid-cell': {
+                              whiteSpace: 'normal', // biar teks wrap
+                              lineHeight: '1.2rem',  // lebih rapat
+                              padding: '8px'
+                            },
+                            "& .MuiTablePagination-select option:not([value='5']):not([value='10']):not([value='20'])": {
+                              display: "none" // sembunyikan opsi default MUI yang tidak diinginkan
+                            },
+                            "& .MuiTablePagination-selectLabel": {
+                              color: "#444",
+                              fontWeight: "bold",
+                              marginTop: "15px"
+                            },
+                            "& .MuiTablePagination-displayedRows": {
+                              color: "#666",
+                              marginTop: "15px"
+                            },
+                            "& .MuiTablePagination-select": {
+                              color: "#000",
+                              fontWeight: "600",
+                              backgroundColor: "#dbdbdb",
+                              borderRadius: "6px"
+                            }
+                          }}
+                        />
+                      </ThemeProvider>
+                    </motion.div>
+                  </Col>
+                </Row>  
+              </Tab>
 
               <Tab eventKey="aktivitas" title="Aktivitas">
                   <Activity kunci={'Satu Peta Koleksi'}/>
               </Tab>
+              <Tab eventKey="infoalur" title="Informasi">
+                <Row className="mt-5">
+                  <Col sm={12} className="d-flex" >
+                      <p
+                        className={`
+                          px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block
+                          ${statusStyle['draft']}
+                        `}
+                        style={{width:"100px"}}
+                      >
+                        Draft
+                      </p>
+                      <p className="mt-1">Pengajuan data oleh Operator OPD dan menunggu diteruskan kepada Verifikator OPD.</p>
+                      
+                  </Col>
+                  <Col sm={12} className="d-flex">
+                      <p
+                        className={`
+                          px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                          ${statusStyle['pending']}
+                        `}
+                        style={{width:"100px"}}
+                      >
+                        Pending
+                      </p>
+                      <p className="mt-1">Data sudah diajukan dan menunggu proses verifikasi dari Operator Wali Data.</p>
+                      
+                  </Col>
+                  <Col sm={12} className="d-flex">
+                      <p
+                        className={`
+                          px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                          ${statusStyle['verified']}
+                        `}
+                        style={{width:"100px"}}
+                      >
+                        Verified
+                      </p>
+                      <p className="mt-1">Data sudah diverifikasi dan dinyatakan valid oleh Operator Wali Data.</p>
+                      
+                  </Col>
+                  
+                  <Col sm={12} className="d-flex">
+                      <p
+                        className={`
+                          px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                          ${statusStyle['publik']}
+                        `}
+                        style={{width:"100px"}}
+                      >
+                        Publik
+                      </p>
+                      <p className="mt-1">Mapset dapat dikonsumsi oleh masyarakat umum / publik</p>
+                      
+                  </Col>
+                  <Col sm={12} className="d-flex">
+                      <p
+                        className={`
+                          px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                          ${statusStyle['privat']}
+                        `}
+                        style={{width:"100px"}}
+                      >
+                        Privat
+                      </p>
+                      <p className="mt-1">Data dibatasi aksesnya, hanya untuk pengguna tertentu.</p>
+                      
+                  </Col>
+                </Row>
+            </Tab>
             </Tabs>
             
           </Container>

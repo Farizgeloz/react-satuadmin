@@ -69,10 +69,10 @@ const Datasetlist = () => {
 
   const [showDetail, setShowDetail] = useState(false);
   const [selectedDetail, setSelectedDetail] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);  
   const [tiketDetail, setTiketDetail] = useState(null);
   const [jumlahTiketMap, setJumlahTiketMap] = useState({});
   const [selectedRow, setSelectedRow] = useState(null);
-  const [loadingDetail, setLoadingDetail] = useState(false);  
 
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
@@ -114,18 +114,22 @@ const Datasetlist = () => {
   };
 
   useEffect(() => {
-    dataku.forEach(row => {
-      if (!jumlahTiketMap[row.id_permohonan]) {
-        getJumlahTiket(row.id_permohonan);
-      }
-    });
-  }, [dataku])
+    if (!dataku?.length) return;
+
+    const idsBelumAda = dataku
+      .map(row => row.id_permohonan)
+      .filter(id => !(id in jumlahTiketMap));
+
+    idsBelumAda.forEach(id => getJumlahTiket(id));
+  }, [dataku]);
 
   const getJumlahTiket = async (id) => {
     try {
       const res = await api_url_satuadmin.get(`api/opendata/dataset_permohonan/detail_jumlah/${id}`);
       const tiket = res.data.tiket || [];
       setJumlahTiketMap(prev => ({ ...prev, [id]: tiket.length }));
+      console.log("getJumlahTiket",tiket);
+      
     } catch (err) {
       console.error("Gagal ambil jumlah tiket:", err);
     }
@@ -348,6 +352,33 @@ const Datasetlist = () => {
       disableColumnMenu: true,
       renderCell: (params) => (
         <div>
+          <Tooltip title="Balas Tiket" arrow>
+            <Link to={`/Opendata/Dataset/Permohonan/Update/${params.row.id_permohonan}`} className="flex items-center justify-center mb-[2px]">
+              <button
+                className={`
+                  ${ (jumlahTiketMap[params.row.id_permohonan] ?? 0) > 0
+                    ? "bg-yellow-500 hover:bg-yellow-400"
+                    : "bg-yellow-500 hover:bg-yellow-400"
+                  }
+                   text-white font-bold py-2 px-3 rounded-xl flex items-center
+                `}
+              >
+                <MdOutlineMessage className="mr-1" size={18} />
+                <span 
+                  className={`
+                    ${ (jumlahTiketMap[params.row.id_permohonan] ?? 0) > 0
+                      ? "text-red"
+                      : "text-white"
+                    }
+                    font-bold
+                  `}
+                
+                >
+                  ({jumlahTiketMap[params.row.id_permohonan] ?? 0})
+                </span>
+              </button>
+            </Link>
+          </Tooltip>
            {/* Tombol Detail */}
           <Tooltip title="Lihat Detail" arrow>
             <Link to='' className="flex items-center justify-center mb-[2px]">
@@ -358,17 +389,11 @@ const Datasetlist = () => {
                 onClick={() => handleShowDetail(params.row.id_permohonan)}
               >
                 <MdOutlineRemoveRedEye className="mr-1" size={18} />
-                <span className="textsize8">({jumlahTiketMap[params.row.id_permohonan] ?? 0})</span>
+                
               </Button>
             </Link>
           </Tooltip>
-          <Tooltip title="Balas Tiket" arrow>
-            <Link to={`/Opendata/Dataset/Permohonan/Update/${params.row.id_permohonan}`} className="flex items-center justify-center mb-[2px]">
-              <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
-                <MdOutlineMessage className="mr-1" size={18} />
-              </button>
-            </Link>
-          </Tooltip>
+          
           <DatasetModalDelete id={params.row.id_permohonan} name={params.row.nomor_tiket} />
         </div>
       ),

@@ -25,7 +25,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="permohonan">
+    <Layout key ="permohonan" itemmenu="Opendata Permohonan">
       <Main_User />
     </Layout>
   );

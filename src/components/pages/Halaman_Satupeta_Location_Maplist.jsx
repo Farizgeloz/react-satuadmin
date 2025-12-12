@@ -25,7 +25,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="locationmaplist">
+    <Layout key ="locationmaplist" itemmenu="Satupeta Koleksi">
       <Main_User />
     </Layout>
   );

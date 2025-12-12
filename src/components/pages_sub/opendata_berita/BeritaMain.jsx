@@ -40,7 +40,7 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get("api/opendata/artikel");
+    const res = await api_url_satuadmin.get("api/opendata/artikel_admin");
     const data = res.data.data || [];
     setDatasetku(data);
     setRowsFiltered(data);

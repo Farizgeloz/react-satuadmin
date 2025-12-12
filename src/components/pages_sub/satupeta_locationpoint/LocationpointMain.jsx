@@ -21,6 +21,8 @@ import { MdDashboard, MdDataset, MdInfoOutline, MdEditSquare } from "react-icons
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
+
+
 // Theme MUI custom label pagination
 const theme = createTheme({
   components: {
@@ -58,6 +60,10 @@ function convertDate(datePicker) {
 
 
 const Datasetlist = () => {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
   const [dataku, setDatasetSearch] = useState([]);
   const [searchText, setSearchText] = React.useState("");
@@ -111,7 +117,10 @@ const Datasetlist = () => {
           axios.get(apiurl + 'api/satupeta/map_data/admin')
           //axios.get(apiurl + 'api/opendata/dataset_item')
         ]);*/
-        const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin");
+        //const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin");
+        const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+                  params: { search_satker:userloginsatker }
+                });
     
         setDatasetSearch(searchRes.data?.result || []);
         
@@ -251,7 +260,9 @@ const Datasetlist = () => {
               </button>
             </Link>
           </Tooltip>
+          {(rolelogin === "Super Admin" || rolelogin === "Admin" || rolelogin === "Operatior") && (
           <DatasetModalDelete id={params.row.id_location_point} name={params.row.nama_location_point} />
+          )}
         </div>
       ),
     },
@@ -298,9 +309,9 @@ const Datasetlist = () => {
             <Col xs={12}>
               <DatasetModalTambah />
             </Col>
-            <Col xs={6}>
-              {/* <DatasetModalTambahFile /> */}
-            </Col>
+            {/* <Col xs={6}>
+              <DatasetModalTambahFile />
+            </Col> */}
           </Row>
         </Col>
 

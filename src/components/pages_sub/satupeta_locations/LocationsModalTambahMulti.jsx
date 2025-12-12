@@ -15,10 +15,8 @@ import "../../../App.css";
 import Swal from 'sweetalert2';
 import { IoAdd, IoTrash } from "react-icons/io5";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IconButton, InputAdornment } from "@mui/material";
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -49,6 +47,10 @@ const textFieldStyle = (theme) => ({
 });
 
 function ModalTambahMulti() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [sektorku, setsektorku] = useState([""]);
   const [satkerku, setsatkerku] = useState([""]);
   const [loading, setLoading] = useState(false);  
@@ -103,7 +105,7 @@ function ModalTambahMulti() {
           locations: payloadLocations,
           admin : String(userloginadmin),
           jenis: "Satu Peta Lokasi",
-          komponen: "Delete Lokasi Satu Peta" 
+          komponen: "Tambah Lokasi Satu Peta" 
         },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -243,96 +245,119 @@ function ModalTambahMulti() {
                     
                     <div key={index} className="mt-3">
                         <div className="grid grid-cols-1 gap-x-2 gap-y-8 sm:grid-cols-6">
-                            <div className="sm:col-span-2 -mt-2">
-                                
-                              <div className="mt-0 transisiku">
-                                <TextField
-                                  label="Nama Lokasi"
-                                  className="bg-input rad15 w-full"
-                                  value={loc.nama_location}
-                                  onChange={(e) => handleChange(index, "nama_location", e.target.value)}
-                                  sx={(theme) => textFieldStyle(theme)}
-                                />     
-                                  
+                            <div className="md:col-span-2 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Nama Lokasi
+                                  </label>
+    
+                                  <TextField
+                                    className="bg-input rad15 w-full"
+                                    value={loc.nama_location}
+                                    onChange={(e) => handleChange(index, "nama_location", e.target.value)}
+                                    InputLabelProps={{ shrink: false }}
+                                    sx={(theme) => textFieldStyle(theme)}
+                                    
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="md:col-span-2 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Satker / OPD
+                                  </label>
+    
+                                  <Autocomplete
+                                    className="tsize-110"
+                                    isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                    id="combo-box-satker"
+                                    options={satkerku.map((row) => ({
+                                    label: row.nama_opd,
+                                    value: row.id_opd
+                                    }))}
+                                    getOptionLabel={(option) => option.label || ""}
+                                    value={loc.satker_id}
+                                    onChange={(event, newValue) => handleChange(index, "satker_id",newValue)}
+                                    
+                                    clearOnEscape
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant="outlined"
+                                        className="bg-input rad15 w-full"
+                                        InputLabelProps={{ shrink: false }}
+                                        sx={(theme) => textFieldStyle(theme)}
+                                      />
+                                    )}
+                                    sx={{
+                                      width: "100%",
+                                      "& .MuiAutocomplete-popupIndicator": {
+                                        color: "#1976d2",
+                                        transition: "transform 0.3s",
+                                      },
+                                      "& .MuiAutocomplete-popupIndicatorOpen": {
+                                        transform: "rotate(180deg)",
+                                      },
+                                    }}
+                                  />
+    
+                                </div>
                               </div>
                             </div>
                             
-                            <div className="sm:col-span-2 -mt-2">
-                                
-                                <div className="mt-0">
+                            <div className="md:col-span-2 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Sektor
+                                  </label>
+    
+                                  <Autocomplete
+                                    className="tsize-110"
+                                    isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                    id="combo-box-bidang_urusan_id"
+                                    options={sektorku.map((row) => ({
+                                    label: row.nama_sektor,
+                                    value: row.id_sektor
+                                    }))}
+                                    getOptionLabel={(option) => option.label || ""}
+                                    value={loc.sektor_id}
+                                    onChange={(event, newValue) => handleChange(index, "sektor_id",newValue)}
                                     
-                                    <Autocomplete
-                                        className='tsize-110 w-full'
-                                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                        id="combo-box-bidang_urusan_id"
-                                        options={sektorku.map((row) => ({
-                                        label: row.nama_sektor,
-                                        value: row.id_sektor
-                                        }))}
-                                        getOptionLabel={(option) => option.label || ""}
-                                        value={loc.sektor_id}
-                                        onChange={(event, newValue) => handleChange(index, "sektor_id",newValue)}
-                                        
-                                        clearOnEscape
-                                        disableClearable
-                                        renderInput={(params) => (
-                                          <TextField
-                                            {...params}
-                                            label="Bidang Urusan"
-                                            variant="outlined"
-                                            sx={(theme) => textFieldStyle(theme)}
-                                          />
-                                        )}
-                                        sx={{
-                                          width: "100%",
-                                          "& .MuiAutocomplete-popupIndicator": {
-                                            color: "#1976d2",
-                                            transition: "transform 0.3s",
-                                          },
-                                          "& .MuiAutocomplete-popupIndicatorOpen": {
-                                            transform: "rotate(180deg)",
-                                          },
-                                        }}
-                                    />
+                                    clearOnEscape
+                                    disableClearable
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant="outlined"
+                                        className="bg-input rad15 w-full"
+                                        InputLabelProps={{ shrink: false }}
+                                        sx={(theme) => textFieldStyle(theme)}
+                                      />
+                                    )}
+                                    sx={{
+                                      width: "100%",
+                                      "& .MuiAutocomplete-popupIndicator": {
+                                        color: "#1976d2",
+                                        transition: "transform 0.3s",
+                                      },
+                                      "& .MuiAutocomplete-popupIndicatorOpen": {
+                                        transform: "rotate(180deg)",
+                                      },
+                                    }}
+                                  />
+    
+                                  
                                 </div>
+                              </div>
                             </div>
-                            <div className="sm:col-span-2 -mt-2">
-                                <div className="mt-0">
-                                    <Autocomplete
-                                        className='tsize-110 w-full'
-                                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                        id="combo-box-satker"
-                                        options={satkerku.map((row) => ({
-                                        label: row.nama_opd,
-                                        value: row.id_opd
-                                        }))}
-                                        getOptionLabel={(option) => option.label || ""}
-                                        value={loc.satker_id}
-                                        onChange={(event, newValue) => handleChange(index, "satker_id",newValue)}
-                                        
-                                        clearOnEscape
-                                        disableClearable
-                                        renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          label="Satker"
-                                          variant="outlined"
-                                          sx={(theme) => textFieldStyle(theme)}
-                                        />
-                                      )}
-                                      sx={{
-                                        width: "100%",
-                                        "& .MuiAutocomplete-popupIndicator": {
-                                          color: "#1976d2",
-                                          transition: "transform 0.3s",
-                                        },
-                                        "& .MuiAutocomplete-popupIndicatorOpen": {
-                                          transform: "rotate(180deg)",
-                                        },
-                                      }}
-                                    />
-                                </div>
-                            </div>
+                            
                             
                         </div>
                         {locations.length > 1 && (

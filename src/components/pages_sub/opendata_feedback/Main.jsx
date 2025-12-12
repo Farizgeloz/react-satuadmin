@@ -12,8 +12,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import Swal from 'sweetalert2';
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginadmin = userlogin.id || '';
+
 
 const Spinner = () => <div className="loader"></div>;
 
@@ -28,6 +27,10 @@ const theme = createTheme({
 });
 
 export default function Iklanlist() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
   const [datasetku, setDatasetku] = useState([]);
   const [searchText, setSearchText] = useState("");

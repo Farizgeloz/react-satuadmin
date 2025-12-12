@@ -25,7 +25,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="locationpoint">
+    <Layout key ="locationpoint" itemmenu="Satupeta Titik">
       <Main_User />
     </Layout>
   );

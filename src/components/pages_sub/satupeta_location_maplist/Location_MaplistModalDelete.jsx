@@ -11,13 +11,15 @@ import Swal from 'sweetalert2';
 import Tooltip from "@mui/material/Tooltip";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginadmin = userlogin.id || '';
 
 
 
 
 function ModalDelete(props) {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const id = props.id;
   const name = props.name;
   

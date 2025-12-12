@@ -24,15 +24,14 @@ import { MdDashboard,MdDataset,MdOutlineErrorOutline,
         MdOutlineMap,
         MdOutlinePerson4,
         MdOutlineArrowCircleLeft,
-        MdOutlineSave} from "react-icons/md";
+        MdOutlineSave,
+        MdErrorOutline} from "react-icons/md";
 
 
 import _ from "lodash";
 import { api_url_satuadmin } from '../../../api/axiosConfig';
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
+
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -63,12 +62,17 @@ const textFieldStyle = (theme) => ({
 });
 
 function DatasetPengelolah() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [sektorku, setsektorku] = useState([""]);
   const [satkerku, setsatkerku] = useState([""]);
   const [nama_locations, setnama_locations] = useState("");
   const [satker, setsatker] = useState(null);
   const [sektor, setsektor] = useState(null);
   const [loading, setLoading] = useState(false);
+    const [visibilitas, setvisibilitas] = useState(null);
 
   
   
@@ -107,6 +111,7 @@ function DatasetPengelolah() {
       setnama_locations(response.data.nama_location);
       setsatker({ value: response.data.satker_id, label: response.data.nama_opd });
       setsektor({ value: response.data.sektor_id, label: response.data.nama_sektor });
+      setvisibilitas({ value: response.data.visibilitas, label: response.data.visibilitas });
 
     } catch (err) {
       console.error("❌ Gagal ambil data detail:", err);
@@ -124,6 +129,7 @@ function DatasetPengelolah() {
     formData.append("admin",userloginadmin);
     formData.append("jenis","Satu Peta Lokasi");
     formData.append("komponen","Update Lokasi Satu Peta");
+    formData.append("visibilitas",visibilitas.value);
     try {
       setLoading(true);
       // tampilkan loading swal
@@ -205,6 +211,7 @@ function DatasetPengelolah() {
   const [validasi_nama_locations, setvalidasi_nama_locations] = useState(false);
   const [validasi_satker, setvalidasi_satker] = useState(false);
   const [validasi_sektor, setvalidasi_sektor] = useState(false);
+  const [validasi_visibilitas, setvalidasi_visibilitas] = useState(false);
 
  
   
@@ -212,13 +219,15 @@ function DatasetPengelolah() {
     const validNama = (nama_locations?.length || 0) >= 3;
     const validsatker = satker !== null;
     const validsektor = sektor !== null;
+    const validvisibilitas = visibilitas !== null;
     
 
     setvalidasi_nama_locations(!validNama);
     setvalidasi_satker(!validsatker);
     setvalidasi_sektor(!validsektor);
+    setvalidasi_visibilitas(!validvisibilitas);
 
-    if (validNama && validsatker && validsektor) {
+    if (validNama && validsatker && validsektor && validvisibilitas) {
       nextStep();
     }
   };
@@ -236,6 +245,43 @@ function DatasetPengelolah() {
 
     return formattedLocalDate;
   }
+
+  const getStatusOptions = () => {
+    if (rolelogin === "Super Admin") {
+      return [
+        { label: "Draft", value: "Draft" },
+        { label: "Pending", value: "Pending" },
+        { label: "Verified", value: "Verified" },
+        { label: "Publik", value: "Publik" },
+        { label: "Privat", value: "Privat" },
+      ];
+    } else if (rolelogin === "Admin") {
+      return [
+        { label: "Draft", value: "Draft" },
+        { label: "Pending", value: "Pending" },
+        { label: "Verified", value: "Verified" },
+        { label: "Publik", value: "Publik" },
+        { label: "Privat", value: "Privat" },
+      ];
+      
+    } else if (rolelogin === "Operator") {
+      return [
+        { label: "Pending", value: "Pending" },
+        { label: "Verified", value: "Verified" },
+      ]; // atau return [] jika tidak boleh pilih sama sekali
+    } else if (rolelogin === "Operator Opd") {
+      return [
+        { label: "Draft", value: "Draft" }
+      ]; // atau return [] jika tidak boleh pilih sama sekali
+    } else if (rolelogin === "Verifikator Opd") {
+      return [
+        { label: "Draft", value: "Draft" },
+        { label: "Pending", value: "Pending" },
+      ]; // atau return [] jika tidak boleh pilih sama sekali
+    } else {
+      return [];
+    }
+  };
 
 
 
@@ -261,7 +307,7 @@ function DatasetPengelolah() {
           
           <Row className='p-1 mx-2'>
             
-            <Col md={12} sm={12} className=' bg-linear-9 align-middle justify-content-center align-self-center mt-1 rad15'>
+            <Col md={12} sm={12} className='bg-linear-9 align-middle justify-content-center align-self-center mt-1 rad15'>
               
               <p className='text-white textsize14 text-left p-2 rad15 align-middle mb-1 line-hight-1'>{nama_locations}</p>
             </Col>
@@ -285,132 +331,219 @@ function DatasetPengelolah() {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="w-100 mx-auto">
-                        
-                        
-                          <div className="mt-3 flex">
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                              <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-white py-1">
-                                  1
-                                </p>
-                              </div>
+                        {/* STEP INDICATOR */}
+                        <div className="mt-4 flex items-center justify-between relative">
+
+                          {/* STEP 1 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              1
                             </div>
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                              <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-gray-500 py-1">
-                                  2
-                                </p>
-                              </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Form Input
+                            </span>
+                          </div>
+
+                          {/* STEP 2 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-200 text-cyan-600 font-semibold">
+                              2
                             </div>
-                            
-                            
-                            
-                        </div>
-                        <div className="-mt-5 w-full h-2 bg-cyan-200">
-                            <div className="h-full bg-cyan-600 rounded-3xl  w-1/2"></div>
+                            <span className="mt-1 text-xs text-gray-500 font-semibold">
+                              Konfirmasi
+                            </span>
+                          </div>
+
+                          {/* PROGRESS LINE */}
+                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-1/2" />
+                          </div>
+
                         </div>
 
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0 transisiku">
-                                <TextField
-                                  label="Nama Lokasi"
-                                  className="bg-input rad15 w-full"
-                                  value={nama_locations}
-                                  onChange={(e) => setnama_locations(e.target.value)}
-                                  InputProps={{
-                                    endAdornment: (
-                                      <>
-                                        {nama_locations && (
-                                          <InputAdornment position="end">
-                                            <IconButton
-                                              onClick={() => setnama_locations("")}
-                                              edge="end"
-                                              size="small"
-                                            >
-                                              <ClearIcon />
-                                            </IconButton>
-                                          </InputAdornment>
-                                        )}
-                                      </>
-                                    ),
-                                  }}
-                                  sx={(theme) => textFieldStyle(theme)}
-                                /> 
-                                  {validasi_nama_locations && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}
+                            <div className="md:col-span-6 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Nama Lokasi
+                                  </label>
+    
+                                  <TextField
+                                    className="bg-input rad15 w-full"
+                                    value={nama_locations}
+                                    onChange={(e) => setnama_locations(e.target.value)}
+                                    InputLabelProps={{ shrink: false }}
+                                    sx={(theme) => textFieldStyle(theme)}
+                                    InputProps={{
+                                      endAdornment: (
+                                        <>
+                                          {nama_locations && (
+                                            <InputAdornment position="end">
+                                              <IconButton
+                                                onClick={() => setnama_locations("")}
+                                                edge="end"
+                                                size="small"
+                                              >
+                                                <ClearIcon />
+                                              </IconButton>
+                                            </InputAdornment>
+                                          )}
+                                        </>
+                                      ),
+                                    }}
+                                  />
+    
+                                  {validasi_nama_locations && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 3 karakter.</p>}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="md:col-span-6 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Satker / OPD
+                                  </label>
+    
+                                  <Autocomplete
+                                    className="tsize-110"
+                                    isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                    id="combo-box-location"
+                                    options={satkerku.map((row) => ({
+                                      label: row.nama_opd,
+                                      value: row.id_opd
+                                    }))}
+                                    getOptionLabel={(option) => option.label || ""}
+                                    value={satker}
+                                    onChange={(event, newValue) => setsatker(newValue)}
+                                    clearOnEscape
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant="outlined"
+                                        className="bg-input rad15 w-full"
+                                        InputLabelProps={{ shrink: false }}
+                                        sx={(theme) => textFieldStyle(theme)}
+                                      />
+                                    )}
+                                    sx={{
+                                      width: "100%",
+                                      "& .MuiAutocomplete-popupIndicator": {
+                                        color: "#1976d2",
+                                        transition: "transform 0.3s",
+                                      },
+                                      "& .MuiAutocomplete-popupIndicatorOpen": {
+                                        transform: "rotate(180deg)",
+                                      },
+                                    }}
+                                  />
+    
+                                  {validasi_satker && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
+                                </div>
                               </div>
                             </div>
                             
-                            <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0">
-                                  
-                                <Autocomplete
-                                  className='tsize-110'
-                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                  id="combo-box-satker"
-                                  options={satkerku.map((row) => ({
-                                    label: row.nama_opd,
-                                    value: row.id_opd
-                                  }))}
-                                  getOptionLabel={(option) => option.label || ""}
-                                  value={satker}
-                                  onChange={(event, newValue) => setsatker(newValue)}
-                                  clearOnEscape
-                                  renderInput={(params) => (
-                                    <TextField
-                                    {...params}
-                                    label="Satker"
-                                    variant="outlined"
-                                    sx={(theme) => textFieldStyle(theme)}
-                                    />
-                                  )}
-                                  sx={{
+                            <div className="md:col-span-6 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Sektor
+                                  </label>
+    
+                                  <Autocomplete
+                                    className="tsize-110"
+                                    isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                    id="combo-box-location"
+                                    options={sektorku.map((row) => ({
+                                      label: row.nama_sektor,
+                                      value: row.id_sektor
+                                    }))}
+                                    getOptionLabel={(option) => option.label || ""}
+                                    value={sektor}
+                                    onChange={(event, newValue) => setsektor(newValue)}
+                                    clearOnEscape
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant="outlined"
+                                        className="bg-input rad15 w-full"
+                                        InputLabelProps={{ shrink: false }}
+                                        sx={(theme) => textFieldStyle(theme)}
+                                      />
+                                    )}
+                                    sx={{
                                       width: "100%",
-                                      "& .MuiAutocomplete-popupIndicator": { color: "#1976d2", transition: "transform 0.3s" },
-                                      "& .MuiAutocomplete-popupIndicatorOpen": { transform: "rotate(180deg)" }
-                                  }}
-                                />
-
-
-                                  {validasi_satker && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
-                              </div>
-                            </div>
-                            <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0">
-                                <Autocomplete
-                                  className='tsize-110'
-                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                  id="combo-box-sektor"
-                                  options={sektorku.map((row) => ({
-                                    label: row.nama_sektor,
-                                    value: row.id_sektor
-                                  }))}
-                                  getOptionLabel={(option) => option.label || ""}
-                                  value={sektor}
-                                  onChange={(event, newValue) => setsektor(newValue)}
-                                  clearOnEscape
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label="Bidang Urusan"
-                                      variant="outlined"
-                                      sx={(theme) => textFieldStyle(theme)}
-                                    />
-                                  )}
-                                  sx={{
-                                    width: "100%",
-                                    "& .MuiAutocomplete-popupIndicator": {
-                                      color: "#1976d2",
-                                      transition: "transform 0.3s",
-                                    },
-                                    "& .MuiAutocomplete-popupIndicatorOpen": {
-                                      transform: "rotate(180deg)",
-                                    },
-                                  }}
-                                />
+                                      "& .MuiAutocomplete-popupIndicator": {
+                                        color: "#1976d2",
+                                        transition: "transform 0.3s",
+                                      },
+                                      "& .MuiAutocomplete-popupIndicatorOpen": {
+                                        transform: "rotate(180deg)",
+                                      },
+                                    }}
+                                  />
+    
                                   {validasi_sektor && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
+                                </div>
                               </div>
                             </div>
+
+                            <div className="md:col-span-3 col-span-6 -mt-2">
+                              <div className="mt-1">
+                                <div className="p-3 rad15 border bg-white shadow-sm">
+    
+                                  <label className="font_weight600 textsize12 mb-2 d-block">
+                                    Status
+                                  </label>
+    
+                                  <Autocomplete
+                                    className='tsize-110'
+                                    //disabled={rolelogin !== "Super Admin" && rolelogin !== "Admin"}   // ⬅ DISABLE jika bukan admin
+                                    isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                    id="combo-box-location"
+                                    options={getStatusOptions()}
+                                    getOptionLabel={(option) => option.label || ""}
+                                    
+                                    // jika bukan admin, value dipaksa privat
+                                    value={visibilitas
+                                    }
+  
+                                    onChange={(event, newValue) => {
+                                      // jika bukan admin → jangan bisa ubah
+                                      //if (rolelogin !== "Super Admin" && rolelogin !== "Admin") return;
+  
+                                      setvisibilitas(newValue);
+                                    }}
+  
+                                    clearOnEscape
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        variant="outlined"
+                                        className="bg-input rad15 w-full"
+                                        InputLabelProps={{ shrink: false }}
+                                        sx={(theme) => textFieldStyle(theme)}
+                                      />
+                                    )}
+                                    sx={{
+                                      width: "100%",
+                                      "& .MuiAutocomplete-popupIndicator": {
+                                        color: "#1976d2",
+                                        transition: "transform 0.3s",
+                                      },
+                                      "& .MuiAutocomplete-popupIndicatorOpen": {
+                                        transform: "rotate(180deg)",
+                                      },
+                                    }}
+                                  />
+                                      {validasi_visibilitas && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
+                                </div>
+                              </div>
+                            </div>
+                            
                             
                             
                             
@@ -439,27 +572,34 @@ function DatasetPengelolah() {
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.3 }}
                           className="md:w-1/2 mx-auto py-12">
-                          <div className="mt-3 flex">
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                              <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-white py-1">
-                                  1
-                                </p>
+                          {/* STEP INDICATOR */}
+                          <div className="mt-4 flex items-center justify-between relative">
+
+                            {/* STEP 1 */}
+                            <div className="flex flex-col items-center z-10 w-1/2">
+                              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                                1
                               </div>
+                              <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                                Form Input
+                              </span>
                             </div>
-                            <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                              <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                                <p className=" text-center text-white py-1">
-                                  2
-                                </p>
+
+                            {/* STEP 2 */}
+                            <div className="flex flex-col items-center z-10 w-1/2">
+                              <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                                2
                               </div>
+                              <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                                Konfirmasi
+                              </span>
                             </div>
-                            
-                           
-                            
-                          </div>
-                          <div className="-mt-5 w-full h-2 bg-cyan-200">
-                              <div className="h-full bg-cyan-600 rounded-3xl w-full"></div>
+
+                            {/* PROGRESS LINE */}
+                            <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                              <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-full" />
+                            </div>
+
                           </div>
                           <div className="mt-12 textsize10  text-center">
                               Yakin Data Sudah Benar ?

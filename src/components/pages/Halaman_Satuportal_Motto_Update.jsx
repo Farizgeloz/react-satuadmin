@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout >
+    <Layout itemmenu="Satuportal Motto" >
       <Main_Edit />
     </Layout>
   );

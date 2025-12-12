@@ -5,6 +5,11 @@ import Swal from 'sweetalert2';
 import { MdArticle, MdAccountCircle } from "react-icons/md";
 
 const Nav = (props) => {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
+  const usernicklogin = userlogin.nick || '';
   const title = props.title;
   const navigate = useNavigate();
 
@@ -17,9 +22,6 @@ const Nav = (props) => {
   }, [navigate]);
 
   // ✅ Ambil user info dari localStorage
-  const rolelogin = localStorage.getItem('role');
-  const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-  const usernicklogin = userlogin.nick || '';
 
   // ✅ Fungsi Logout dengan konfirmasi SweetAlert
   const handleLogout = () => {

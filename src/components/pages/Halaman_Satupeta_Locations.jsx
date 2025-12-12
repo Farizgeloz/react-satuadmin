@@ -25,7 +25,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="locationpoint">
+    <Layout key ="locationpoint" itemmenu="Satupeta Lokasi">
       <Main_User />
     </Layout>
   );

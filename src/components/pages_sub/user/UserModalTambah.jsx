@@ -25,12 +25,7 @@ import { MdAddCircle,MdAccessibility,MdPerson,MdEmail, MdPassword, MdOutlineSave
         MdOutlineArrowCircleLeft} from "react-icons/md";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
-const apiurl = import.meta.env.VITE_API_URL;
 
-const rolelogin = localStorage.getItem('role');
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const useropdlogin = userlogin.opd_id || '';
-const userloginadmin = userlogin.id || '';
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -61,6 +56,10 @@ const textFieldStyle = (theme) => ({
 });
 
 function ModalTambahUser() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [satkerku, setsatkerku] = useState([]);
   const [kategoriku, setkategoriku] = useState([]);
   const [name, setname] = useState("");
@@ -77,6 +76,7 @@ function ModalTambahUser() {
   const handleShow = () => setShow(true);
 
   const [showPassword, setShowPassword] = useState(false); // <-- ini dia
+  const [showRePassword, setShowRePassword] = useState(false); // <-- ini dia
   
   const handleShowPassword = () => {
     setShowPassword(true);
@@ -84,6 +84,15 @@ function ModalTambahUser() {
     // otomatis kembali hidden setelah 3 detik
     setTimeout(() => {
       setShowPassword(false);
+    }, 1000);
+  };
+
+  const handleShowRePassword = () => {
+    setShowRePassword(true);
+
+    // otomatis kembali hidden setelah 3 detik
+    setTimeout(() => {
+      setShowRePassword(false);
     }, 1000);
   };
 
@@ -95,7 +104,7 @@ function ModalTambahUser() {
   const getDatasetItem = async () => {
     const response = await api_url_satuadmin.get('api/open-item/satker', {
       params: {
-        search_satker: useropdlogin
+        search_satker: userloginsatker
       },
       paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' })
     });
@@ -192,10 +201,17 @@ function ModalTambahUser() {
     const isRoleValid = role !== null;
 
     // default false
-    let isSatkerValid = true;
+    let isSatkerValid = false;
 
-    if (role?.value !== "Super Admin") {
-      isSatkerValid = !!satker?.value;
+    // Jika role adalah Admin, Operator, Super Admin → satker TIDAK wajib
+    if (
+      role?.value === "Super Admin" ||
+      role?.value === "Admin" ||
+      role?.value === "Operator"
+    ) {
+      isSatkerValid = true;            // tidak wajib → otomatis valid
+    } else {
+      isSatkerValid = !!satker?.value; // wajib → harus ada value
     }
 
     // Set state error messages
@@ -223,16 +239,14 @@ function ModalTambahUser() {
         { label: "Admin", value: "Admin" },
         { label: "Operator", value: "Operator" },
         { label: "Operator Opd", value: "Operator Opd" },
-        { label: "Verifikator", value: "Verifikator" },
-        { label: "CS", value: "CS" },
+        { label: "Verifikator Opd", value: "Verifikator Opd" },
         { label: "Super Admin", value: "Super Admin" },
       ];
     } else if (rolelogin === "Admin") {
       return [
         { label: "Operator", value: "Operator" },
         { label: "Operator Opd", value: "Operator Opd" },
-        { label: "Verifikator", value: "Verifikator" },
-        { label: "CS", value: "CS" },
+        { label: "Verifikator Opd", value: "Verifikator Opd" },
       ];
       
     } else if (rolelogin === "Operator") {
@@ -243,6 +257,8 @@ function ModalTambahUser() {
       return [];
     }
   };
+
+  const roleBolehEdit = ["Operator Opd", "Verifikator Opd"].includes(role.value);
 
 
   
@@ -282,41 +298,137 @@ function ModalTambahUser() {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="w-100 mx-auto">
-                        
-                        
-                        <div className="mt-3 flex">
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                            <div className=" bg-cyan-600 rad15 w-10 h-8  float-right">
-                              <p className=" text-center text-white py-1">
-                                1
-                              </p>
-                            </div>
-                          </div>
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-gray-500 py-1">
-                                2
-                              </p>
-                            </div>
-                          </div>
-                          
-                         
-                            
-                        </div>
-                        <div className="-mt-5 w-full h-2 bg-cyan-200">
-                            <div className="h-full bg-cyan-600 rounded-3xl  w-1/2"></div>
-                        </div>
+                        {/* STEP INDICATOR */}
+                        <div className="mt-4 flex items-center justify-between relative">
 
+                          {/* STEP 1 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              1
+                            </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Form Input
+                            </span>
+                          </div>
+
+                          {/* STEP 2 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-200 text-cyan-600 font-semibold">
+                              2
+                            </div>
+                            <span className="mt-1 text-xs text-gray-500 font-semibold">
+                              Konfirmasi
+                            </span>
+                          </div>
+
+                          {/* PROGRESS LINE */}
+                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-1/2" />
+                          </div>
+
+                        </div>
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                          <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0 transisiku">
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Role User
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                   isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-satker"
+                                  options={getRoleOptions()}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={role}
+                                  onChange={(event, newValue) => setrole(newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+  
+                                {validasi_role && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Satker / OPD
+                                </label>
+  
+                                <Autocomplete
+                                 disabled={!roleBolehEdit}
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-satker"
+                                  options={satkerku.map((row) => ({
+                                    label: row.nama_opd,
+                                    value: row.id_opd
+                                  }))}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={satker}
+                                  onChange={(event, newValue) => setsatker(newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+  
+                                {validasi_satker && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Nama Lengkap
+                                </label>
+  
                                 <TextField
-                                  label="Nama Lengkap"
                                   className="bg-input rad15 w-full"
                                   value={name}
                                   onChange={(e) => setname(e.target.value)}
-                                  multiline   // <-- ini bikin jadi textarea
-                                  rows={1}    // <-- tinggi awal textarea
+                                  InputLabelProps={{ shrink: false }}
                                   InputProps={{
                                     endAdornment: (
                                       <>
@@ -336,18 +448,24 @@ function ModalTambahUser() {
                                   }}
                                   sx={(theme) => textFieldStyle(theme)}
                                 />
-                                  {validasi_name && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}
+  
+                                {validasi_name && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}
                               </div>
+                            </div>
                           </div>
-                          <div className="sm:col-span-6 md:col-span-3 -mt-2">
-                              <div className="mt-0">
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Nick
+                                </label>
+  
                                 <TextField
-                                  label="Nick"
                                   className="bg-input rad15 w-full"
                                   value={nick}
                                   onChange={(e) => setnick(e.target.value)}
-                                  multiline   // <-- ini bikin jadi textarea
-                                  rows={1}    // <-- tinggi awal textarea
+                                  InputLabelProps={{ shrink: false }}
                                   InputProps={{
                                     endAdornment: (
                                       <>
@@ -367,50 +485,69 @@ function ModalTambahUser() {
                                   }}
                                   sx={(theme) => textFieldStyle(theme)}
                                 />
-                                  {validasi_nick && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}
+  
+                                {validasi_nick && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}
                               </div>
-                          </div>
-                          <div className="sm:col-span-6 md:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                label="Email"
-                                className="bg-input rad15 w-full"
-                                type='email'
-                                value={email}
-                                onChange={(e) => setemail(e.target.value)}
-                                multiline   // <-- ini bikin jadi textarea
-                                rows={1}    // <-- tinggi awal textarea
-                                InputProps={{
-                                  endAdornment: (
-                                    <>
-                                      {email && (
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            onClick={() => setemail("")}
-                                            edge="end"
-                                            size="small"
-                                          >
-                                            <ClearIcon />
-                                          </IconButton>
-                                        </InputAdornment>
-                                      )}
-                                    </>
-                                  ),
-                                }}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                                {validasi_email && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Format email tidak valid..</p>}
                             </div>
                           </div>
-                          <div className="sm:col-span-6 md:col-span-3 -mt-2">
-                              <div className="mt-0">
+
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Email
+                                </label>
+  
                                 <TextField
-                                  label="Password"
                                   className="bg-input rad15 w-full"
-                                  type={showPassword ? "text" : "password"}
-                                  value={password}
-                                  onChange={(e) => setpassword(e.target.value)}
+                                  value={email}
+                                  type='email'
+                                  onChange={(e) => setemail(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
                                   InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {email && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setemail("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                />
+  
+                                {validasi_email && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Format email tidak valid..</p>}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="md:col-span-3 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Password
+                                </label>
+  
+                                <TextField
+                                  id="password-field"
+                                  className="bg-input rad15 w-full"
+                                  value={password}
+                                  type={showPassword ? "text" : "password"}
+                                  onChange={(e) => setpassword(e.target.value)}
+                                  autoComplete="new-password"
+                                  InputLabelProps={{ shrink: false }}
+                                  InputProps={{
+                                  autoComplete: "new-password",       // ⛔ Matikan juga di InputProps
                                     endAdornment: (
                                       <InputAdornment position="end">
                                         {password && (
@@ -439,18 +576,25 @@ function ModalTambahUser() {
                                   }}
                                   sx={(theme) => textFieldStyle(theme)}
                                 />
-
-                                  {validasi_password && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 6 Karakter.</p>}
+  
+                                {validasi_password && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 6 Karakter.</p>}
                               </div>
+                            </div>
                           </div>
-                          <div className="sm:col-span-6 md:col-span-3 -mt-2">
-                              <div className="mt-0">
+                          <div className="md:col-span-3 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Ulang Password
+                                </label>
+  
                                 <TextField
-                                  label="Ulang Password"
                                   className="bg-input rad15 w-full"
-                                  type={"password"}   // bisa toggle show/hide
                                   value={confpassword}
+                                  type={showRePassword ? "text" : "password"}
                                   onChange={(e) => setconfpassword(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
                                   InputProps={{
                                     endAdornment: (
                                       <InputAdornment position="end">
@@ -464,6 +608,15 @@ function ModalTambahUser() {
                                             >
                                               <ClearIcon />
                                             </IconButton>
+
+                                            {/* tombol show/hide password */}
+                                            <IconButton
+                                              onClick={handleShowRePassword}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              {showRePassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
                                           </>
                                         )}
                                       </InputAdornment>
@@ -471,78 +624,17 @@ function ModalTambahUser() {
                                   }}
                                   sx={(theme) => textFieldStyle(theme)}
                                 />
-
-                                  {validasi_repassword && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Ulang Password Tidak Sesuai.</p>}
+  
+                                {validasi_repassword && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 6 Karakter.</p>}
                               </div>
-                          </div>
-                          
-                          <div className="sm:col-span-6 md:col-span-3 -mt-2">
-                            <div className="mt-0">
-                                
-                                <Autocomplete
-                                  className='tsize-110'
-                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                  id="combo-box-satker"
-                                  options={satkerku.map((row) => ({
-                                    label: row.nama_opd,
-                                    value: row.id_opd
-                                  }))}
-                                  getOptionLabel={(option) => option.label || ""}
-                                  value={satker}
-                                  onChange={(event, newValue) => setsatker(newValue)}
-                                  clearOnEscape
-                                  renderInput={(params) => (
-                                    <TextField
-                                    {...params}
-                                    label="Satker"
-                                    variant="outlined"
-                                    sx={(theme) => textFieldStyle(theme)}
-                                    />
-                                  )}
-                                  sx={{
-                                      width: "100%",
-                                      "& .MuiAutocomplete-popupIndicator": { color: "#1976d2", transition: "transform 0.3s" },
-                                      "& .MuiAutocomplete-popupIndicatorOpen": { transform: "rotate(180deg)" }
-                                  }}
-                                />
-                                 {validasi_satker && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Dipilih.</p>}
-                                
                             </div>
                           </div>
                           
-                          <div className="sm:col-span-6 md:col-span-3 -mt-2">
-                              <div className="mt-0">
-                                <Autocomplete
-                                  className="tsize-110"
-                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                  id="combo-box-location"
-                                  options={getRoleOptions()}
-                                  getOptionLabel={(option) => option.label || ""}
-                                  value={role}
-                                  onChange={(event, newValue) => setrole(newValue)}
-                                  clearOnEscape
-                                  renderInput={(params) => (
-                                    <TextField
-                                      {...params}
-                                      label="Role"
-                                      variant="outlined"
-                                      sx={(theme) => textFieldStyle(theme)}
-                                    />
-                                  )}
-                                  sx={{
-                                    width: "100%",
-                                    "& .MuiAutocomplete-popupIndicator": {
-                                      color: "#1976d2",
-                                      transition: "transform 0.3s",
-                                    },
-                                    "& .MuiAutocomplete-popupIndicatorOpen": {
-                                      transform: "rotate(180deg)",
-                                    },
-                                  }}
-                                />
-                                {validasi_role && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 3 karakter.</p>}  
-                              </div>
-                          </div>
+                          
+                          
+                          
+                          
+                          
                           
                           
                         </div>
@@ -569,25 +661,34 @@ function ModalTambahUser() {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="md:w-3/5 mx-auto py-12">
-                        <div className="mt-3 flex">
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-white py-1">
-                                1
-                              </p>
+                        {/* STEP INDICATOR */}
+                        <div className="mt-4 flex items-center justify-between relative">
+
+                          {/* STEP 1 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              1
                             </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Form Input
+                            </span>
                           </div>
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-white py-1">
-                                2
-                              </p>
+
+                          {/* STEP 2 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              2
                             </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Konfirmasi
+                            </span>
                           </div>
-                          
-                        </div>
-                        <div className="-mt-5 w-full h-2 bg-cyan-200">
-                            <div className="h-full bg-cyan-600 rounded-3xl w-full"></div>
+
+                          {/* PROGRESS LINE */}
+                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-full" />
+                          </div>
+
                         </div>
                         <div className="mt-12 textsize10  text-center">
                             Yakin Data Sudah Benar ?

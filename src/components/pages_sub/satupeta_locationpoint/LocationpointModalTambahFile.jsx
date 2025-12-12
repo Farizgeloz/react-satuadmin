@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { Form, Spinner, Alert, Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate,Link, NavLink } from "react-router-dom";
@@ -11,6 +11,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import "../../../App.css";
 import Swal from 'sweetalert2';
+
+import Papa from "papaparse";
+import * as XLSX from "xlsx";
 
 import { MdAddCircle,MdErrorOutline,MdOutlineArrowCircleLeft,MdOutlineArrowCircleRight,
         MdOutlineQrCode,MdOutlineMap,MdOutlinePerson4,MdPermDeviceInformation,MdAccessibility,
@@ -52,6 +55,15 @@ const textFieldStyle = (theme) => ({
 });
 
 function DatasetModalTambahFile() {
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
+  const [locationku, setlocationku] = useState([]);
+  const [previewData, setPreviewData] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [errorLocation, setErrorLocation] = useState(false); // <<--- ERROR FLAG
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 50; // bisa diganti 20/100
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,9 +73,95 @@ function DatasetModalTambahFile() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleFileChange = (e) => {
+  /* const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+  }; */
+
+  useEffect(() => {
+        getDatasetItem();
+  }, []);
+  const getDatasetItem = async () => {
+    const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+      params: { search_satker:userloginsatker }
+    });
+
+    const data = response.data;
+    setlocationku(response.data.resultlocation);
+    console.log("locationku:", data.resultlocation);
+    
   };
+
+  const handleFileChange = (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+
+    setFile(f);
+
+    const ext = f.name.split('.').pop().toLowerCase();
+
+    // reset error dulu
+    setErrorLocation("");
+
+    // 👉 allowed location dari JSON locationku
+    const allowedValues = locationku.map((loc) => String(loc.id_location));
+
+    if (ext === "csv") {
+      Papa.parse(f, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function (results) {
+          const rows = results.data;
+
+          // VALIDASI LOCATION
+          const invalid = rows.filter(
+            (r) => !allowedValues.includes(String(r.location).trim())
+          );
+
+          if (invalid.length > 0) {
+            setErrorLocation(
+              `❌ Ada baris dengan nilai 'location' tidak valid. Hanya boleh: ${allowedValues.join(", ")}.`
+            );
+          } else {
+            setErrorLocation("");
+          }
+
+          setPreviewData(rows);
+          setShowPreview(true);
+        },
+      });
+    } 
+    else if (ext === "xlsx" || ext === "xls") {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const bstr = evt.target.result;
+        const workbook = XLSX.read(bstr, { type: "binary" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+        // VALIDASI LOCATION
+        const invalid = data.filter(
+          (r) => !allowedValues.includes(String(r.location).trim())
+        );
+
+        if (invalid.length > 0) {
+          setErrorLocation(
+            `❌ Ada baris dengan nilai 'location' tidak valid. Hanya boleh: ${allowedValues.join(", ")}.`
+          );
+        } else {
+          setErrorLocation("");
+        }
+
+        setPreviewData(data);
+        setShowPreview(true);
+      };
+      reader.readAsBinaryString(f);
+    }
+  };
+
+
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -178,17 +276,120 @@ function DatasetModalTambahFile() {
                   sx={(theme) => textFieldStyle(theme)}
                 />
               </Form.Group>
-              <button 
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1 mt-3">
-                  <MdOutlineSave  className='mt-1 mx-1'  /><span>{loading ? <Spinner animation="border" size="sm" /> : "Upload"}</span>
-              </button>  
+             
             </Form>
             {message && (
               <Alert className="mt-3" variant={message.startsWith("✅") ? "success" : "danger"}>
                 {message}
               </Alert>
             )}
+
+            {/* ================= PREVIEW DATA ================= */}
+            {showPreview && (
+              <div className="card mt-4 p-3">
+                <h5>Konfirmasi Data Upload</h5>
+
+                <p>
+                  Pastikan kolom <b>location</b> sesuai dengan level akses yang Anda miliki
+                  <br />
+                  <b>{locationku.map(l => l.nama_location +"=>"+ l.id_location).join(", ")}</b>
+                </p>
+
+                {/* PAGINATION */}
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    Total Data: <b>{previewData.length}</b>
+                  </div>
+
+                  <div>
+                    <button
+                      className="btn btn-sm btn-secondary me-2"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(prev => prev - 1)}
+                    >
+                      ‹ Prev
+                    </button>
+
+                    <span>
+                      Page <b>{currentPage}</b> / {Math.ceil(previewData.length / rowsPerPage)}
+                    </span>
+
+                    <button
+                      className="btn btn-sm btn-secondary ms-2"
+                      disabled={currentPage === Math.ceil(previewData.length / rowsPerPage)}
+                      onClick={() => setCurrentPage(prev => prev + 1)}
+                    >
+                      Next ›
+                    </button>
+                  </div>
+                </div>
+
+                {/* TABLE */}
+                <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+                  <table className="table table-bordered table-sm">
+                    <thead>
+                      <tr>
+                        {Object.keys(previewData[0] || {}).map((col) => (
+                          <th key={col}>{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {previewData
+                        .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+                        .map((row, i) => {
+                          const allowedValues = locationku.map((loc) =>
+                            String(loc.id_location)
+                          );
+                          const isValid = allowedValues.includes(
+                            String(row.location).trim()
+                          );
+
+                          return (
+                            <tr key={i}>
+                              {Object.keys(row).map((col) => (
+                                <td
+                                  key={col}
+                                  className={
+                                    col === "location"
+                                      ? isValid
+                                        ? "bg-success text-white"
+                                        : "bg-danger text-white"
+                                      : ""
+                                  }
+                                >
+                                  {row[col]}
+                                </td>
+                              ))}
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* UPLOAD BUTTON */}
+                 {!errorLocation && (
+                <button 
+                    type="submit"
+                     disabled={errorLocation}
+                    className="w-50 bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1 mt-3">
+                    <MdOutlineSave  className='mt-1 mx-1'  /><span>{loading ? <Spinner animation="border" size="sm" /> : "✔ Konfirmasi & Upload"}</span>
+                </button>  
+                 )}
+
+                {errorLocation && (
+                  <p className="text-danger mt-2">
+                    ⚠ Ada baris yang kolom <b>location</b>-nya tidak sesuai. Hanya boleh:{" "}
+                    <b>{locationku.map((l) => l.nama_location+"=>"+l.id_location).join(", ")}</b>
+                  </p>
+                )}
+              </div>
+            )}
+
+
+
               
           </Modal.Body>
           <Modal.Footer>

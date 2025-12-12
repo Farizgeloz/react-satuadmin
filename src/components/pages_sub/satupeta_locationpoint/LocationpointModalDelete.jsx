@@ -13,8 +13,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginadmin = userlogin.id || '';
 
 
 

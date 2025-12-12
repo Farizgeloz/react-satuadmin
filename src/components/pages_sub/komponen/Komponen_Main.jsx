@@ -185,7 +185,7 @@ const Satuportal_listlist = () => {
                 style={{ maxWidth: 100, objectFit: "contain" }}
               />
             )}
-            {row.title_images_a && (
+            {!row.title_images_a===null && (
               <p className="textsize10 text-center">
                 {row.title_images_a}
               </p>
@@ -199,7 +199,7 @@ const Satuportal_listlist = () => {
                 style={{ maxWidth: 100, objectFit: "contain" }}
               />
             )}
-            {row.title_images_b && (
+            {!row.title_images_b===null && (
               <p className="textsize10 text-center">
                 {row.title_images_b}
               </p>
@@ -213,7 +213,7 @@ const Satuportal_listlist = () => {
                 style={{ maxWidth: 100, objectFit: "contain" }}
               />
             )}
-            {row.title_images_c && (
+            {!row.title_images_c===null && (
               <p className="textsize10 text-center">
                 {row.title_images_c}
               </p>

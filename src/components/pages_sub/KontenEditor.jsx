@@ -5,10 +5,10 @@ import { IconButton, InputAdornment, Box, Typography } from "@mui/material";
 
 const KontenEditor = ({ content, setcontent }) => {
   return (
-    <Box className="w-full">
-      <Typography variant="subtitle1" sx={{ mb: 1 }} className="">
-        Masukkan Konten
-      </Typography>
+    <Box className="w-full  p-3">
+      <label className="font_weight600 textsize12 mb-2 d-block">
+        Isi Konten
+      </label>
 
       <Box
         className="bg-blue rad15"
@@ -18,7 +18,7 @@ const KontenEditor = ({ content, setcontent }) => {
           "&:hover": { borderColor: "#999" },
           "& .ql-container": {
             borderRadius: "0 0 15px 15px",
-            minHeight: "150px",
+            minHeight: "250px",
           },
           "& .ql-toolbar": {
             borderRadius: "15px 15px 0 0",

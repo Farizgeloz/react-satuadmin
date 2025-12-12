@@ -29,6 +29,9 @@ export default function Iklanlist() {
   const [searchText, setSearchText] = useState("");
   const [rowsFiltered, setRowsFiltered] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   useEffect(() => {
     setTimeout(() => {
       getIklanSearch();
@@ -73,6 +76,13 @@ export default function Iklanlist() {
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchText.toLowerCase())
     )
+  );
+
+  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+
+  const paginatedRows = filteredRows.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
     // Format tanggal Indonesia aman
@@ -137,58 +147,97 @@ export default function Iklanlist() {
               </Col>
               <Col md={12}>
                 <motion.div
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   viewport={{ once: true }}
                 >
-                  
-                  {filteredRows.map((message) => (
-                        
-                    <div key={message.id} className="p-1">
-                      <div className="card shadow-sm border-0 p-3 bg-light-subtle">
-                        <dl className="row mb-0">
-                          <dt className="col-sm-3 text-end text-secondary fw-semibold">Admin</dt>
-                          <dd className="col-sm-9 text-dark">{message.nick_admin}</dd>
+                  {paginatedRows.map((message) => {
+                    const kategori = message.kategori?.toLowerCase() || "";
 
-                          <dt className="col-sm-3 text-end text-secondary fw-semibold">Waktu</dt>
-                          <dd className="col-sm-9 text-dark">{convertDate(message.updated_at)}</dd>
+                    const kategoriClass = kategori.includes("delete")
+                      ? "bg-danger-subtle text-danger"
+                      : kategori.includes("tambah") || kategori.includes("create")
+                      ? "bg-success-subtle text-success"
+                      : kategori.includes("update")
+                      ? "bg-primary-subtle text-primary"
+                      : kategori.includes("balas")
+                      ? "bg-warning-subtle text-warning"
+                      : "bg-secondary-subtle text-dark";
 
-                          <dt className="col-sm-3 text-end text-secondary fw-semibold">Bagian</dt>
-                          <dd className="col-sm-9 text-dark font_weight600">{message.jenis}</dd>
+                    return (
+                      <div key={message.id} className="p-2">
+                        <div className="card border-0 shadow-sm rad15 p-3 bg-white">
 
-                          <dt className="col-sm-3 text-end text-secondary fw-semibold">Tindakan</dt>
-                          <dd
-                            className={`col-sm-9 fw-semibold ${
-                              message.kategori?.toLowerCase().includes("delete")
-                                ? "text-danger" // 🔴 merah
-                                : message.kategori?.toLowerCase().includes("tambah") ||
-                                  message.kategori?.toLowerCase().includes("create")
-                                ? "text-success" // 🟢 hijau
-                                : message.kategori?.toLowerCase().includes("update")
-                                ? "text-primary" // 🔵 biru
-                                : message.kategori?.toLowerCase().includes("balas")
-                                ? "text-warning" // 🟡 kuning
-                                : "text-dark" // ⚫ default hitam
-                            }`}
-                          >
-                            {message.kategori}
-                          </dd>
+                          {/* HEADER */}
+                          <div className="d-flex justify-content-between align-items-center mb-2 gap-2">
+                            <div className="d-flex flex-column">
+                              <p className="mb-0 fw-semibold text-dark">
+                                <span className="text-primary">{message.role_admin}</span>
+                                <span className="text-muted mx-1">•</span>
+                                {message.nick_admin}
+                              </p>
+                              <small className="text-muted">
+                                {convertDate(message.updated_at)}
+                              </small>
+                            </div>
 
+                            <span
+                              className={`badge ${kategoriClass} px-3 py-2 text-capitalize shadow-sm`}
+                              style={{ borderRadius: "999px", fontSize: "12px" }}
+                            >
+                              {message.kategori}
+                            </span>
+                          </div>
 
-                          <dt className="col-sm-3 text-end text-secondary fw-semibold">Judul</dt>
-                          <dd className="col-sm-9 text-dark font_weight600">{message.item}</dd>
+                          {/* CONTENT */}
+                          <div className="mt-2">
+                            <p className="fw-semibold mb-1">Bagian</p>
+                            <p className="text-muted mb-2 textsize12">{message.jenis}</p>
 
-                          <dt className="col-sm-3 text-end text-secondary fw-semibold">Deskripsi</dt>
-                          <dd className="col-sm-9 text-muted">{message.deskripsi}</dd>
-                        </dl>
+                            <p className="fw-semibold mb-1">Judul</p>
+                            <p className="text-muted mb-2 textsize12">{message.item}</p>
+
+                            <p className="fw-semibold mb-1">Deskripsi</p>
+                            <p className="text-muted mb-2 textsize12">{message.deskripsi}</p>
+                          </div>
+                        </div>
                       </div>
-                        
-                    </div>
-
-
-                ))}
+                    );
+                  })}
                 </motion.div>
+                <div className="d-flex justify-content-center mt-3 gap-1">
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => p - 1)}
+                  >
+                    ‹ Prev
+                  </button>
+
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      className={`btn btn-sm ${
+                        currentPage === i + 1
+                          ? "btn-primary"
+                          : "btn-outline-secondary"
+                      }`}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+
+                  <button
+                    className="btn btn-outline-secondary btn-sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                  >
+                    Next ›
+                  </button>
+                </div>
+
               </Col>
             </Row>
           </Container>

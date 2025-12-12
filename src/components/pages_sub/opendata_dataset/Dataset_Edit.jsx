@@ -573,7 +573,35 @@ function DatasetPengelolah() {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="md:w-full mx-auto">
-                        
+                        {/* STEP INDICATOR */}
+                        <div className="mt-4 flex items-center justify-between relative">
+
+                          {/* STEP 1 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              1
+                            </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Form Input
+                            </span>
+                          </div>
+
+                          {/* STEP 2 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              2
+                            </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Konfirmasi
+                            </span>
+                          </div>
+
+                          {/* PROGRESS LINE */}
+                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-full" />
+                          </div>
+
+                        </div>
                         <div className="mt-3 flex">
                           <div className="col-span-2 -mt-2 py-1 justify-end w-1/4">
                             <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">

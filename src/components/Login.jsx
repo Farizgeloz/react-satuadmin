@@ -41,7 +41,7 @@ const Login = () => {
       localStorage.setItem('expiredAt', expiredAt.toISOString());
 
       if (response.data.role !== '') {
-        sweetsuccess();
+        sweetsuccess(response.data.role);
         navigate("/Dashboard");
       }
     } catch (error) {
@@ -71,10 +71,10 @@ const Login = () => {
     }
   };
 
-  function sweetsuccess(){
+  function sweetsuccess(user){
     Swal.fire({
         title: "Sukses",
-        html: "Data Berhasil Disimpan",
+        html: "Selamat Datang "+user,
         timer: 2000,
         icon: "success",
         timerProgressBar: true,
@@ -107,7 +107,7 @@ const Login = () => {
   };
 
   return (
-      <div className=" grid grid-cols-1 md:grid-cols-6 h-100v justify-center bg-gray-200">
+      <div className=" grid grid-cols-1 md:grid-cols-6 h-100v justify-center bg-gray-200 overflow-hidden">
        
          <div className="col-span-3 h-100v p-5 my-auto  max-[670px]:hidden" style={{backgroundColor:"#0D47A1"}}>
           <Image data-aos="zoom-in-up" className=" margin-t10" src='./assetku/login.png' />
@@ -116,8 +116,8 @@ const Login = () => {
           <div className="col-span-6 sm:mx-auto sm:w-full sm:max-w-sm margin-t10">
             <img
               alt="Kabupaten Probolinggo"
-              src={`./logo.png`}
-              className="mx-auto h-25 w-auto"
+              src={`/logo.png`}
+              className="mx-auto h-20 w-auto"
             />
             <p className="col-span-6 mt-2 text-center textsize20 font-bold tracking-tight text-gray-900">
               MASUK SATU ADMIN 

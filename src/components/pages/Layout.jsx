@@ -6,13 +6,15 @@ import Navbar from "../Nav";
 import Sidebar from "../Sidebar";
 
 
-const Layout = ({ children }) => {
-
+const Layout = ({ children,itemmenu }) => {
+  
   const [username, setName] = useState("");
   const [usernick, setNick] = useState("");
   const [userrole, setRole] = useState("");
   const [userorganisasi, setOrganisasi] = useState("");
   const [userjabatan, setJabatan] = useState("");
+  
+
 
    useEffect(() => {
     //getUser();
@@ -45,6 +47,7 @@ const Layout = ({ children }) => {
         userrole={userrole}
         userorganisasi={userorganisasi}
         userjabatan={userjabatan}
+         itemmenu={itemmenu}
         />
         <div className="h-98v flex-1 p-0 overflow-auto">
            <Navbar
@@ -53,6 +56,7 @@ const Layout = ({ children }) => {
               userrole={userrole}
               userorganisasi={userorganisasi}
               userjabatan={userjabatan}
+              itemmenu={itemmenu}
             />
           <main>{children}</main>
         </div>

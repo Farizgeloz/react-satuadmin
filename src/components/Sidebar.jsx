@@ -11,23 +11,24 @@ import { MdCategory, MdDashboard, MdDataset } from 'react-icons/md';
 import { FaClone, FaGg, FaMapMarkerAlt } from 'react-icons/fa';
 import { api_url_satuadmin } from '../api/axiosConfig';
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const rolelogin = localStorage.getItem('role');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
+
 
 const portal = "Portal Satu Admin";
 
-const Sidebar = (props) => {
-  const username = props.username;
-  const usernick = props.usernick;
-  const userrole = props.userrole;
+const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
+  
+    console.log("itemmenu layout:",itemmenu);
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
+  
   const [open, setOpen] = useState(true);
   const [isOpenPenduduk, setIsOpenPenduduk] = React.useState(false);
 
   const [collapsed_satuportal, setCollapsed_SatuPortal] = useState(true);
   const [collapsed_opendata, setCollapsed_OpenData] = useState(true);
-  const [collapsed_satupeta, setCollapsed_SatuPeta] = useState(true);
+  const [collapsed_satupeta, setCollapsed_SatuPeta] = useState(false);
 
   const [image1, setImage1] = useState("");
   const [image2, setImage2] = useState("");
@@ -49,6 +50,37 @@ const Sidebar = (props) => {
   const style = {
     padding: "0px 0px 0px -30px",
   };
+
+  useEffect(() => {
+    // reset collapsed ketika role berubah
+    setCollapsed_SatuPortal(true);
+    setCollapsed_OpenData(true);
+    setCollapsed_SatuPeta(false);
+    if(itemmenu==="Satuportal Motto" || itemmenu==="Satuportal Iklan" || itemmenu==="Satuportal Visitor" || itemmenu==="Satuportal List" || itemmenu==="Satuportal Color"){
+      setCollapsed_SatuPortal(false);
+      setCollapsed_OpenData(true);
+      setCollapsed_SatuPeta(true);
+    }
+    if(itemmenu==="Opendata Permohonan" || itemmenu==="Opendata Iklan" || itemmenu==="Opendata Artikel" || itemmenu==="Opendata Infografik" || itemmenu==="Opendata Bantuan" || itemmenu==="Opendata Color" || itemmenu==="Opendata Feedback"){
+      setCollapsed_OpenData(false);
+      setCollapsed_SatuPortal(true);
+      setCollapsed_SatuPeta(true);
+    }
+    if(itemmenu==="Satupeta Lokasi" || itemmenu==="Satupeta Koleksi" || itemmenu==="Satupeta Titik" || itemmenu==="Satupeta Iklan" || itemmenu==="Satupeta Artikel" || itemmenu==="Satupeta Bantuan" || itemmenu==="Satupeta Color" || itemmenu==="Satupeta Feedback"){
+      setCollapsed_SatuPeta(false);
+      setCollapsed_OpenData(true);
+      setCollapsed_SatuPortal(true);
+    }
+    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Log"){
+      setCollapsed_SatuPeta(true);
+      setCollapsed_OpenData(true);
+      setCollapsed_SatuPortal(true);
+    }
+
+    // jika perlu set default menu lagi
+    // setMenu(defaultMenuBasedOnRole(rolelogin));
+
+  }, [rolelogin]);
 
   useEffect(() => {
     getMenu();
@@ -96,7 +128,9 @@ const Sidebar = (props) => {
           {/* button */}
           <Link
             to={`/Dashboard`}
-            className="side-li flex tsize-100 text-white-a"
+            className={`side-li flex tsize-100 text-white-a ${
+              itemmenu === "Dashboard" ? "active-menu" : ""
+            }`}
           >
               <MdDashboard  className="mt-1 text-orange-500 tsize-150"  />
               <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Dashboard</span>
@@ -109,7 +143,9 @@ const Sidebar = (props) => {
             {/* button */}
             <Link
               to={`/Data-User`}
-              className="side-li flex tsize-100 text-white-a"
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "User" ? "active-menu" : ""
+              }`}
             >
                 <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
                 <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Data Pengguna</span>
@@ -156,7 +192,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satuportal/Motto`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satuportal Motto" ? "active-menu" : ""
+                  }`}
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -167,7 +205,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satuportal/Iklan`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satuportal Iklan" ? "active-menu" : ""
+                  }`}
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -180,7 +220,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satuportal/Visitor`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satuportal Visitor" ? "active-menu" : ""
+                  }`}
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -191,7 +233,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satuportal/List`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satuportal List" ? "active-menu" : ""
+                  }`}
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -202,7 +246,9 @@ const Sidebar = (props) => {
               <li className='mb-3'>
                 <Link
                   to={`/Satuportal/Color`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satuportal Color" ? "active-menu" : ""
+                  }`}
                 >
                   <FaGg className="mt-1 text-red-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -263,7 +309,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Opendata/Dataset/Permohonan`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Permohonan" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -279,7 +327,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Opendata/Iklan`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Iklan" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -290,7 +340,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Opendata/Artikel`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Artikel" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -301,7 +353,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Opendata/Infografik`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Infografik" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -312,7 +366,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Opendata/Bantuan`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Bantuan" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -329,7 +385,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Opendata/Color`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Color" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -340,7 +398,9 @@ const Sidebar = (props) => {
               <li className='mb-3'>
                 <Link
                   to={`/Opendata/Feedback`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Opendata Feedback" ? "active-menu" : ""
+                  }`}
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -369,7 +429,7 @@ const Sidebar = (props) => {
       ) : null
       } 
 
-      {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd' ? (
+      {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
       <>
       <li className={`-right-20`}>
         {/* tombol utama */}
@@ -404,12 +464,14 @@ const Sidebar = (props) => {
             collapsed_satupeta ? "max-h-0" : "max-h-50"
           }`}
         >
-          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
             <>
               <li>
                 <Link
                   to={`/Satupeta/Lokasi-Peta`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Lokasi" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -420,12 +482,14 @@ const Sidebar = (props) => {
             </>
           ) : null
           } 
-          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd' ? (
+          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
             <>
               <li>
                 <Link
                   to={`/Satupeta/Koleksi-Peta`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Koleksi" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -436,7 +500,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satupeta/Titik-Lokasi-Peta`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Titik" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -452,7 +518,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satupeta/Iklan`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Iklan" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -463,7 +531,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satupeta/Artikel`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Artikel" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -474,7 +544,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satupeta/Bantuan`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Bantuan" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -491,7 +563,9 @@ const Sidebar = (props) => {
               <li>
                 <Link
                   to={`/Satupeta/Color`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Color" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -502,7 +576,9 @@ const Sidebar = (props) => {
               <li className='mb-3'>
                 <Link
                   to={`/Satupeta/Feedback`}
-                  className="tsize-100 block py-1 btn-white-a flex"
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Feedback" ? "active-menu" : ""
+                  }`}
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
@@ -532,7 +608,9 @@ const Sidebar = (props) => {
         {/* button */}
         <Link
           to={`/Komponen-Statik`}
-          className="side-li flex tsize-100 text-white-a"
+          className={`side-li flex tsize-100 text-white-a ${
+            itemmenu === "Komponen Statik" ? "active-menu" : ""
+          }`}
         >
             <MdDataset className="mt-1 text-red-500 tsize-150"  />
             <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
@@ -542,7 +620,9 @@ const Sidebar = (props) => {
         {/* button */}
         <Link
           to={`/Log`}
-          className="side-li flex tsize-100 text-white-a"
+          className={`side-li flex tsize-100 text-white-a ${
+            itemmenu === "Log" ? "active-menu" : ""
+          }`}
         >
             <MdDataset className="mt-1 text-red-500 tsize-150"  />
             <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Aktivitas</span>

@@ -25,7 +25,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="Satu Peta Color">
+    <Layout key ="Satu Peta Color" itemmenu="Satupeta Color">
       <Main_User />
     </Layout>
   );

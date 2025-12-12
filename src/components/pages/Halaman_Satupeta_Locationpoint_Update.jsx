@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout >
+    <Layout itemmenu="Satupeta Titik" >
       <Main_Edit />
     </Layout>
   );

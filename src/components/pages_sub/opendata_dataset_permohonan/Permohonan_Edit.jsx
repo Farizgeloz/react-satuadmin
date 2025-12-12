@@ -30,8 +30,7 @@ import IconButton from '@mui/material/IconButton';
 import ClearIcon from "@mui/icons-material/Clear";
 import { api_url_satuadmin, api_url_satudata } from "../../../api/axiosConfig";
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginadmin = userlogin.id || '';
+
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -90,7 +89,10 @@ const textFieldStyleMulti = (theme) => ({
 });
 
 function DatasetPengelolah() {
-  
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [tiketDetail, setTiketDetail] = useState(null);
   const [jumlahTiketMap, setJumlahTiketMap] = useState({});

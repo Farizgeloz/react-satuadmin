@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
-import { Container, Row, Col,Tabs, Tab} from 'react-bootstrap';
+import { Container, Row, Col, Button,Modal,Tabs, Tab } from 'react-bootstrap';
 import Image from 'react-bootstrap/Image';
 import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
@@ -16,13 +16,13 @@ import Downloadku from "./Locations_Download";
 import DatasetModalDelete from "./LocationsModalDelete";
 import Activity from "../log/Activity";
 
-import { MdDashboard, MdDataset, MdInfoOutline, MdEditSquare } from "react-icons/md";
+import { MdDashboard, MdDataset, MdInfoOutline, MdEditSquare, MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaBuildingColumns } from "react-icons/fa6";
-import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { api_url_satuadmin, api_url_satudata } from "../../../api/axiosConfig";
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
+
+
+const rolelogin = localStorage.getItem('role');
 
 // Theme MUI custom label pagination
 const theme = createTheme({
@@ -61,9 +61,16 @@ function convertDate(datePicker) {
 
 
 const Datasetlist = () => {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
   const [dataku, setDatasetSearch] = useState([]);
+  const [datakustatus, setDatasetSearchStatus] = useState([]);
   const [searchText, setSearchText] = React.useState("");
+
+  const [searchTextStatus, setSearchTextStatus] = React.useState("");
   const [kategoriku, setDatasetKategori] = useState([]);
   const [satkerku, setDatasetProdukData] = useState([]);
   const [sifat_dataku, setDatasetSifatData] = useState([]);
@@ -107,13 +114,42 @@ const Datasetlist = () => {
     }
   };
 
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);  
+  const [namalokasi, setNamaLokasi] = useState("");
+
+  const handleShowDetail = async (id,nama) => {
+    setShowDetail(true);
+    setLoadingDetail(true);
+    setSelectedDetail(null);
+
+    setNamaLokasi(nama);
+
+    try {
+      const res = await api_url_satuadmin.get(`api/satupeta/map_data/locationpoint/${id}`);
+      const ambil_titik = res.data?.result;
+      
+      setSelectedDetail(ambil_titik);
+      
+      console.log("setSelectedDetail",ambil_titik);
+      
+    } catch (err) {
+      console.error("Gagal ambil detail:", err);
+      setSelectedDetail(null);
+    } finally {
+      setLoadingDetail(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
-          params: { search_satker:userloginsatker }
+          params: { search_satker:userloginsatker,search_role:rolelogin }
         });
         setDatasetSearch(searchRes.data?.resultlocation || []);
+        setDatasetSearchStatus(searchRes.data?.resultlocationstatus || []);
         
       } catch (error) {
         console.error('Failed to fetch data:', error);
@@ -132,6 +168,37 @@ const Datasetlist = () => {
         ...row
       }))
     : [];
+  const rowskustatus = Array.isArray(datakustatus)
+    ? datakustatus.map((row, index) => ({
+        id: index + 1,
+        no: index + 1,
+        ...row,
+      }))
+    : [];
+
+  const rowskulocationpoint = Array.isArray(selectedDetail)
+    ? selectedDetail.map((row, index) => ({
+        id: index + 1,
+        no: index + 1,
+        ...row
+      }))
+    : [];
+
+   const statusStyle = {
+    draft: "bg-gray-600 text-white border border-gray-400",
+    pending: "bg-yellow-600 text-white border border-yellow-400",
+    verified: "bg-green-600 text-white border border-green-500",
+    publik: "bg-blue-600 text-white border border-blue-500",
+    privat: "bg-red-600 text-white border border-red-500",
+  };
+
+  const visibilitasStyle = {
+    draft: "bg-gray-200 text-gray-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    verified: "bg-green-100 text-green-700",
+    publik: "bg-blue-100 text-blue-700",
+    privat: "bg-red-100 text-red-700",
+  };
     
 
   const columns = [
@@ -197,6 +264,30 @@ const Datasetlist = () => {
         );
       }
     },
+    { 
+      field: "visibilitas", 
+      headerName: "Status", 
+      flex: 1,
+      minWidth: 100,
+      filterable: true,
+      headerAlign: 'left',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div className="">
+            <p
+              className={`
+                px-2 py-1 textsize10 rounded-lg font-semibold inline-block w-fit
+                ${visibilitasStyle[row.visibilitas?.toLowerCase()] || "bg-gray-100 text-gray-600"}
+              `}
+            >
+              {row.visibilitas}
+            </p>
+          </div>
+        );
+      }
+    },
     {
       field: "aksi",
       headerName: "Aksi",
@@ -217,16 +308,156 @@ const Datasetlist = () => {
               </button>
             </Link>
           </Tooltip>
-          <DatasetModalDelete id={params.row.id_location} name={params.row.nama_location} />
+           {(rolelogin === "Super Admin" || rolelogin === "Admin") && (
+             <DatasetModalDelete id={params.row.id_location} name={params.row.nama_location} />
+          )}
+         
         </div>
       ),
     },
   ];
 
+  const columnslocationpoint = [
+      { 
+        field: "no", 
+        headerName: "No", 
+        width: 70,
+        headerClassName: "custom-header", // kelas custom
+      },
+     
+      { 
+      field: "nama_location", 
+      headerName: "Nama Lokasi", 
+      flex: 2,
+      minWidth: 100,
+      filterable: true,
+      headerAlign: 'left',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div className="">
+           <p className={` my-1 textsize10`}>{row.nama_location}</p>
+          </div>
+        );
+      }
+    },
+    { 
+      field: "nama_opd", 
+      headerName: "OPD", 
+      flex: 2,
+      minWidth: 100,
+      headerAlign: 'left',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div className="" style={{ textAlign: "left", width: "100%" }}>
+            {row.nama_opd && (
+              <p className="textsize10 mb-0 d-flex"> <FaBuildingColumns size={25} className="mt-1 mr-2" /> <span>{row.nama_opd}</span></p>
+              
+            )}
+           
+          </div>
+        );
+      }
+    },
+    { 
+      field: "nama_sektor", 
+      headerName: "Sektor", 
+      flex: 1,
+      filterable: true,
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <div>
+             {row.nama_sektor && (
+              <p className={`my-1 textsize10 `} style={{color:"#"+row.sektor_color}}>( {row.nama_sektor} )</p>
+             )}
+            
+          </div>
+        );
+      }
+    },
+      { 
+      field: "visibilitas", 
+      headerName: "Story Map", 
+      flex: 3,
+      minWidth: 100,
+      filterable: true,
+      headerAlign: 'center',
+      headerClassName: "custom-header", // kelas custom
+      renderCell: (params) => {
+        const currentStatus = params.row.visibilitas?.toLowerCase();
+        const statusFlow = ["draft", "pending", "verified"];
+        const endingStatus = ["publik", "privat"];
+
+        return (
+          <div className="flex items-center flex-wrap gap-1" style={{marginLeft:"20px"}}>
+            {/* FLOW */}
+            {statusFlow.map((status, index) => (
+              <div key={status} className="flex items-center gap-1">
+                <span
+                  className={`
+                    px-3 py-0.5 textsize10 rounded-full capitalize
+                    ${statusStyle[status]}
+                    ${currentStatus === status ? "font-bold opacity-100" : "opacity-50"}
+                  `}
+                >
+                  {status}
+                </span>
+
+                {index < statusFlow.length - 1 && (
+                  <span className="text-gray-600 textsize10">→</span>
+                )}
+              </div>
+            ))}
+
+            {/* ENDING */}
+            {endingStatus.includes(currentStatus) && (
+              <>
+                <span className="text-gray-400 textsize10">→</span>
+                <span
+                  className={`
+                    px-2 py-0.5 textsize10 rounded-full capitalize font-bold
+                    ${statusStyle[currentStatus]}
+                  `}
+                >
+                  {currentStatus === "publik" && "🌍 "}
+                  {currentStatus === "privat" && "🔒 "}
+                  {currentStatus}
+                </span>
+              </>
+            )}
+          </div>
+        );
+      }
+
+
+
+    },
+    ];
+
+  const isAdmin = rolelogin === "Super Admin" || rolelogin === "Admin";
+
+  const filteredColumns = columns.filter((col) => {
+    // sembunyikan kolom AKSI jika bukan admin/super admin
+    if (col.field === "aksi" && !isAdmin) return false;
+    return true;
+  });
+
    // Filter data manual
   const filteredRows = rowsku.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+
+  const filteredRowsStatus = rowskustatus.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchTextStatus.toLowerCase())
     )
   );
 
@@ -349,13 +580,170 @@ const Datasetlist = () => {
                           }}
                         />
                       </ThemeProvider>
+
                     </motion.div>
                   </Col>
                 </Row>   
               </Tab>
-
+              <Tab eventKey="storymap" title="Story Map">
+                <div className="text-center p-2">
+                 
+                  <p className="text-sage textsize10">Pencarian berdasarkan Nama Lokasi, Satker dan Sektor.</p>
+                  <div className="mb-3 w-100">
+                    <input
+                      type="text"
+                      value={searchTextStatus}
+                      onChange={(e) => setSearchTextStatus(e.target.value)}
+                      placeholder="Cari data..."
+                      className="border p-2 rounded w-100 input-gray textsize10"
+                    />
+                  </div>
+                </div>  
+                <Row className='portfoliolist'>
+                  <Col sm={12}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 50 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      viewport={{ once: true }}
+                    >
+                      <ThemeProvider theme={theme}>
+                        <DataGrid
+                          loading={loading}
+                          rows={filteredRowsStatus}
+                          columns={columnslocationpoint}
+                          pageSizeOptions={[5, 10, 50, 100]}
+                          initialState={{
+                            pagination: {
+                              paginationModel: { pageSize: 10, page: 0 }
+                            }
+                          }}
+                        
+                          disableSelectionOnClick
+                          getRowHeight={() => 'auto'}
+                          
+                          sx={{
+                            "& .custom-header": {
+                              backgroundColor: "#1886ca",
+                              color: "white",
+                              fontWeight: "bold",
+                              textTransform: "uppercase",
+                              fontSize: "100%"
+                            },
+                            "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon": {
+                              opacity: 1,
+                              visibility: "visible",
+                              width: "auto",
+                              color: "#fff"
+                            },
+                            "& .MuiDataGrid-columnHeader:hover .MuiDataGrid-menuIcon": {
+                              opacity: 1
+                            },
+                            "& .MuiDataGrid-columnHeader .MuiDataGrid-menuIcon button svg": {
+                              fill: "#fff"
+                            },
+                            '& .MuiDataGrid-cell': {
+                              whiteSpace: 'normal', // biar teks wrap
+                              lineHeight: '1.2rem',  // lebih rapat
+                              padding: '8px'
+                            },
+                            "& .MuiTablePagination-select option:not([value='5']):not([value='10']):not([value='20'])": {
+                              display: "none" // sembunyikan opsi default MUI yang tidak diinginkan
+                            },
+                            "& .MuiTablePagination-selectLabel": {
+                              color: "#444",
+                              fontWeight: "bold",
+                              marginTop: "15px"
+                            },
+                            "& .MuiTablePagination-displayedRows": {
+                              color: "#666",
+                              marginTop: "15px"
+                            },
+                            "& .MuiTablePagination-select": {
+                              color: "#000",
+                              fontWeight: "600",
+                              backgroundColor: "#dbdbdb",
+                              borderRadius: "6px"
+                            }
+                          }}
+                        />
+                      </ThemeProvider>
+                    </motion.div>
+                  </Col>
+                </Row>  
+              </Tab>                    
               <Tab eventKey="aktivitas" title="Aktivitas">
                   <Activity kunci={'Satu Peta Lokasi'}/>
+              </Tab>
+              <Tab eventKey="infoalur" title="Informasi">
+                  <Row className="mt-5">
+                    <Col sm={12} className="d-flex" >
+                        <p
+                          className={`
+                            px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block
+                            ${statusStyle['draft']}
+                          `}
+                          style={{width:"100px"}}
+                        >
+                          Draft
+                        </p>
+                        <p className="mt-1">Pengajuan data dan menunggu diteruskan oleh Verifikator OPD.</p>
+                        
+                    </Col>
+                    <Col sm={12} className="d-flex">
+                        <p
+                          className={`
+                            px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                            ${statusStyle['pending']}
+                          `}
+                          style={{width:"100px"}}
+                        >
+                          Pending
+                        </p>
+                        <p className="mt-1">Data sudah diajukan dan menunggu proses verifikasi dari Operator Wali Data.</p>
+                        
+                    </Col>
+                    <Col sm={12} className="d-flex">
+                        <p
+                          className={`
+                            px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                            ${statusStyle['verified']}
+                          `}
+                          style={{width:"100px"}}
+                        >
+                          Verified
+                        </p>
+                        <p className="mt-1">Data sudah diverifikasi dan dinyatakan valid oleh Operator Wali Data.</p>
+                        
+                    </Col>
+                    
+                    <Col sm={12} className="d-flex">
+                        <p
+                          className={`
+                            px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                            ${statusStyle['publik']}
+                          `}
+                          style={{width:"100px"}}
+                        >
+                          Publik
+                        </p>
+                        <p className="mt-1">Data ditampilkan untuk semua pengguna aplikasi.</p>
+                        
+                    </Col>
+                    <Col sm={12} className="d-flex">
+                        <p
+                          className={`
+                            px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                            ${statusStyle['privat']}
+                          `}
+                          style={{width:"100px"}}
+                        >
+                          Privat
+                        </p>
+                        <p className="mt-1">Data dibatasi aksesnya, hanya untuk pengguna tertentu.</p>
+                        
+                    </Col>
+                  </Row>
               </Tab>
             </Tabs>
             

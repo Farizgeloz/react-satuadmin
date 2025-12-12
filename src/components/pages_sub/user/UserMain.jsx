@@ -15,13 +15,7 @@ import UserModalDelete from "./UserModalDelete";
 import Activity from "../log/Activity";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
-const rolelogin = localStorage.getItem('role');
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const useropdlogin = userlogin.opd_id || '';
 
-
-//const apikey=process.env.REACT_APP_API_KEY;
-const apiurl = import.meta.env.VITE_API_URL;
 const theme = createTheme({
   components: {
     MuiTablePagination: {
@@ -33,6 +27,10 @@ const theme = createTheme({
 });
 
 const Userlist = () => {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
   const [userku, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -53,7 +51,7 @@ const Userlist = () => {
   const getUsers = async () => {
     const response = await api_url_satuadmin.get('api/open-user/user', {
       params: {
-        search_opd: useropdlogin,
+        search_opd: userloginsatker,
         search_role: rolelogin
       },
       paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' })

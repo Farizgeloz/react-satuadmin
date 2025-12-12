@@ -221,6 +221,20 @@ export default function Iklanlist() {
                   : row.content_c}
               </p>
             )}
+            {row.presignedUrl_d_tumb && (
+              <Image
+                src={row.presignedUrl_d_tumb}
+                className="rad15 px-3"
+                style={{ maxWidth: 130, objectFit: "contain" }}
+              />
+            )}
+            {row.content_d && (
+              <p className="textsize11 text_justif">
+                {row.content_d.length > 150 
+                  ? row.content_d.substring(0, 150) + "..." 
+                  : row.content_d}
+              </p>
+            )}
           </div>
         );
       }

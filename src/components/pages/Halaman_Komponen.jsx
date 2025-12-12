@@ -25,7 +25,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="ekosistemlist">
+    <Layout key ="ekosistemlist" itemmenu="Komponen Statik">
       <Main_User />
     </Layout>
   );

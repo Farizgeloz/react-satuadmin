@@ -12,7 +12,8 @@ import Select from 'react-select';
 
 import { MdAddCircle,MdOutlineArrowCircleLeft,MdOutlineArrowCircleRight,
         MdOutlineMap,MdOutlinePerson4,MdOutlineShortText,MdFileUpload,MdOutlineSave,MdOutlineErrorOutline,
-        MdArrowCircleRight,MdOutlineToday} from "react-icons/md";
+        MdArrowCircleRight,MdOutlineToday,
+        MdErrorOutline} from "react-icons/md";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
@@ -21,8 +22,6 @@ import Swal from 'sweetalert2';
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginadmin = userlogin.id || '';
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -81,12 +80,19 @@ const textFieldStyleMultiline = (theme) => ({
 });
 
 function ModalTambahUser() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [satkerku, setsatkerku] = useState([]);
   const [bidangku, setbidangku] = useState([]);
   const [locationku, setlocationku] = useState([]);
 
   const [title, settitle] = useState("");
   const [contents, setcontents] = useState("");
+  const [logo_a, setlogo_a] = useState("");
+  const [logo_b, setlogo_b] = useState("");
+  const [logo_c, setlogo_c] = useState("");
   const [images_a, setimage_a] = useState("");
   const [title_images_a, settitle_image_a] = useState("");
   const [images_b, setimage_b] = useState("");
@@ -101,166 +107,57 @@ function ModalTambahUser() {
   const [file_images_a, setfile_images_a] = useState("");
   const [file_images_b, setfile_images_b] = useState("");
   const [file_images_c, setfile_images_c] = useState("");
-  const [fileError, setFileError] = useState("");
+  const [fileError_logo_a, setFileError_logo_a] = useState("");
+  const [fileError_logo_b, setFileError_logo_b] = useState("");
+  const [fileError_logo_c, setFileError_logo_c] = useState("");
+  const [fileError_images_a, setFileError_images_a] = useState("");
+  const [fileError_images_b, setFileError_images_b] = useState("");
+  const [fileError_images_c, setFileError_images_c] = useState("");
 
   const [loading, setLoading] = useState(false);
 
   
-  const loadImage_Logo_a = (e) => {
+  const validateImageFile = (e, setFile, setPreview,setError) => {
     const file = e.target.files[0];
 
     if (!file) return;
 
-    // Validasi ekstensi
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    // Validasi tipe file
+    const allowedTypes = ["image/jpeg", "image/png"];
+
     if (!allowedTypes.includes(file.type)) {
-      setFileError("File harus berupa gambar (JPG, PNG, WEBP).");
-      setfile_logo_a(null);
+      Swal.fire({
+        icon: "error",
+        title: "Format Tidak Valid",
+        text: "Hanya file JPG atau PNG yang diperbolehkan!",
+        confirmButtonColor: "#3085d6",
+      });
+      e.target.value = "";
       return;
     }
 
     // Validasi ukuran (maks. 2MB)
     const maxSize = 5 * 1024 * 1024; // 2 MB
     if (file.size > maxSize) {
-      setFileError("Ukuran file maksimal 5MB.");
-      setfile_logo_a(null);
+      setError("Ukuran file maksimal 5MB.");
+      setFile(null);
       return;
+    }else{
+      setError("");
     }
 
-    // Jika valid
-    setFileError("");
-    setfile_logo_a(file);
+    // Atur file dan preview
+    setFile(file);
+    if (setPreview) setPreview(URL.createObjectURL(file));
   };
 
-  const loadImage_Logo_b = (e) => {
-    const file = e.target.files[0];
 
-    if (!file) return;
-
-    // Validasi ekstensi
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      setFileError("File harus berupa gambar (JPG, PNG, WEBP).");
-      setfile_logo_b(null);
-      return;
-    }
-
-    // Validasi ukuran (maks. 2MB)
-    const maxSize = 5 * 1024 * 1024; // 2 MB
-    if (file.size > maxSize) {
-      setFileError("Ukuran file maksimal 5MB.");
-      setfile_logo_b(null);
-      return;
-    }
-
-    // Jika valid
-    setFileError("");
-    setfile_logo_b(file);
-  };
-
-  const loadImage_Logo_c = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    // Validasi ekstensi
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      setFileError("File harus berupa gambar (JPG, PNG, WEBP).");
-      setfile_logo_c(null);
-      return;
-    }
-
-    // Validasi ukuran (maks. 2MB)
-    const maxSize = 5 * 1024 * 1024; // 2 MB
-    if (file.size > maxSize) {
-      setFileError("Ukuran file maksimal 5MB.");
-      setfile_logo_c(null);
-      return;
-    }
-
-    // Jika valid
-    setFileError("");
-    setfile_logo_c(file);
-  };
-
-  const loadImage_Images_a = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    // Validasi ekstensi
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      setFileError("File harus berupa gambar (JPG, PNG, WEBP).");
-      setfile_images_a(null);
-      return;
-    }
-
-    // Validasi ukuran (maks. 2MB)
-    const maxSize = 5 * 1024 * 1024; // 2 MB
-    if (file.size > maxSize) {
-      setFileError("Ukuran file maksimal 5MB.");
-      setfile_images_a(null);
-      return;
-    }
-
-    // Jika valid
-    setFileError("");
-    setfile_images_a(file);
-  };
-
-  const loadImage_Images_b = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    // Validasi ekstensi
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      setFileError("File harus berupa gambar (JPG, PNG, WEBP).");
-      setfile_images_b(null);
-      return;
-    }
-
-    // Validasi ukuran (maks. 2MB)
-    const maxSize = 5 * 1024 * 1024; // 2 MB
-    if (file.size > maxSize) {
-      setFileError("Ukuran file maksimal 5MB.");
-      setfile_images_b(null);
-      return;
-    }
-
-    // Jika valid
-    setFileError("");
-    setfile_images_b(file);
-  };
-
-  const loadImage_Images_c = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    // Validasi ekstensi
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
-      setFileError("File harus berupa gambar (JPG, PNG, WEBP).");
-      setfile_images_c(null);
-      return;
-    }
-
-    // Validasi ukuran (maks. 2MB)
-    const maxSize = 5 * 1024 * 1024; // 2 MB
-    if (file.size > maxSize) {
-      setFileError("Ukuran file maksimal 5MB.");
-      setfile_images_c(null);
-      return;
-    }
-
-    // Jika valid
-    setFileError("");
-    setfile_images_c(file);
-  };
+  const loadImage_Logo_a = (e) => validateImageFile(e, setfile_logo_a, setlogo_a,setFileError_logo_a);
+  const loadImage_Logo_b = (e) => validateImageFile(e, setfile_logo_b, setlogo_b,setFileError_logo_b);
+  const loadImage_Logo_c = (e) => validateImageFile(e, setfile_logo_c, setlogo_c,setFileError_logo_c);
+  const loadImage_Images_a = (e) => validateImageFile(e, setfile_images_a, setimage_a,setFileError_images_a);
+  const loadImage_Images_b = (e) => validateImageFile(e, setfile_images_b, setimage_b,setFileError_images_b);
+  const loadImage_Images_c = (e) => validateImageFile(e, setfile_images_c, setimage_c,setFileError_images_c);
 
   const navigate = useNavigate();
 
@@ -446,7 +343,7 @@ function ModalTambahUser() {
         >
             <form onSubmit={saveSatuportal_list}>
             <Modal.Header closeButton className="border-b ">
-                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Location Maplist</h4>
+                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Satu Portal List</h4>
                 
             </Modal.Header>
             <Modal.Body className="mt-2 bg-silver-light p-0">
@@ -461,80 +358,90 @@ function ModalTambahUser() {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="w-100 mx-auto">
-                        
-                        
-                        <div className="mt-3 flex">
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-600 rad15 w-10 h-8  float-right">
-                              <p className=" text-center text-white py-1">
-                                1
-                              </p>
-                            </div>
-                          </div>
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-gray-500 py-1">
-                                2
-                              </p>
-                            </div>
-                          </div>
-                          
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-gray-500 py-1">
-                                3
-                              </p>
-                            </div>
-                          </div>
-                            
-                        </div>
-                        <div className="-mt-5 w-full h-2 bg-cyan-200">
-                            <div className="h-full bg-cyan-600 rounded-3xl  w-1/3"></div>
-                        </div>
+                        {/* STEP INDICATOR */}
+                        <div className="mt-4 flex items-center justify-between relative">
 
+                          {/* STEP 1 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              1
+                            </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Form Input
+                            </span>
+                          </div>
+
+                          {/* STEP 2 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-200 text-cyan-600 font-semibold">
+                              2
+                            </div>
+                            <span className="mt-1 text-xs text-gray-500 font-semibold">
+                              Konfirmasi
+                            </span>
+                          </div>
+
+                          {/* PROGRESS LINE */}
+                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-1/2" />
+                          </div>
+
+                        </div>
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             
-                            <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0">
-                                  <TextField
-                                    label="Judul"
-                                    className="bg-input rad15 w-full"
-                                    value={title}
-                                    onChange={(e) => settitle(e.target.value)}
-                                    multiline   // <-- ini bikin jadi textarea
-                                    rows={1}    // <-- tinggi awal textarea
-                                    InputProps={{
-                                      endAdornment: (
-                                        <>
-                                          {title && (
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() => settitle("")}
-                                                edge="end"
-                                                size="small"
-                                              >
-                                                <ClearIcon />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          )}
-                                        </>
-                                      ),
-                                    }}
-                                    sx={(theme) => textFieldStyle(theme)}
-                                  />
-                                    {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 5 karakter...</p>}
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Judul Portal List
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={title}
+                                  onChange={(e) => settitle(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                                {validasi_title && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 5 karakter...</p>}
                               </div>
                             </div>
-
-                            <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0">
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Isi Konten
+                                </label>
+  
                                 <TextField
-                                  label="Isi Konten"
                                   className="bg-input rad15 w-full"
                                   value={contents}
-                                  onChange={(e) => setcontents(e.target.value)}
                                   multiline   // <-- ini bikin jadi textarea
                                   rows={5}    // <-- tinggi awal textarea
+                                  onChange={(e) => setcontents(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyleMultiline(theme)}
                                   InputProps={{
                                     endAdornment: (
                                       <>
@@ -552,42 +459,51 @@ function ModalTambahUser() {
                                       </>
                                     ),
                                   }}
-                                  sx={(theme) => textFieldStyleMultiline(theme)}
                                 />
-                                  {validasi_contents && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 5 karakter...</p>}
+  
+                                {validasi_contents && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 5 karakter...</p>}
                               </div>
                             </div>
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Tautan Link
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={linked}
+                                  onChange={(e) => setlinked(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {linked && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setlinked("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                                {validasi_linked && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 5 karakter...</p>}
+                              </div>
+                            </div>
+                          </div>         
                             
-                            <div className="sm:col-span-6 -mt-2">
-                              <div className="mt-0">
-                                  <TextField
-                                    label="Link Url"
-                                    className="bg-input rad15 w-full"
-                                    value={linked}
-                                    onChange={(e) => setlinked(e.target.value)}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <>
-                                          {contents && (
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() => setcontents("")}
-                                                edge="end"
-                                                size="small"
-                                              >
-                                                <ClearIcon />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          )}
-                                        </>
-                                      ),
-                                    }}
-                                    sx={(theme) => textFieldStyle(theme)}
-                                  />
-                                  {validasi_linked && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
-                              </div>
-
-                            </div>
+                            
                             
                             
                         </div>
@@ -614,282 +530,694 @@ function ModalTambahUser() {
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
                         className="md:w-full mx-auto">
-                        <div className="mt-3 flex">
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-white py-1">
-                                1
-                              </p>
+                        {/* STEP INDICATOR */}
+                        <div className="mt-4 flex items-center justify-between relative">
+
+                          {/* STEP 1 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              1
                             </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Form Input
+                            </span>
                           </div>
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-white py-1">
-                                2
-                              </p>
+
+                          {/* STEP 2 */}
+                          <div className="flex flex-col items-center z-10 w-1/2">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                              2
                             </div>
+                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                              Konfirmasi
+                            </span>
                           </div>
-                          
-                          <div className="col-span-2 -mt-2 py-1 justify-end w-2/3">
-                            <div className=" bg-cyan-200 rad15 w-8 h-8  float-right">
-                              <p className=" text-center text-gray-500 py-1">
-                                3
-                              </p>
-                            </div>
+
+                          {/* PROGRESS LINE */}
+                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-full" />
                           </div>
-                            
-                        </div>
-                        <div className="-mt-5 w-full h-2 bg-cyan-200">
-                            <div className="h-full bg-cyan-600 rounded-3xl w-2/3"></div>
+
                         </div>
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                          <div className="sm:col-span-6 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                type="file"
-                                label="Unggah Logo 1"
-                                className="bg-input rad15 w-100"
-                                inputProps={{
-                                  accept: "image/*", // hanya file gambar
-                                }}
-                                alt=""
-                                InputLabelProps={{
-                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
-                                }}
-                                onChange={loadImage_Logo_a}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                              <span className="file-label">Pilih File .jpg dan .png</span>
-                              {validasi_logo_a && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                              {fileError && (
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Logo 1
+                                </label>
+  
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: false,
+                                  }}
+                                  onChange={loadImage_Logo_a}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_logo_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_logo_a("")}
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                {fileError_logo_a && (
                                 <p className="text-red-600 mt-2 d-flex">
                                   <MdOutlineErrorOutline className="mt-1 me-2" />
-                                  {fileError}
+                                  {fileError_logo_a}
                                 </p>
                               )}
+  
+                                
+  
+                              </div>
+  
                             </div>
                           </div>
-                          <div className="sm:col-span-6 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                type="file"
-                                label="Unggah Logo 2"
-                                className="bg-input rad15 w-100"
-                                inputProps={{
-                                  accept: "image/*", // hanya file gambar
+                          {/* AREA PREVIEW GAMBAR */}
+                          {logo_a && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+  
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
                                 }}
-                                alt=""
-                                InputLabelProps={{
-                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
-                                }}
-                                onChange={loadImage_Logo_b}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                              <span className="file-label">Pilih File .jpg dan .png</span>
-                              {validasi_logo_b && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                              {fileError && (
+                              >
+                                <img
+                                  src={logo_a}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+  
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Logo 2
+                                </label>
+  
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: false,
+                                  }}
+                                  onChange={loadImage_Logo_b}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_logo_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_logo_b("")}
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                {fileError_logo_b && (
                                 <p className="text-red-600 mt-2 d-flex">
                                   <MdOutlineErrorOutline className="mt-1 me-2" />
-                                  {fileError}
+                                  {fileError_logo_b}
                                 </p>
                               )}
+  
+                                
+  
+                              </div>
+  
                             </div>
                           </div>
-                          <div className="sm:col-span-6 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                type="file"
-                                label="Unggah Logo 3"
-                                className="bg-input rad15 w-100"
-                                inputProps={{
-                                  accept: "image/*", // hanya file gambar
+                          {/* AREA PREVIEW GAMBAR */}
+                          {logo_b && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+  
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
                                 }}
-                                alt=""
-                                InputLabelProps={{
-                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
-                                }}
-                                onChange={loadImage_Logo_c}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                              <span className="file-label">Pilih File .jpg dan .png</span>
-                              {validasi_logo_c && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                              {fileError && (
+                              >
+                                <img
+                                  src={logo_b}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+  
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Logo 3
+                                </label>
+  
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: false,
+                                  }}
+                                  onChange={loadImage_Logo_c}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_logo_c && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_logo_c("")}
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                {fileError_logo_c && (
                                 <p className="text-red-600 mt-2 d-flex">
                                   <MdOutlineErrorOutline className="mt-1 me-2" />
-                                  {fileError}
+                                  {fileError_logo_c}
                                 </p>
                               )}
+  
+                                
+  
+                              </div>
+  
                             </div>
                           </div>
-                          <div className="sm:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                label="Sub List Konten"
-                                className="bg-input rad15 w-full"
-                                value={title_images_a}
-                                onChange={(e) => settitle_image_a(e.target.value)}
-                                InputProps={{
-                                  endAdornment: (
-                                    <>
-                                      {title_images_a && (
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            onClick={() => settitle_image_a("")}
-                                            edge="end"
-                                            size="small"
-                                          >
-                                            <ClearIcon />
-                                          </IconButton>
-                                        </InputAdornment>
-                                      )}
-                                    </>
-                                  ),
+                          {/* AREA PREVIEW GAMBAR */}
+                          {logo_c && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+  
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
                                 }}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />   
-                              
-                                {validasi_title_images_a && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
+                              >
+                                <img
+                                  src={logo_c}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
                             </div>
+                          )}
+                          
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Sub List Konten 1
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={title_images_a}
+                                  onChange={(e) => settitle_image_a(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title_images_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                                {validasi_title_images_a && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Gambar Konten 1
+                                </label>
+  
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: false,
+                                  }}
+                                  onChange={loadImage_Images_a}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_images_a && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_images_a("")}
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                {fileError_images_a && (
+                                <p className="text-red-600 mt-2 d-flex">
+                                  <MdOutlineErrorOutline className="mt-1 me-2" />
+                                  {fileError_images_a}
+                                </p>
+                              )}
+  
+                                
+  
+                              </div>
+  
+                            </div>
+                          </div>
+                          {/* AREA PREVIEW GAMBAR */}
+                          {images_a && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+  
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <img
+                                  src={images_a}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
 
-                          </div>
-                          <div className="sm:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                type="file"
-                                label="Unggah Gambar Konten"
-                                className="bg-input rad15 w-100"
-                                inputProps={{
-                                  accept: "image/*", // hanya file gambar
-                                }}
-                                alt=""
-                                InputLabelProps={{
-                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
-                                }}
-                                onChange={loadImage_Images_a}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                                <span className="file-label">Pilih File .jpg dan .png</span>
-                                {validasi_image_a && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                                {fileError && (
-                                  <p className="text-red-600 mt-2 d-flex">
-                                    <MdOutlineErrorOutline className="mt-1 me-2" />
-                                    {fileError}
-                                  </p>
-                                )}
-                            </div>
-                          </div>
-                          <div className="sm:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                label="Sub List Konten"
-                                className="bg-input rad15 w-full"
-                                value={title_images_b}
-                                onChange={(e) => settitle_image_b(e.target.value)}
-                                InputProps={{
-                                  endAdornment: (
-                                    <>
-                                      {title_images_b && (
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            onClick={() => settitle_image_b("")}
-                                            edge="end"
-                                            size="small"
-                                          >
-                                            <ClearIcon />
-                                          </IconButton>
-                                        </InputAdornment>
-                                      )}
-                                    </>
-                                  ),
-                                }}
-                                sx={(theme) => textFieldStyle(theme)}
-                              /> 
-                                {validasi_title_images_b && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
-                            </div>
 
-                          </div>
-                          <div className="sm:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                type="file"
-                                label="Unggah Gambar Konten"
-                                className="bg-input rad15 w-100"
-                                inputProps={{
-                                  accept: "image/*", // hanya file gambar
-                                }}
-                                alt=""
-                                InputLabelProps={{
-                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
-                                }}
-                                onChange={loadImage_Images_b}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                                <span className="file-label">Pilih File .jpg dan .png</span>
-                                {validasi_image_b && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                                {fileError && (
-                                  <p className="text-red-600 mt-2 d-flex">
-                                    <MdOutlineErrorOutline className="mt-1 me-2" />
-                                    {fileError}
-                                  </p>
-                                )}
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Sub List Konten 2
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={title_images_b}
+                                  onChange={(e) => settitle_image_b(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title_images_b && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle_image_b("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                                {validasi_title_images_b && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
+                              </div>
                             </div>
                           </div>
-                          <div className="sm:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                label="Sub List Konten"
-                                className="bg-input rad15 w-full"
-                                value={title_images_c}
-                                onChange={(e) => settitle_image_c(e.target.value)}
-                                InputProps={{
-                                  endAdornment: (
-                                    <>
-                                      {title_images_c && (
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            onClick={() => settitle_image_c("")}
-                                            edge="end"
-                                            size="small"
-                                          >
-                                            <ClearIcon />
-                                          </IconButton>
-                                        </InputAdornment>
-                                      )}
-                                    </>
-                                  ),
-                                }}
-                                sx={(theme) => textFieldStyle(theme)}
-                              /> 
-                                {validasi_title_images_c && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Minimal 1 Karakter...</p>}
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Gambar Konten 2
+                                </label>
+  
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: false,
+                                  }}
+                                  onChange={loadImage_Images_b}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_images_b && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_images_b("")}
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                {fileError_images_b && (
+                                <p className="text-red-600 mt-2 d-flex">
+                                  <MdOutlineErrorOutline className="mt-1 me-2" />
+                                  {fileError_images_b}
+                                </p>
+                              )}
+  
+                                
+  
+                              </div>
+  
                             </div>
+                          </div>
+                          {/* AREA PREVIEW GAMBAR */}
+                          {images_b && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+  
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <img
+                                  src={images_b}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
 
-                          </div>
-                          <div className="sm:col-span-3 -mt-2">
-                            <div className="mt-0">
-                              <TextField
-                                type="file"
-                                label="Unggah Gambar Konten"
-                                className="bg-input rad15 w-100"
-                                inputProps={{
-                                  accept: "image/*", // hanya file gambar
-                                }}
-                                alt=""
-                                InputLabelProps={{
-                                  shrink: true, // biar label tetap tampil di atas saat file dipilih
-                                }}
-                                onChange={loadImage_Images_c}
-                                sx={(theme) => textFieldStyle(theme)}
-                              />
-                                <span className="file-label">Pilih File .jpg dan .png</span>
-                                {validasi_image_c && <p className="transisi mb-0 text-red-700 d-flex"><MdOutlineErrorOutline className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                                {fileError && (
-                                  <p className="text-red-600 mt-2 d-flex">
-                                    <MdOutlineErrorOutline className="mt-1 me-2" />
-                                    {fileError}
-                                  </p>
-                                )}
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Sub List Konten 3
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={title_images_c}
+                                  onChange={(e) => settitle_image_c(e.target.value)}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {title_images_c && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => settitle_image_c("")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                                {validasi_title_images_c && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
+                              </div>
                             </div>
                           </div>
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Gambar Konten 3
+                                </label>
+  
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: false,
+                                  }}
+                                  onChange={loadImage_Images_c}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {file_images_c && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => setfile_images_c("")}
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                {fileError_images_c && (
+                                <p className="text-red-600 mt-2 d-flex">
+                                  <MdOutlineErrorOutline className="mt-1 me-2" />
+                                  {fileError_images_c}
+                                </p>
+                              )}
+  
+                                
+  
+                              </div>
+  
+                            </div>
+                          </div>
+                          {/* AREA PREVIEW GAMBAR */}
+                          {images_c && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+  
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <img
+                                  src={images_c}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
                             
                         </div>
                         <div className="flex justify-center mt-12">

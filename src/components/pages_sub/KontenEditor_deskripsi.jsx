@@ -3,13 +3,10 @@ import "react-quill/dist/quill.snow.css";
 import ClearIcon from "@mui/icons-material/Clear";
 import { IconButton, InputAdornment, Box, Typography } from "@mui/material";
 
-const KontenEditor = ({ content_b, setcontent_b }) => {
+const KontenEditor = ({ deskripsi, setdeskripsi }) => {
   return (
     <Box className="w-full">
-      <label className="font_weight600 textsize12 mb-2 d-block ml-5">
-        Masukkan Konten
-      </label>
-
+      
       <Box
         className="bg-blue rad15"
         sx={{
@@ -18,7 +15,7 @@ const KontenEditor = ({ content_b, setcontent_b }) => {
           "&:hover": { borderColor: "#999" },
           "& .ql-container": {
             borderRadius: "0 0 15px 15px",
-            minHeight: "150px",
+            minHeight: "250px",
           },
           "& .ql-toolbar": {
             borderRadius: "15px 15px 0 0",
@@ -27,8 +24,8 @@ const KontenEditor = ({ content_b, setcontent_b }) => {
       >
         <ReactQuill
           theme="snow"
-          value={content_b}
-          onChange={setcontent_b}
+          value={deskripsi}
+          onChange={setdeskripsi}
           placeholder="Tulis konten di sini..."
           modules={{
             toolbar: [
@@ -42,12 +39,12 @@ const KontenEditor = ({ content_b, setcontent_b }) => {
         />
 
         {/* Tombol Clear */}
-        {content_b && (
+        {deskripsi && (
           <InputAdornment
             position="end"
             sx={{ position: "absolute", top: 8, right: 8 }}
           >
-            <IconButton onClick={() => setcontent_b("")} size="small">
+            <IconButton onClick={() => setdeskripsi("")} size="small">
               <ClearIcon fontSize="small" />
             </IconButton>
           </InputAdornment>

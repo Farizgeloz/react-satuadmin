@@ -80,6 +80,7 @@ body,html {
 }
 .text-black{
   color: var(--black);
+
 }
 .text-silver{
   color: var(--silver);
@@ -102,6 +103,8 @@ body,html {
 
 .text-sage-a,.text-blue-a,.text-green-a,.text-red-a,.text-purple-a,.text-black-a,.text-silver-a{
 color: var(--black);
+
+  text-decoration:none;
 }
 
 .text-sage-a:hover{

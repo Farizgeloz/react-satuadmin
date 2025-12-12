@@ -6,9 +6,9 @@ import { IconButton, InputAdornment, Box, Typography } from "@mui/material";
 const KontenEditor = ({ content_c, setcontent_c }) => {
   return (
     <Box className="w-full">
-      <Typography variant="subtitle1" sx={{ mb: 1 }} className="">
+      <label className="font_weight600 textsize12 mb-2 d-block ml-5">
         Masukkan Konten
-      </Typography>
+      </label>
 
       <Box
         className="bg-blue rad15"

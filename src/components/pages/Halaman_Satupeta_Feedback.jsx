@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="Feedback">
+    <Layout key ="Feedback" itemmenu="Satupeta Feedback">
       <Main />
     </Layout>
   );

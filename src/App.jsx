@@ -103,7 +103,7 @@ function App() {
             path="/Dashboard"
             element={
               <ProtectedRoute>
-                <RequireRole allowedRoles={['Operator','Operator Opd','CS','Admin', 'Super Admin']}>
+                <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator Opd','Admin', 'Super Admin']}>
                   <Dashboard />
                 </RequireRole>
               </ProtectedRoute>
@@ -218,7 +218,7 @@ function App() {
           />
           <Route path="/Opendata/Dataset/Permohonan" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['CS','Admin','Super Admin']}>
+              <RequireRole allowedRoles={['Operator','Admin','Super Admin']}>
                 <Opendata_Dataset_Permohonan />
               </RequireRole>
             </ProtectedRoute>
@@ -227,7 +227,7 @@ function App() {
          
           <Route path="/Opendata/Dataset/Permohonan/Update/:id" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['CS','Admin','Super Admin']}>
+              <RequireRole allowedRoles={['Operator','Admin','Super Admin']}>
                 <Opendata_Dataset_Permohonan_Update />
               </RequireRole>
             </ProtectedRoute>
@@ -316,7 +316,7 @@ function App() {
 
           <Route path="/Satupeta/Lokasi-Peta" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['Operator','Admin','Super Admin']}>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator Opd','Admin','Super Admin']}>
                 <Satupeta_Locations />
               </RequireRole>
             </ProtectedRoute>
@@ -325,7 +325,7 @@ function App() {
           
           <Route path="/Satupeta/Lokasi-Peta/Update/:id" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['Operator','Admin','Super Admin']}>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator Opd','Admin','Super Admin']}>
                 <Satupeta_Locations_Update />
               </RequireRole>
             </ProtectedRoute>
@@ -333,7 +333,7 @@ function App() {
           />  
           <Route path="/Satupeta/Koleksi-Peta" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator','Admin','Super Admin']}>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator Opd','Admin','Super Admin']}>
                 <Satupeta_Location_Maplist />
               </RequireRole>
             </ProtectedRoute>
@@ -341,7 +341,7 @@ function App() {
           />
           <Route path="/Satupeta/Koleksi-Peta/Update/:id" element={
             <ProtectedRoute>
-              <RequireRole allowedRoles={['Operator','Operator Opd','Admin','Super Admin']}>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator Opd','Admin','Super Admin']}>
                 <Satupeta_Location_Maplist_Update />
               </RequireRole>
             </ProtectedRoute>

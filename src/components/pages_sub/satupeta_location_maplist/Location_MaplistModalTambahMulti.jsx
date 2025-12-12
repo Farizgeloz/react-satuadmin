@@ -19,9 +19,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
-const userlogin = JSON.parse(localStorage.getItem('user') || '{}');
-const userloginsatker = userlogin.satker_id || '';
-const userloginadmin = userlogin.id || '';
+
 
 const textFieldStyle = (theme) => ({
   "& .MuiOutlinedInput-root": {
@@ -80,6 +78,10 @@ const textFieldStyleMultiline = (theme) => ({
 });
 
 function ModalTambahMulti() {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [sektorku, setsektorku] = useState([""]);
   const [satkerku, setsatkerku] = useState([""]);
   const [locationku, setlocationku] = useState([""]);
@@ -113,11 +115,40 @@ function ModalTambahMulti() {
     const file = e.target.files[0];
     if (!file) return;
 
+    // ✅ Validasi tipe file
+    const allowedTypes = ["image/jpg","image/jpeg", "image/png"];
+
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Format Tidak Valid",
+        text: "Hanya file gambar JPG, JPEG, atau PNG yang diperbolehkan.",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    // ✅ Validasi ukuran file (5 MB)
+    const maxSize = 5 * 1024 * 1024; // 5 MB
+
+    if (file.size > maxSize) {
+      Swal.fire({
+        icon: "error",
+        title: "Ukuran Terlalu Besar",
+        text: "Ukuran gambar maksimal 5 MB.",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    // ✅ Set file & preview jika lolos validasi
     const newLocations = [...locations];
     newLocations[index].file = file;
     newLocations[index].images = URL.createObjectURL(file);
+
     setLocations(newLocations);
   };
+
 
   const clearImage = (index) => {
     const newLocations = [...locations];
@@ -139,7 +170,10 @@ function ModalTambahMulti() {
       periode: loc.periode?.value ?? "",
       tahun_rilis: loc.tahun_rilis?.toString() ?? "",
       pengukuran: loc.pengukuran?.trim() ?? "",
-      visibilitas: loc.visibilitas?.value ?? "",
+      visibilitas:
+      rolelogin === "Super Admin" || rolelogin === "Admin"
+        ? loc.visibilitas?.value ?? "Privat"
+        : "Privat",
       deskripsi: loc.deskripsi?.trim() ?? "",
       admin: userloginadmin?.toString() ?? "",
     }));
@@ -316,9 +350,12 @@ function ModalTambahMulti() {
         rowErrors.tahun_rilis = "Tahun rilis harus 4 digit";
       }
 
-      if (!loc.visibilitas) {
-        rowErrors.visibilitas = "Visibilitas wajib dipilih";
+      if(rolelogin === "Super Admin" || rolelogin === "Admin"){
+        if (!loc.visibilitas) {
+          rowErrors.visibilitas = "Visibilitas wajib dipilih";
+        }
       }
+      
 
       // ✅ Validasi file upload
       if (!loc.file) {
@@ -357,7 +394,7 @@ function ModalTambahMulti() {
           </button>
         </Link>
       
-        <Modal dialogClassName="my-modal6"
+        <Modal dialogClassName="my-modal5"
             show={show}
             onHide={handleClose}
             backdrop="static"
@@ -368,7 +405,7 @@ function ModalTambahMulti() {
                 <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Lokasi Maplist</h4>
                 
             </Modal.Header>
-            <Modal.Body className="mt-2 bg-silver-light p-0">
+            <Modal.Body className="mt-2 bg-silver-light px-5 py-2">
 
               <div className="relative px-2">
                 {step === 1 && (
@@ -380,452 +417,642 @@ function ModalTambahMulti() {
                     transition={{ duration: 0.3 }}
                     className="w-100 mx-auto"
                   >
+                    {/* STEP INDICATOR */}
+                    <div className="mt-4 flex items-center justify-between relative">
 
+                      {/* STEP 1 */}
+                      <div className="flex flex-col items-center z-10 w-1/2">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                          1
+                        </div>
+                        <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                          Form Input
+                        </span>
+                      </div>
+
+                      {/* STEP 2 */}
+                      <div className="flex flex-col items-center z-10 w-1/2">
+                        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-200 text-cyan-600 font-semibold">
+                          2
+                        </div>
+                        <span className="mt-1 text-xs text-gray-500 font-semibold">
+                          Konfirmasi
+                        </span>
+                      </div>
+
+                      {/* PROGRESS LINE */}
+                      <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                        <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-1/2" />
+                      </div>
+
+                    </div>  
                     {locations.map((loc, index) => (
                         
-                        <div key={index} className="mt-4">
-                            <div className="grid grid-cols-1 gap-x-2 gap-y-8 sm:grid-cols-6">
-                                <div className="sm:col-span-2 -mt-4">
-                                    
-                                  <div className="mt-0 transisiku">
-                                      <Autocomplete
-                                        className="tsize-110"
-                                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                        id="combo-box-location"
-                                        options={[
-                                          { label: "Peta Interaktif", value: "Peta Interaktif" },
-                                          { label: "Peta Layout", value: "Peta Layout" }
-                                        ]}
-                                        getOptionLabel={(option) => option.label || ""}
-                                        value={loc.koleksi_data || null}
-                                        onChange={(event, newValue) => handleChange(index, "koleksi_data",newValue)}
-                                        clearOnEscape
-                                        renderInput={(params) => (
-                                          <TextField
-                                            {...params}
-                                            label="Jenis Koleksi Data"
-                                            variant="outlined"
-                                            sx={(theme) => textFieldStyle(theme)}
-                                            error={!!errors[index]?.koleksi_data}
-                                            helperText={errors[index]?.koleksi_data}
-                                          />
-                                        )}
-                                        sx={{
-                                          width: "100%",
-                                          "& .MuiAutocomplete-popupIndicator": {
-                                            color: "#1976d2",
-                                            transition: "transform 0.3s",
-                                          },
-                                          "& .MuiAutocomplete-popupIndicatorOpen": {
-                                            transform: "rotate(180deg)",
-                                          },
-                                        }}
-                                      />   
-                                      
-                                  </div>
-                                </div>
-                                <div className="sm:col-span-2 -mt-4">
-                                    
-                                    <div className="mt-0">
-                                        <Autocomplete
-                                          className="tsize-110"
-                                          isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                          id="combo-box-location"
-                                          options={[
-                                            { label: "Layout", value: "Layout" },
-                                            { label: "Geomap", value: "Geomap" },
-                                            { label: "Marker", value: "Marker" },
-                                          ]}
-                                          getOptionLabel={(option) => option.label || ""}
-                                          value={loc.tipe || null}
-                                          onChange={(event, newValue) => handleChange(index, "tipe",newValue)}
-                                          clearOnEscape
-                                          renderInput={(params) => (
-                                            <TextField
-                                              {...params}
-                                              label="Tipe Map"
-                                              variant="outlined"
-                                              sx={(theme) => textFieldStyle(theme)}
-                                              error={!!errors[index]?.tipe}
-                                              helperText={errors[index]?.tipe}
-                                            />
-                                          )}
-                                          sx={{
-                                            width: "100%",
-                                            "& .MuiAutocomplete-popupIndicator": {
-                                              color: "#1976d2",
-                                              transition: "transform 0.3s",
-                                            },
-                                            "& .MuiAutocomplete-popupIndicatorOpen": {
-                                              transform: "rotate(180deg)",
-                                            },
-                                          }}
-                                        />
-                                        
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-2 -mt-4">
-                                    <div className="mt-0">
-                                      <Autocomplete
-                                        className='tsize-110'
-                                        disabled={loc.tipe && (loc.tipe?.value === "Geomap" || loc.tipe?.value === "Layout")}
-                                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                        id="combo-box-location"
-                                        options={locationku.map((row) => ({
-                                          label: row.nama_location,
-                                          value: row.id_location
-                                        }))}
-                                        getOptionLabel={(option) => option.label || ""}
-                                        value={loc.location_id || null}
-                                        onChange={(event, newValue) => handleChange(index, "location_id",newValue)}
-                                        clearOnEscape
-                                        renderInput={(params) => (
-                                          <TextField
-                                          {...params}
-                                          label="Lokasi Infrastruktur"
-                                          variant="outlined"
-                                          sx={(theme) => textFieldStyle(theme)}
-                                          error={!!errors[index]?.location_id}
-                                          helperText={errors[index]?.location_id}
-                                          />
-                                        )}
-                                        sx={{
-                                            width: "100%",
-                                            "& .MuiAutocomplete-popupIndicator": { color: "#1976d2", transition: "transform 0.3s" },
-                                            "& .MuiAutocomplete-popupIndicatorOpen": { transform: "rotate(180deg)" }
-                                        }}
-                                      />
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3 -mt-4">
-                                    <div className="mt-0">
-                                      <TextField
-                                        label="Judul Maplist"
-                                        className="bg-input rad15 w-full"
-                                        value={loc.title}
-                                        onChange={(e) => handleChange(index, "title", e.target.value)}
-                                        error={!!errors[index]?.title}
-                                        helperText={errors[index]?.title}
-                                        InputProps={{
-                                          endAdornment: (
-                                            <>
-                                              {loc.title && (
-                                                <InputAdornment position="end">
-                                                  <IconButton
-                                                    onClick={() => handleChange(index, "title","")}
-                                                    edge="end"
-                                                    size="small"
-                                                  >
-                                                    <ClearIcon />
-                                                  </IconButton>
-                                                </InputAdornment>
-                                              )}
-                                            </>
-                                          ),
-                                        }}
-                                        sx={(theme) => textFieldStyle(theme)}
-                                      /> 
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-3 -mt-4">
-                                    <div className="mt-0">
-                                      <Autocomplete
-                                        className='tsize-110'
-                                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                        id="combo-box-satker"
-                                        options={satkerku.map((row) => ({
-                                          label: row.nama_opd,
-                                          value: row.id_opd
-                                        }))}
-                                        getOptionLabel={(option) => option.label || ""}
-                                        value={loc.satker_id || null}
-                                        onChange={(event, newValue) => handleChange(index, "satker_id",newValue)}
-                                        clearOnEscape
-                                        renderInput={(params) => (
-                                          <TextField
-                                          {...params}
-                                          label="Satker"
-                                          variant="outlined"
-                                          sx={(theme) => textFieldStyle(theme)}
-                                          error={!!errors[index]?.satker_id}
-                                          helperText={errors[index]?.satker_id}
-                                          />
-                                        )}
-                                        sx={{
-                                            width: "100%",
-                                            "& .MuiAutocomplete-popupIndicator": { color: "#1976d2", transition: "transform 0.3s" },
-                                            "& .MuiAutocomplete-popupIndicatorOpen": { transform: "rotate(180deg)" }
-                                        }}
-                                      /> 
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-2 -mt-4">
-                                    <div className="mt-0">
-                                      <Autocomplete
-                                        className='tsize-110'
-                                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                        id="combo-box-sektor"
-                                        options={sektorku.map((row) => ({
-                                          label: row.nama_sektor,
-                                          value: row.id_sektor
-                                        }))}
-                                        getOptionLabel={(option) => option.label || ""}
-                                        value={loc.sektor_id || null}
-                                        onChange={(event, newValue) => handleChange(index, "sektor_id",newValue)}
-                                        clearOnEscape
-                                        renderInput={(params) => (
-                                          <TextField
-                                            {...params}
-                                            label="Sektor"
-                                            variant="outlined"
-                                            sx={(theme) => textFieldStyle(theme)}
-                                            error={!!errors[index]?.sektor_id}
-                                            helperText={errors[index]?.sektor_id}
-                                          />
-                                        )}
-                                        sx={{
-                                          width: "100%",
-                                          "& .MuiAutocomplete-popupIndicator": {
-                                            color: "#1976d2",
-                                            transition: "transform 0.3s",
-                                          },
-                                          "& .MuiAutocomplete-popupIndicatorOpen": {
-                                            transform: "rotate(180deg)",
-                                          },
-                                        }}
-                                      />
-                                        
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-2 -mt-4">               
-                                  <div className="mt-0 transisiku">
-                                    <Autocomplete
-                                      className="tsize-110"
-                                      isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                      id="combo-box-periode"
-                                      options={[
-                                        { label: "Harian", value: "Harian" },
-                                        { label: "Mingguan", value: "Mingguan" },
-                                        { label: "Bulanan", value: "Bulanan" },
-                                        { label: "Tahunan", value: "Tahunan" }
-                                      ]}
-                                      getOptionLabel={(option) => option.label || ""}
-                                      value={loc.periode || null}
-                                      onChange={(event, newValue) => handleChange(index, "periode",newValue)}
-                                      clearOnEscape
-                                      renderInput={(params) => (
-                                        <TextField
-                                          {...params}
-                                          label="Periode"
-                                          variant="outlined"
-                                          sx={(theme) => textFieldStyle(theme)}
-                                          error={!!errors[index]?.periode}
-                                          helperText={errors[index]?.periode}
-                                        />
-                                      )}
-                                      sx={{
-                                        width: "100%",
-                                        "& .MuiAutocomplete-popupIndicator": {
-                                          color: "#1976d2",
-                                          transition: "transform 0.3s",
-                                        },
-                                        "& .MuiAutocomplete-popupIndicatorOpen": {
-                                          transform: "rotate(180deg)",
-                                        },
-                                      }}
-                                    />
-                                      
-                                  </div>
-                                </div>
-                                
-                                <div className="sm:col-span-2 -mt-4">
-                                  <div className="mt-0 transisiku">
-                                    <TextField
-                                      label="Tahun Rilis"
-                                      className="bg-input rad15 w-full"
-                                      type="number"
-                                      value={loc.tahun_rilis}
-                                      onChange={(e) => handleChange(index, "tahun_rilis", e.target.value)}
-                                      error={!!errors[index]?.tahun_rilis}
-                                      helperText={errors[index]?.tahun_rilis}
-                                      inputProps={{ maxLength: 4 }} // biar cuma 4 digit
-                                      InputProps={{
-                                        endAdornment: (
-                                          <>
-                                            {loc.pengukuran && (
-                                              <InputAdornment position="end">
-                                                <IconButton
-                                                  onClick={() => handleChange(index, "tahun_rilis","")}
-                                                  edge="end"
-                                                  size="small"
-                                                >
-                                                  <ClearIcon />
-                                                </IconButton>
-                                              </InputAdornment>
-                                            )}
-                                          </>
-                                        ),
-                                      }}
-                                      sx={(theme) => textFieldStyle(theme)}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="sm:col-span-3 -mt-4">
-                                  <div className="mt-0">
-                                      <TextField
-                                        label="Pengukuran Skala"
-                                        className="bg-input rad15 w-full"
-                                        value={loc.pengukuran}
-                                        onChange={(e) => handleChange(index, "pengukuran", e.target.value)}
-                                        error={!!errors[index]?.pengukuran}
-                                        helperText={errors[index]?.pengukuran}
-                                        multiline   // <-- ini bikin jadi textarea
-                                        rows={1}    // <-- tinggi awal textarea
-                                        InputProps={{
-                                          endAdornment: (
-                                            <>
-                                              {loc.pengukuran && (
-                                                <InputAdornment position="end">
-                                                  <IconButton
-                                                    onClick={() => handleChange(index, "pengukuran","")}
-                                                    edge="end"
-                                                    size="small"
-                                                  >
-                                                    <ClearIcon />
-                                                  </IconButton>
-                                                </InputAdornment>
-                                              )}
-                                            </>
-                                          ),
-                                        }}
-                                        sx={(theme) => textFieldStyleMultiline(theme)}
-                                      />
-                                  </div>
-                                </div>
-                                <div className="sm:col-span-3 -mt-4">
-                                    <div className="mt-0">
-                                        <Autocomplete
-                                          className="tsize-110"
-                                          isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                          id="combo-box-location"
-                                          options={[
-                                            { label: "Privat", value: "Privat" },
-                                            { label: "Publik", value: "Publik" },
-                                          ]}
-                                          getOptionLabel={(option) => option.label || ""}
-                                          value={loc.visibilitas || null}
-                                          onChange={(event, newValue) => handleChange(index, "visibilitas",newValue)}
-                                          clearOnEscape
-                                          renderInput={(params) => (
-                                            <TextField
-                                              {...params}
-                                              label="Visibilitas"
-                                              variant="outlined"
-                                              sx={(theme) => textFieldStyle(theme)}
-                                              error={!!errors[index]?.visibilitas}
-                                              helperText={errors[index]?.visibilitas}
-                                            />
-                                          )}
-                                          sx={{
-                                            width: "100%",
-                                            "& .MuiAutocomplete-popupIndicator": {
-                                              color: "#1976d2",
-                                              transition: "transform 0.3s",
-                                            },
-                                            "& .MuiAutocomplete-popupIndicatorOpen": {
-                                              transform: "rotate(180deg)",
-                                            },
-                                          }}
-                                        />
-                                        
-                                    </div>
-                                </div>
-                                <div className="sm:col-span-6 -mt-2">
-                                  <div className="mt-0">
-                                      <TextField
-                                        label="Deskripsi"
-                                        className="bg-input rad15 w-full"
-                                        value={loc.deskripsi}
-                                        onChange={(e) => handleChange(index, "deskripsi", e.target.value)}
-                                        error={!!errors[index]?.deskripsi}
-                                        helperText={errors[index]?.deskripsi}
-                                        multiline   // <-- ini bikin jadi textarea
-                                        rows={7}    // <-- tinggi awal textarea
-                                        InputProps={{
-                                          endAdornment: (
-                                            <>
-                                              {loc.deskripsi && (
-                                                <InputAdornment position="end">
-                                                  <IconButton
-                                                    onClick={() => handleChange(index, "deskripsi","")}
-                                                    edge="end"
-                                                    size="small"
-                                                  >
-                                                    <ClearIcon />
-                                                  </IconButton>
-                                                </InputAdornment>
-                                              )}
-                                            </>
-                                          ),
-                                        }}
-                                        sx={(theme) => textFieldStyleMultiline(theme)}
-                                      />
-                                  </div>
-                                </div>
-                                <div className="sm:col-span-6 -mt-2">                     
-                                  <div className="mt-0 transisiku grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <TextField
-                                      type="file"
-                                      label="Upload File"
-                                      className="bg-input rad15 sm:col-span-4"
-                                      InputLabelProps={{
-                                        shrink: true,
-                                      }}
-                                      onChange={(e) => handleImageChange(index, e)}  // ⬅️ per index
-                                      error={!!errors[index]?.file}
-                                      helperText={errors[index]?.file}
-                                      InputProps={{
-                                        endAdornment: (
-                                          <>
-                                            {loc.file && (
-                                              <InputAdornment position="end">
-                                                <IconButton
-                                                  onClick={() => clearImage(index)}   // ⬅️ reset file + preview
-                                                  edge="end"
-                                                  size="small"
-                                                >
-                                                  <ClearIcon />
-                                                </IconButton>
-                                              </InputAdornment>
-                                            )}
-                                          </>
-                                        ),
-                                      }}
-                                      sx={(theme) => textFieldStyle(theme)}
-                                    />
-
-                                    {loc.images && (
-                                      <img
-                                        src={loc.images}
-                                        alt="preview"
-                                        style={{ maxWidth: "100%", objectFit: "contain" }}  // ⬅️ camelCase
-                                        className="rounded border p-1 sm:col-span-2"
-                                      />
-                                    )}
-    
-                                  </div>
-                                </div>
-                            </div>
-                            {locations.length > 1 && (
-                                <button 
-                                    type="button"
-                                    className="mt-1 bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-3 rounded-xl flex items-center"
-                                    onClick={() => removeLocationField(index)}
-                                >
-                                        <IoTrash   /> Hapus Baris
-                                </button>
-                            )}
+                      <div key={index} className="mt-4">
+                        <div className="mt-3 mb-3" style={{backgroundColor:"#8989893b",height:"3px"}}>
+                  
                         </div>
+                        <div className="grid grid-cols-1 gap-x-2 gap-y-8 sm:grid-cols-6">
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Jenis Koleksi Peta
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-location"
+                                  options={[
+                                    { label: "Peta Interaktif", value: "Peta Interaktif" },
+                                    { label: "Peta Layout", value: "Peta Layout" }
+                                  ]}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={loc.koleksi_data || null}
+                                  onChange={(event, newValue) => handleChange(index, "koleksi_data",newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.koleksi_data}
+                                      helperText={errors[index]?.koleksi_data}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Tipe Map
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-location"
+                                  options={[
+                                    { label: "Layout", value: "Layout" },
+                                    { label: "Geomap", value: "Geomap" },
+                                    { label: "Marker", value: "Marker" },
+                                  ]}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={loc.tipe || null}
+                                  onChange={(event, newValue) => handleChange(index, "tipe",newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.tipe}
+                                      helperText={errors[index]?.tipe}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Lokasi Peta
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  disabled={loc.tipe && (loc.tipe?.value === "Geomap" || loc.tipe?.value === "Layout")}
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-location"
+                                  options={locationku.map((row) => ({
+                                    label: row.nama_location,
+                                    value: row.id_location
+                                  }))}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={loc.location_id || null}
+                                  onChange={(event, newValue) => handleChange(index, "location_id",newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.location_id}
+                                      helperText={errors[index]?.location_id}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Judul Koleksi
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={loc.title}
+                                  onChange={(e) => handleChange(index, "title", e.target.value)}
+                                  error={!!errors[index]?.title}
+                                  helperText={errors[index]?.title}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {loc.title && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => handleChange(index, "title","")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                              </div>
+                            </div>
+                          </div> 
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Satker / OPD
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-satker"
+                                  options={satkerku.map((row) => ({
+                                    label: row.nama_opd,
+                                    value: row.id_opd
+                                  }))}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={loc.satker_id || null}
+                                  onChange={(event, newValue) => handleChange(index, "satker_id",newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.satker_id}
+                                      helperText={errors[index]?.satker_id}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Satker / OPD
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-sektor"
+                                  options={sektorku.map((row) => ({
+                                    label: row.nama_sektor,
+                                    value: row.id_sektor
+                                  }))}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={loc.sektor_id || null}
+                                  onChange={(event, newValue) => handleChange(index, "sektor_id",newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.sektor_id}
+                                      helperText={errors[index]?.sektor_id}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Priode
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-periode"
+                                  options={[
+                                    { label: "Harian", value: "Harian" },
+                                    { label: "Mingguan", value: "Mingguan" },
+                                    { label: "Bulanan", value: "Bulanan" },
+                                    { label: "Tahunan", value: "Tahunan" }
+                                  ]}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={loc.periode || null}
+                                  onChange={(event, newValue) => handleChange(index, "periode",newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.periode}
+                                      helperText={errors[index]?.periode}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Tahun Rilis
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                    type="number"
+                                  value={loc.tahun_rilis}
+                                  onChange={(e) => handleChange(index, "tahun_rilis", e.target.value)}
+                                  error={!!errors[index]?.tahun_rilis}
+                                  helperText={errors[index]?.tahun_rilis}
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {loc.tahun_rilis && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => handleChange(index, "tahun_rilis", "")}
+                                              edge="end"
+                                              size="small"
+                                              title="Bersihkan"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+
+                                      </>
+                                    ),
+                                    maxLength: 4,
+                                  }}
+                                />
+  
+                              </div>
+                            </div>
+                          </div> 
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Pengukuran Skala
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={loc.pengukuran}
+                                  onChange={(e) => handleChange(index, "pengukuran", e.target.value)}
+                                  error={!!errors[index]?.pengukuran}
+                                  helperText={errors[index]?.pengukuran}
+                                  multiline   // <-- ini bikin jadi textarea
+                                  rows={1}    // <-- tinggi awal textarea
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyle(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {loc.pengukuran && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => handleChange(index, "pengukuran","")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                              </div>
+                            </div>
+                          </div> 
+                          <div className="md:col-span-2 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Visibilitas
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  disabled={rolelogin !== "Super Admin" && rolelogin !== "Admin"}
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-location"
+                                  options={[
+                                    { label: "Privat", value: "Privat" },
+                                    { label: "Publik", value: "Publik" }
+                                  ]}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  
+                                  // jika bukan admin, value dipaksa privat
+                                  value={
+                                    rolelogin !== "Super Admin" && rolelogin !== "Admin"
+                                      ? { label: "Privat", value: "Privat" }
+                                      : loc.visibilitas
+                                  }
+
+                                  onChange={(event, newValue) => {
+                                    if (rolelogin !== "Super Admin" && rolelogin !== "Admin") return;
+                                    handleChange(index, "visibilitas", newValue);
+                                  }}
+
+
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                      error={!!errors[index]?.visibilitas}
+                                      helperText={errors[index]?.visibilitas}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                    
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-6 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Deskripsi
+                                </label>
+  
+                                <TextField
+                                  className="bg-input rad15 w-full"
+                                  value={loc.deskripsi}
+                                  onChange={(e) => handleChange(index, "deskripsi", e.target.value)}
+                                  error={!!errors[index]?.deskripsi}
+                                  helperText={errors[index]?.deskripsi}
+                                  multiline   // <-- ini bikin jadi textarea
+                                  rows={7}    // <-- tinggi awal textarea
+                                  InputLabelProps={{ shrink: false }}
+                                  sx={(theme) => textFieldStyleMultiline(theme)}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {loc.deskripsi && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => handleChange(index, "deskripsi","")}
+                                              edge="end"
+                                              size="small"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                />
+  
+                              </div>
+                            </div>
+                          </div> 
+                          <div className="md:col-span-5 col-span-6 -mt-2">
+                            <div className="mt-1">
+
+                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Unggah Gambar Konten
+                                </label>
+
+                                <TextField
+                                  type="file"
+                                  accept="image/*"
+                                  className="bg-input rad15 w-100"
+                                  InputLabelProps={{
+                                    shrink: true,
+                                  }}
+                                  onChange={(e) => handleImageChange(index, e)}  // ⬅️ per index
+                                  error={!!errors[index]?.file}
+                                  helperText={errors[index]?.file}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <>
+                                        {loc.file && (
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() => clearImage(index)}   // ⬅️ reset file + preview
+                                              edge="end"
+                                              size="small"
+                                              title="Hapus file"
+                                            >
+                                              <ClearIcon />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        )}
+                                      </>
+                                    ),
+                                  }}
+                                  sx={(theme) => ({
+                                    ...textFieldStyle(theme),
+                                    "& .MuiInputBase-root": {
+                                      borderRadius: "12px",
+                                      paddingRight: "8px",
+                                      background: "#fafafa",
+                                    },
+                                    "& input::file-selector-button": {
+                                      marginRight: "15px",
+                                      padding: "7px 14px",
+                                      border: "1px solid #ddd",
+                                      borderRadius: "8px",
+                                      background: "#fff",
+                                      cursor: "pointer",
+                                      fontWeight: 600,
+                                    },
+                                  })}
+                                />
+                                
+
+                                
+
+                              </div>
+
+                            </div>
+                          </div>
+                          {/* AREA PREVIEW GAMBAR */}
+                          {loc.images && (
+                            <div className="md:col-span-1  col-span-6 -mt-4">
+                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
+
+                              <div
+                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
+                                style={{
+                                  width: "100%",
+                                  height: "100px",
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <img
+                                  src={loc.images}
+                                  alt="preview"
+                                  style={{
+                                    maxHeight: "100%",
+                                    maxWidth: "100%",
+                                    objectFit: "contain",
+                                    borderRadius: "10px",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                            
+                        </div>
+                        
+                        {locations.length > 1 && index !== 0 && (
+                          <button 
+                            type="button"
+                            className="mt-3 mb-5 bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-3 rounded-xl flex items-center gap-1"
+                            onClick={() => removeLocationField(index)}
+                          >
+                            <IoTrash /> Hapus Baris
+                          </button>
+                        )}
+                      </div>
                     ))}
                     <button 
                         type="button"
@@ -854,27 +1081,34 @@ function ModalTambahMulti() {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.3 }}
                       className="md:w-1/2 mx-auto py-12">
-                      <div className="mt-3 flex">
-                        <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                          <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                            <p className=" text-center text-white py-1">
-                              1
-                            </p>
+                      {/* STEP INDICATOR */}
+                      <div className="mt-4 flex items-center justify-between relative">
+
+                        {/* STEP 1 */}
+                        <div className="flex flex-col items-center z-10 w-1/2">
+                          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                            1
                           </div>
+                          <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                            Form Input
+                          </span>
                         </div>
-                        <div className="col-span-2 -mt-2 py-1 justify-end w-1/2">
-                          <div className=" bg-cyan-600 rad15 w-8 h-8  float-right">
-                            <p className=" text-center text-white py-1">
-                              2
-                            </p>
+
+                        {/* STEP 2 */}
+                        <div className="flex flex-col items-center z-10 w-1/2">
+                          <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
+                            2
                           </div>
+                          <span className="mt-1 text-xs text-cyan-700 font-semibold">
+                            Konfirmasi
+                          </span>
                         </div>
-                        
-                        
-                        
-                      </div>
-                      <div className="-mt-5 w-full h-2 bg-cyan-200">
-                          <div className="h-full bg-cyan-600 rounded-3xl w-full"></div>
+
+                        {/* PROGRESS LINE */}
+                        <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
+                          <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-full" />
+                        </div>
+
                       </div>
                       <div className="mt-12 textsize10  text-center">
                           Yakin Data Sudah Benar ?

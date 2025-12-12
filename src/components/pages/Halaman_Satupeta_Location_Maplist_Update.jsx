@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout >
+    <Layout itemmenu="Satupeta Koleksi" >
       <Main_Edit />
     </Layout>
   );

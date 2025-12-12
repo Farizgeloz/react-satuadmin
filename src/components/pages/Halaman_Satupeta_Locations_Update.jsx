@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout >
+    <Layout  itemmenu="Satupeta Lokasi">
       <Main_Edit />
     </Layout>
   );

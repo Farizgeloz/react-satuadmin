@@ -19,7 +19,7 @@ const Dashboard = () => {
   }, [navigate]);
 
   return (
-    <Layout>
+    <Layout itemmenu="Dashboard">
       <Welcome />
     </Layout>
   );

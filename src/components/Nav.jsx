@@ -120,16 +120,16 @@ const Nav = (props) => {
 
   return (
     <div className='bg-blue-800 drop-shadow-lg w-full top-0 left-0 font-[Poppins] min-[680px]:hidden max-[640px]:fixed z-10' style={{height:'8vh'}}>
-      <div className='md:flex items-center justify-between  py-2 md:px-10 px-7  height1'>
+      <div className='md:flex items-center justify-between  py-2 md:px-10 px-7  height1   bg-linear-10'>
         <div className='w-100 font-bold cursor-pointer flex items-center font-[Poppins] '>
           <img src={image1} className=" w-50 cursor-pointer duration-500 mr-2" />
         </div>
       
-        <div onClick={()=>setOpen(!open)} className='text-white text-3xl absolute right-8 top-2 cursor-pointer md:hidden'>
+        <div onClick={()=>setOpen(!open)} className='text-silver text-3xl absolute right-8 top-2 cursor-pointer md:hidden'>
         <ion-icon name={open ? 'close':'menu'}></ion-icon>
         </div>
 
-        <ul className={`md:flex flex-row-reverse md:items-center md:pb-0 pb-3 absolute md:static md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-4 transition-all duration-500 ease-in  max-[680px]:bg-white ${open ? 'top-10 ':'top-[-490px]'} overflow-yy-auto`} style={{maxHeight:'65vh'}} >
+        <ul className={`md:flex flex-row-reverse md:items-center md:pb-0 pb-3 absolute md:static md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-4 transition-all duration-500 ease-in  max-[680px]:bg-white max-[680px]:py-3 ${open ? 'top-10 ':'top-[-490px]'} overflow-yy-auto`} style={{maxHeight:'65vh'}} >
           
           <li className={`-right-20 mb-3`}>
             <Dropdown>
@@ -143,7 +143,7 @@ const Nav = (props) => {
               </Dropdown.Menu>
             </Dropdown>
           </li>
-          <p className={`text-sage-light  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
+          <p className={`text-sage-dark  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
           <li className={`-right-20 `}>
             {/* button */}
             <Link
@@ -153,201 +153,276 @@ const Nav = (props) => {
                 <MdDashboard  className="mt-1 text-orange-500 tsize-150"  />
                 <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Dashboard</span>
             </Link>
+            
           </li>
-          <li className={`-right-20 mt-2`}>
-            {/* button */}
-            <Link
-              to={`/Data-User`}
-              className="side-li flex tsize-100 text-silver-a"
-            >
-                <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Data Pengguna</span>
-            </Link>
-          </li>
-
-
-          <li className={`-right-20 mt-2`}>
-          {/* tombol utama */}
-          <button
-            onClick={toggleCollapse_SatuPortal}
-            className="side-li flex tsize-100 w-full items-center justify-between"
-            type="button"
-          >
-            <div className="flex items-center">
-              <FaGg className="mt-1 text-red-500 tsize-150" />
-              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-silver-a`}>
-                Satu Portal
-              </span>
-            </div>
-            {/* icon panah collapse */}
-            <svg
-              className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
-                collapsed_satuportal ? "" : "rotate-90"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          {/* isi collapse */}
-          <ul
-            className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
-              collapsed_satuportal ? "max-h-0" : "max-h-50"
-            }`}
-          >
-            <li>
-              <a
-                href="/Satuportal/Motto"
-                className="tsize-100 block py-1 btn-silver-a flex"
+          {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+            <>
+            <li className={`-right-20 mt-2`}>
+              {/* button */}
+              <Link
+                to={`/Data-User`}
+                className="side-li flex tsize-100 text-silver-a"
               >
-                <FaGg className="mt-1 text-red-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Satu Portal Motto
-                </span>
-                
-              </a>
+                  <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
+                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Data Pengguna</span>
+              </Link>
             </li>
-            <li>
-              <a
-                href="/Satuportal/Iklan"
-                className="tsize-100 block py-1 btn-silver-a flex"
+            </>
+          ) : null
+          }
+          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+            <>
+            <li className={`-right-20 mt-2`}>
+              {/* tombol utama */}
+              <button
+                onClick={toggleCollapse_SatuPortal}
+                className="side-li flex tsize-100 w-full items-center justify-between"
+                type="button"
               >
-                <FaGg className="mt-1 text-red-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Satu Portal Iklan
-                </span>
-                
-              </a>
+                <div className="flex items-center">
+                  <FaGg className="mt-1 text-red-500 tsize-150" />
+                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                    Satu Portal
+                  </span>
+                </div>
+                {/* icon panah collapse */}
+                <svg
+                  className={`w-4 h-4 ml-2 transition-transform duration-300 text-silver ${
+                    collapsed_satuportal ? "" : "rotate-90"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+  
+              {/* isi collapse */}
+              <ul
+                className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
+                  collapsed_satuportal ? "max-h-0" : "max-h-50"
+                }`}
+              >
+                <li>
+                  <Link
+                    to={`/Satuportal/Motto`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaGg className="mt-1 text-red-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Satu Portal Motto
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Satuportal/Iklan`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaGg className="mt-1 text-red-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Satu Portal Iklan
+                    </span>
+                  </Link>
+                </li>
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Satuportal/Visitor`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaGg className="mt-1 text-red-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Satu Portal Visitor
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Satuportal/List`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaGg className="mt-1 text-red-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Satu Portal List
+                    </span>
+                  </Link>
+                </li>
+                <li className='mb-3'>
+                  <Link
+                    to={`/Satuportal/Color`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaGg className="mt-1 text-red-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Satu Portal Color
+                    </span>
+                  </Link>
+                </li>
+                </>
+                ) : null
+                }
+              </ul>
             </li>
-            <li>
-              <a
-                href="/Satuportal/Visitor"
-                className="tsize-100 block py-1 btn-silver-a flex"
+          </>
+          ) : null
+          }
+          
+  
+  
+          
+  
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' || rolelogin==='CS' ? (
+          <>
+            <li className={`-right-20`}>
+              {/* tombol utama */}
+              <button
+                onClick={toggleCollapse_OpenData}
+                className="side-li flex tsize-100 w-full items-center justify-between"
+                type="button"
               >
-                <FaGg className="mt-1 text-red-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal Visitor
-                </span>
+                <div className="flex items-center">
+                  <FaClone className="mt-1 text-sky-500 tsize-150" />
+                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-silver-a`}>
+                    Open Data
+                  </span>
+                </div>
+                {/* icon panah collapse */}
+                <svg
+                  className={`w-4 h-4 ml-2 transition-transform duration-300 text-silver ${
+                    collapsed_opendata ? "" : "rotate-90"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+  
+              {/* isi collapse */}
+              <ul
+                className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
+                  collapsed_opendata ? "max-h-0" : ""
+                }`}
+              >
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='CS' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Opendata/Dataset/Permohonan`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Permohonan
+                    </span>
+                  </Link>
+                </li>
+                </>
+                ) : null
+                }
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Opendata/Iklan`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Iklan
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Opendata/Artikel`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Artikel
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Opendata/Infografik`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Infografik
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Opendata/Bantuan`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Bantuan
+                    </span>
+                  </Link>
+                </li>
                 
-              </a>
+                </>
+                ) : null
+                }
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Opendata/Color`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Color
+                    </span>
+                  </Link>
+                </li>
+                <li className='mb-3'>
+                  <Link
+                    to={`/Opendata/Feedback`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Feedback
+                    </span>
+                  </Link>
+                </li>
+                </>
+                ) : null
+                }
+                {/* <li>
+                  <a
+                    href="/Opendata/Dataset"
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaClone className="mt-1 text-silver tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Open Data Dataset
+                    </span>
+                  
+                  </a>
+                </li> */}
+              </ul>
             </li>
-            <li>
-              <a
-                href="/Satuportal/List"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaGg className="mt-1 text-red-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal List
-                </span>
-                
-              </a>
-            </li>
-            <li className='mb-3'>
-              <a
-                href="/Satuportal/Color"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaGg className="mt-1 text-red-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal Color
-                </span>
-                
-              </a>
-            </li>
-          </ul>
-        </li>
-
-
-        <li className={`-right-20`}>
-          {/* tombol utama */}
-          <button
-            onClick={toggleCollapse_OpenData}
-            className="side-li flex tsize-100 w-full items-center justify-between"
-            type="button"
-          >
-            <div className="flex items-center">
-              <FaClone className="mt-1 text-sky-500 tsize-150" />
-              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-silver-a`}>
-                Open Data
-              </span>
-            </div>
-            {/* icon panah collapse */}
-            <svg
-              className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
-                collapsed_opendata ? "" : "rotate-90"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          {/* isi collapse */}
-          <ul
-            className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
-              collapsed_opendata ? "max-h-0" : "max-h-40"
-            }`}
-          >
-            <li>
-              <a
-                href="/Opendata/Iklan"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaClone className="mt-1 text-sky-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Iklan
-                </span>
-                
-              </a>
-            </li>
-            <li>
-              <a
-                href="/Opendata/Artikel"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaClone className="mt-1 text-sky-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Artikel
-                </span>
-                
-              </a>
-            </li>
-            <li className='mb-3'>
-              <a
-                href="/Opendata/Color"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaClone className="mt-1 text-sky-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Color
-                </span>
-                
-              </a>
-            </li>
-            {/* <li>
-              <a
-                href="/Opendata/Dataset"
-                className="tsize-100 block py-1 text-silver-a flex"
-              >
-                <FaClone className="mt-1 text-white tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Open Data Dataset
-                </span>
-                
-              </a>
-            </li> */}
-          </ul>
-        </li>
-
-
+          </>
+        ) : null
+        } 
+  
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd' ? (
+        <>
         <li className={`-right-20`}>
           {/* tombol utama */}
           <button
@@ -363,7 +438,7 @@ const Nav = (props) => {
             </div>
             {/* icon panah collapse */}
             <svg
-              className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
+              className={`w-4 h-4 ml-2 transition-transform duration-300 text-silver ${
                 collapsed_satupeta ? "" : "rotate-90"
               }`}
               fill="none"
@@ -374,99 +449,139 @@ const Nav = (props) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
-
+  
           {/* isi collapse */}
           <ul
             className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
               collapsed_satupeta ? "max-h-0" : "max-h-50"
             }`}
           >
-            <li>
-              <a
-                href="/Satupeta/Lokasi-Peta"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Lokasi Peta
-                </span>
-                
-              </a>
-            </li>
-            <li>
-              <a
-                href="/Satupeta/Koleksi-Peta"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Koleksi Peta
-                </span>
-                
-              </a>
-            </li>
-            <li>
-              <a
-                href="/Satupeta/Titik-Lokasi-Peta"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Titik Lokasi Peta
-                </span>
-                
-              </a>
-            </li>
-            <li>
-              <a
-                href="/Satupeta/Iklan"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-silver-a`}>
-                  Iklan
-                </span>
-                
-              </a>
-            </li>
-            <li>
-              <a
-                href="/Satupeta/Artikel"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Artikel
-                </span>
-                
-              </a>
-            </li>
-            <li className='mb-3'>
-              <a
-                href="/Satupeta/Color"
-                className="tsize-100 block py-1 btn-silver-a flex"
-              >
-                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                  Color
-                </span>
-                
-              </a>
-            </li>
+            {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+              <>
+                <li>
+                  <Link
+                    to={`/Satupeta/Lokasi-Peta`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Lokasi Peta
+                    </span>
+                  </Link>
+                </li>
+              </>
+            ) : null
+            } 
+            {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd' ? (
+              <>
+                <li>
+                  <Link
+                    to={`/Satupeta/Koleksi-Peta`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Koleksi Peta
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Satupeta/Titik-Lokasi-Peta`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Titik Lokasi Peta
+                    </span>
+                  </Link>
+                </li>
+              </>
+            ) : null
+            } 
+            {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+              <>
+                <li>
+                  <Link
+                    to={`/Satupeta/Iklan`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Iklan
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Satupeta/Artikel`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Artikel
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Satupeta/Bantuan`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Bantuan
+                    </span>
+                  </Link>
+                </li>
+              
+              </>
+              ) : null
+              } 
+              {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+              <>
+                <li>
+                  <Link
+                    to={`/Satupeta/Color`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Color
+                    </span>
+                  </Link>
+                </li>
+                <li className='mb-3'>
+                  <Link
+                    to={`/Satupeta/Feedback`}
+                    className="tsize-100 block py-1 text-silver-a flex"
+                  >
+                    <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                    <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                      Feedback
+                    </span>
+                  </Link>
+                </li>
+              </>
+            ) : null
+            } 
           </ul>
         </li>
-
-
-          
-          
-          
         
-
-
-        <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
-        <li className={`-right-20 mb-5`}>
-          {/* button */}
+        </>
+        ) : null
+        } 
+  
+  
           
+          
+          
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+        <>
+  
+        <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
+        <li className={`-right-20 mb-1`}>
+          {/* button */}
           <Link
             to={`/Komponen-Statik`}
             className="side-li flex tsize-100 text-silver-a"
@@ -475,8 +590,20 @@ const Nav = (props) => {
               <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
           </Link>
         </li>
-              
-            
+        <li className={`-right-20 mb-5`}>
+          {/* button */}
+          <Link
+            to={`/Log`}
+            className="side-li flex tsize-100 text-silver-a"
+          >
+              <MdDataset className="mt-1 text-red-500 tsize-150"  />
+              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Aktivitas</span>
+          </Link>
+        </li>
+        
+          </>
+        ) : null
+        }  
           
           
         </ul>

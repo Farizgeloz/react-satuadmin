@@ -67,6 +67,14 @@ export default function Iklanlist() {
       }))
     : [];
 
+  const visibilitasStyle = {
+    draft: "bg-gray-200 text-gray-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    verified: "bg-green-100 text-green-700",
+    publik: "bg-blue-100 text-blue-700",
+    privat: "bg-red-100 text-red-700",
+  };
+
   const columns = [
     { 
       field: "no", 
@@ -142,7 +150,12 @@ export default function Iklanlist() {
         const row = params.row;
         return (
           <>
-            <p className="textsize10">
+            <p 
+            className={`
+                px-2 py-1 textsize10 rounded-lg font-semibold inline-block w-fit
+                ${visibilitasStyle[row.visibilitas?.toLowerCase()] || "bg-gray-100 text-gray-600"}
+              `}
+            >
               {row.visibilitas}
             </p>
           </>

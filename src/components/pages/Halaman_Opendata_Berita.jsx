@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="Iklan" itemmenu="Opendata Berita">
+    <Layout key ="Iklan" itemmenu="Opendata Artikel">
       <Main />
     </Layout>
   );

@@ -38,7 +38,7 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`api/open-item/opendata-bantuan`);
+    const res = await api_url_satuadmin.get(`api/open-item/opendata-bantuan/admin`);
     const data = res.data.resultWithUrls || [];
     setDatasetku(data);
     setRowsFiltered(data);
@@ -66,6 +66,14 @@ export default function Iklanlist() {
         ...row
       }))
     : [];
+  
+  const visibilitasStyle = {
+    draft: "bg-gray-200 text-gray-700",
+    pending: "bg-yellow-100 text-yellow-700",
+    verified: "bg-green-100 text-green-700",
+    publik: "bg-blue-100 text-blue-700",
+    privat: "bg-red-100 text-red-700",
+  };
 
   const columns = [
     { 
@@ -139,6 +147,28 @@ export default function Iklanlist() {
                {row.content.length > 100 
                 ? row.content.substring(0, 100) + "..." 
                 : row.content}
+            </p>
+          </>
+        );
+      }  
+    },
+    { 
+      field: "visibilitas", 
+      headerName: "Visibilitas", 
+      flex: 1,  // 10%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <>
+            <p 
+            className={`
+                px-2 py-1 textsize10 rounded-lg font-semibold inline-block w-fit
+                ${visibilitasStyle[row.visibilitas?.toLowerCase()] || "bg-gray-100 text-gray-600"}
+              `}
+            >
+              {row.visibilitas}
             </p>
           </>
         );

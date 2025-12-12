@@ -5,7 +5,7 @@ import '../styles/style_bg.css';
 import '../styles/style_button.css';
 import '../styles/style_design.css';
 
-import Main_Edit from "../pages_sub/satupeta_berita/Berita_Edit";
+import Main_User from "../pages_sub/aplikasi_terhubung/ListMain";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getMe } from "../features/authSlice";
@@ -23,13 +23,10 @@ const Users = () => {
     if (isError) {
       navigate("/");
     }
-    if (user && user.role !== "Super Admin") {
-      navigate("/Dashboard");
-    }
   }, [isError, user, navigate]);*/
   return (
-    <Layout itemmenu="Satupeta Artikel" >
-      <Main_Edit />
+    <Layout key ="ekosistemlist" itemmenu="Aplikasi Terhubung" >
+      <Main_User />
     </Layout>
   );
 };

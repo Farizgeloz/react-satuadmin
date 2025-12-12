@@ -5,7 +5,7 @@ import '../styles/style_bg.css';
 import '../styles/style_button.css';
 import '../styles/style_design.css';
 
-import Main_Edit from "../pages_sub/satupeta_berita/Berita_Edit";
+import Main_Edit from "../pages_sub/aplikasi_terhubung/List_Edit";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getMe } from "../features/authSlice";
@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout itemmenu="Satupeta Artikel" >
+    <Layout itemmenu="Aplikasi Terhubung" >
       <Main_Edit />
     </Layout>
   );

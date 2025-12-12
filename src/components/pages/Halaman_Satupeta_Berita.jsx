@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout key ="Iklan" itemmenu="Satupeta Berita">
+    <Layout key ="Iklan" itemmenu="Satupeta Artikel">
       <Main />
     </Layout>
   );

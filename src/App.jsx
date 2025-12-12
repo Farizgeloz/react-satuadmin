@@ -51,7 +51,10 @@ import Satupeta_Feedback from "./components/pages/Halaman_Satupeta_Feedback";
 
 import Komponen from "./components/pages/Halaman_Komponen";
 import Komponen_Update from "./components/pages/Halaman_Komponen_Update";
+import Aplikasi_Terhubung from "./components/pages/Halaman_aplikasi_terhubung";
+import Aplikasi_Terhubung_Update from "./components/pages/Halaman_Aplikasi_Terhubung_Update";
 import Log from "./components/pages/Halaman_Log";
+import RuleInformasi from "./components/pages/Halaman_Rule_Informasi";
 
 /*import Satkercode from "./components/pages/Halaman_Satkercode";
 import Satkercode_Detail from "./components/pages/Halaman_Satkercode_Detail";
@@ -130,7 +133,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/Satuportal/Motto" element={
+          {/* <Route path="/Satuportal/Motto" element={
             <ProtectedRoute>
               <RequireRole allowedRoles={['Operator','Admin', 'Super Admin']}>
                 <Satuportal_Motto />
@@ -196,7 +199,7 @@ function App() {
               </RequireRole>
             </ProtectedRoute>
             }
-          />
+          /> */}
 
 
           <Route path="/Opendata/Dataset" element={
@@ -441,6 +444,30 @@ function App() {
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Komponen_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/Aplikasi-Terhubung" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
+                <Aplikasi_Terhubung />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/Aplikasi-Terhubung/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
+                <Aplikasi_Terhubung_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+           <Route path="/Rule-Informasi" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Verifikator Opd','Admin','Super Admin']}>
+                <RuleInformasi />
               </RequireRole>
             </ProtectedRoute>
             }

@@ -28,7 +28,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);*/
   return (
-    <Layout itemmenu="Opendata Berita" >
+    <Layout itemmenu="Opendata Artikel" >
       <Main_Edit />
     </Layout>
   );

@@ -148,16 +148,15 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
               }`}
             >
                 <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Data Pengguna</span>
+                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 mb-2`}>Data Pengguna</span>
             </Link>
           </li>
           </>
         ) : null
         }
-        {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+        {/*rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
           <>
           <li className={`-right-20 mt-2`}>
-            {/* tombol utama */}
             <button
               onClick={toggleCollapse_SatuPortal}
               className="side-li flex tsize-100 w-full items-center justify-between"
@@ -169,7 +168,6 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                   Satu Portal
                 </span>
               </div>
-              {/* icon panah collapse */}
               <svg
                 className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
                   collapsed_satuportal ? "" : "rotate-90"
@@ -183,7 +181,6 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
               </svg>
             </button>
 
-            {/* isi collapse */}
             <ul
               className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
                 collapsed_satuportal ? "max-h-0" : "max-h-50"
@@ -262,7 +259,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
             </ul>
           </li>
         </>
-        ) : null
+        ) : null*/
         }
         
 
@@ -616,6 +613,20 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
             <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
         </Link>
       </li>
+      <li>
+        <Link
+          to={`/Aplikasi-Terhubung`}
+          className={`side-li flex tsize-100 text-white-a ${
+            itemmenu === "Aplikasi Terhubung" ? "active-menu" : ""
+          }`}
+        >
+          <MdDataset className="mt-1 text-red-500 tsize-150"  />
+          <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+            Aplikasi Terhubung
+          </span>
+        </Link>
+      </li>
+      
       <li className={`-right-20 mb-5`}>
         {/* button */}
         <Link
@@ -632,6 +643,20 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
         </>
       ) : null
       }   
+      {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
+        <li className={`-right-20 mb-5`}>
+          {/* button */}
+          <Link
+            to={`/Rule-Informasi`}
+            className={`side-li flex tsize-100 text-white-a ${
+              itemmenu === "Rule Informasi" ? "active-menu" : ""
+            }`}
+          >
+              <MdDataset className="mt-1 text-red-500 tsize-150"  />
+              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Rule Informasi</span>
+          </Link>
+        </li>
+      ) : null}
     </ul>
     </div>
   )

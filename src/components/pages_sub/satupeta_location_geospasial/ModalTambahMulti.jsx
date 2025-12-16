@@ -5,6 +5,15 @@ import { useNavigate,Link, NavLink } from "react-router-dom";
 import "../../styles/Modal.css";
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import {
+  Dialog,
+  DialogContent
+} from "@mui/material";
+import PaletteIcon from "@mui/icons-material/Palette";
+
+import _ from "lodash";
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
 import ClearIcon from "@mui/icons-material/Clear";
 
 import { MdAddCircle,MdOutlineArrowCircleLeft,MdOutlineQrCode,MdOutlineMap,MdOutlinePerson4,
@@ -12,11 +21,10 @@ import { MdAddCircle,MdOutlineArrowCircleLeft,MdOutlineQrCode,MdOutlineMap,MdOut
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
+
 import "../../../App.css";
 import Swal from 'sweetalert2';
 import { IoAdd, IoTrash } from "react-icons/io5";
-import InputAdornment from "@mui/material/InputAdornment";
-import IconButton from "@mui/material/IconButton";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
@@ -49,29 +57,58 @@ const textFieldStyle = (theme) => ({
   },
 });
 
+const textFieldStyleMultiline = (theme) => ({
+  "& .MuiOutlinedInput-root": {
+    height: "auto",
+    fontSize: "1.2rem",
+    background: "#ecfccb",
+    borderRadius: "6px",
+  },
+  "& .MuiInputLabel-root": {
+    fontSize: "1.0rem",
+    fontWeight: 600,
+    transition: "all 0.2s ease",
+  },
+  "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+    backgroundColor: "#2a4f74",
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+  "& .MuiInputLabel-root.Mui-focused": {
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    borderRadius: "6px",
+    padding: "0 6px",
+    transform: "translate(14px, -9px) scale(0.85)",
+  },
+});
+
 function ModalTambahMulti() {
   const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
   const userloginsatker = userlogin.opd_id || '';
   const userloginadmin = userlogin.id || '';
-   const [locationku, setlocationku] = useState([]);
+  const [maplistku, setmaplistku] = useState([]);
   const [kecamatanku, setkecamatanku] = useState([]);
   const [desaku, setdesaku] = useState([]);
-  const [nama_location_point, setnama_location_point] = useState("");
+  const [nama_geospasial, setnama_geospasial] = useState("");
   const [coordinatlon, setcoordinatlon] = useState("");
   const [coordinatlat, setcoordinatlat] = useState("");
   const [kecamatan, setkecamatan] = useState(null);
   const [lokasi, setlokasi] = useState(null);
   const [desa, setdesa] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [openColor, setOpenColor] = useState(false);
 
   const [locations, setLocations] = useState([
-    { nama_location_point: "", coordinatlon: "", coordinatlat: "", location_id: "", kecamatan_id: "", desa_id: "" }
+    { nama_geospasial: "", geojson: "", luas_area: "", satuan: "", map_color: "", id_maplist: "", kecamatan_id: "", desa_id: "" }
   ]);
 
   const addLocationField = () => {
     setLocations([
       ...locations,
-      { nama_location_point: "", coordinatlon: "", coordinatlat: "", location_id: "", kecamatan_id: "", desa_id: "" }
+      { nama_geospasial: "", geojson: "", luas_area: "", satuan: "", map_color: "", id_maplist: "", kecamatan_id: "", desa_id: "" }
     ]);
   };
 
@@ -89,11 +126,13 @@ function ModalTambahMulti() {
 
   const saveDataset = async (e) => {
     e.preventDefault();
-
     const payloadLocations = locations.map((loc) => ({
-        nama_location_point: loc.nama_location_point.toString(),
-        coordinat: `[${loc.coordinatlon},${loc.coordinatlat}]`,
-        location_id: loc.location_id.value.toString(),   // <-- pastikan string
+        nama_geospasial: loc.nama_geospasial.toString(),
+        geojson: loc.geojson.toString(),
+        luas_area: loc.luas_area.toString(),
+        satuan: loc.satuan.value.toString(),
+        map_color: loc.map_color.toString(),
+        id_maplist: loc.koleksi.value.toString(),   // <-- pastikan string
         kecamatan_id: loc.kecamatan_id.value.toString(), // <-- pastikan string
         desa_id: loc.desa_id.value.toString()            // <-- pastikan string
     }));
@@ -110,12 +149,12 @@ function ModalTambahMulti() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post("api/satupeta/location_point/addmulti", 
+      await api_url_satuadmin.post("api/satupeta/geospasial/addmulti", 
         { 
           locations: payloadLocations,
           admin : userloginadmin,
-          jenis: "Satu Peta Titik Lokasi",
-          komponen: "Tambah Titik Lokasi Satu Peta" 
+          jenis: "Satu Peta Geospasial",
+          komponen: "Tambah Geospasial Satu Peta" 
 
          
         },
@@ -155,18 +194,18 @@ function ModalTambahMulti() {
 
   const getDatasetItem = async () => {
     const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
-      params: { search_satker:userloginsatker }
+      params: { search_satker:userloginsatker,search_kecamatan: kecamatan ? kecamatan.value : "" }
     });
 
     const data = response.data;
-    setlocationku(response.data.resultlocation);
+    setmaplistku(response.data.resultlocationmaplistgeo);
     setkecamatanku(response.data.resultkecamatan);
     setdesaku(response.data.resultdesa);
   };
 
   const getDatasetItem2 = async () => {
     const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
-      params: { search_kecamatan: kecamatan ? kecamatan.value : "" }
+      params: { search_satker:userloginsatker,search_kecamatan: kecamatan ? kecamatan.value : "" }
     });
     const data = response.data;
     setdesaku(response.data.resultdesa);
@@ -177,10 +216,10 @@ function ModalTambahMulti() {
     e.preventDefault();
     const coordinat="["+coordinatlon+","+coordinatlat+"]"
     const formData = new FormData();
-    formData.append("nama_location_point",nama_location_point);
+    formData.append("nama_geospasial",nama_geospasial);
     formData.append("coordinat",coordinat);
     
-    formData.append("location_id",lokasi.value);
+    formData.append("id_maplist",lokasi.value);
     formData.append("kecamatan_id",kecamatan.value);
     formData.append("desa_id",desa.value);
 
@@ -261,31 +300,137 @@ function ModalTambahMulti() {
 
   const [errors, setErrors] = useState({});
 
+  const validateGeoJsonPolygon = (geojsonString) => {
+    let data;
+
+    // 1. pastikan JSON valid
+    try {
+      data = JSON.parse(geojsonString);
+    } catch (e) {
+      return {
+        valid: false,
+        message: "GeoJSON bukan JSON valid. Format harus [[[lng,lat,z],...]]"
+      };
+    }
+
+    // 2. cek struktur [[[...]]]
+    if (!Array.isArray(data) || !Array.isArray(data[0])) {
+      return {
+        valid: false,
+        message: "Format GeoJSON harus [[[lng,lat,z],...]]"
+      };
+    }
+
+    const ring = data[0];
+
+    // 3. polygon minimal 4 titik
+    if (ring.length < 4) {
+      return {
+        valid: false,
+        message: "Polygon minimal memiliki 4 titik (termasuk titik penutup)"
+      };
+    }
+
+    for (let i = 0; i < ring.length; i++) {
+      const point = ring[i];
+
+      // 4. cek point
+      if (!Array.isArray(point) || point.length < 2) {
+        return {
+          valid: false,
+          message: `Koordinat ke-${i + 1} harus [lng, lat, z]`
+        };
+      }
+
+      const [lng, lat] = point;
+
+      // 5. cek numeric
+      if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
+        return {
+          valid: false,
+          message: `Koordinat ke-${i + 1} bukan angka valid`
+        };
+      }
+
+      // 6. deteksi lat-lng tertukar
+      if (Math.abs(lng) <= 90 && Math.abs(lat) > 90) {
+        return {
+          valid: false,
+          message: `Koordinat ke-${i + 1} kemungkinan tertukar (lat,lng)`
+        };
+      }
+
+      // 7. validasi range
+      if (lng < -180 || lng > 180) {
+        return {
+          valid: false,
+          message: `Longitude ke-${i + 1} di luar range (-180 s/d 180)`
+        };
+      }
+
+      if (lat < -90 || lat > 90) {
+        return {
+          valid: false,
+          message: `Latitude ke-${i + 1} di luar range (-90 s/d 90)`
+        };
+      }
+    }
+
+    // 8. cek ring tertutup
+    const first = ring[0];
+    const last = ring[ring.length - 1];
+
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      return {
+        valid: false,
+        message: "Polygon harus tertutup (titik awal dan akhir harus sama)"
+      };
+    }
+
+    return { valid: true };
+  };
+
+
   const validateAll = () => {
     let newErrors = [];
 
     locations.forEach((loc, index) => {
       let rowErrors = {};
 
-      if (!loc.nama_location_point?.trim()) {
-        rowErrors.nama_location_point = "Jenis koleksi data wajib diisi";
+      if (!loc.nama_geospasial?.trim()) {
+        rowErrors.nama_geospasial = "Data wajib diisi";
       }
-      if (!isValidLongitude(loc.coordinatlon)) {
-        rowErrors.coordinatlon = "Longitude tidak valid";
+      // GeoJSON
+     
+      if (loc.luas_area === null || loc.luas_area === "" || loc.luas_area <= 0) {
+        rowErrors.luas_area = "Luas area wajib diisi dan > 0";
       }
-      if (!isValidLatitude(loc.coordinatlat)) {
-        rowErrors.coordinatlat = "Latitude tidak valid";
+      if (!loc.map_color?.trim()) {
+        rowErrors.map_color = "Data wajib diisi";
       }
 
       // ✅ Simpan error per baris, bukan di root
-      if (!loc.location_id) {
-        rowErrors.location_id = "Lokasi wajib dipilih";
+      if (!loc.satuan?.value) {
+        rowErrors.satuan = "Satuan wajib dipilih";
+      }
+
+      if (!loc.koleksi?.value) {
+        rowErrors.koleksi = "Koleksi wajib dipilih";
       }
       if (!loc.kecamatan_id) {
         rowErrors.kecamatan_id = "Kecamatan wajib dipilih";
       }
       if (!loc.desa_id) {
         rowErrors.desa_id = "Desa wajib dipilih";
+      }
+
+       if (!loc.geojson?.trim()) {
+        rowErrors.geojson = "GeoJSON wajib diisi";
+      } else {
+        const geoValidation = validateGeoJsonPolygon(loc.geojson);
+        if (!geoValidation.valid) {
+          rowErrors.geojson = geoValidation.message;
+        }
       }
 
       newErrors[index] = rowErrors;
@@ -324,7 +469,7 @@ function ModalTambahMulti() {
         >
             <form onSubmit={saveDataset}>
             <Modal.Header closeButton className="border-b ">
-                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Lokasi Point</h4>
+                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Geospasial</h4>
                 
             </Modal.Header>
             <Modal.Body className="mt-2 bg-silver-light p-0 px-5">
@@ -380,23 +525,20 @@ function ModalTambahMulti() {
                             <div className="p-3 rad15 border bg-white shadow-sm">
 
                               <label className="font_weight600 textsize12 mb-2 d-block">
-                                Lokasi Peta
+                                Koleksi Geomap
                               </label>
-
                               <Autocomplete
                                 className="tsize-110"
                                 isOptionEqualToValue={(option, value) => option?.value === value?.value}
-                                id="combo-box-lokasi"
-                                options={locationku.map((row) => ({
-                                label: row.nama_location,
-                                value: row.id_location
+                                id="combo-box-koleksi"
+                                options={maplistku.map((row) => ({
+                                  label: row.title,
+                                  value: row.id_maplist
                                 }))}
                                 getOptionLabel={(option) => option.label || ""}
-                                value={loc.location_id}
-                                onChange={(event, newValue) => handleChange(index, "location_id",newValue)}
-                                
+                                value={loc.koleksi}
+                                onChange={(event, newValue) => handleChange(index, "koleksi",newValue)}
                                 clearOnEscape
-                                disableClearable
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -404,8 +546,8 @@ function ModalTambahMulti() {
                                     className="bg-input rad15 w-full"
                                     InputLabelProps={{ shrink: false }}
                                     sx={(theme) => textFieldStyle(theme)}
-                                    error={!!errors[index]?.location_id}
-                                    helperText={errors[index]?.location_id}
+                                    error={!!errors[index]?.koleksi}
+                                    helperText={errors[index]?.koleksi}
                                   />
                                 )}
                                 sx={{
@@ -419,6 +561,7 @@ function ModalTambahMulti() {
                                   },
                                 }}
                               />
+                             
                                 
                             </div>
                           </div>
@@ -428,98 +571,23 @@ function ModalTambahMulti() {
                             <div className="p-3 rad15 border bg-white shadow-sm">
 
                               <label className="font_weight600 textsize12 mb-2 d-block">
-                                Nama Titik Lokasi
+                                Nama Geospasial
                               </label>
-
                               <TextField
                                 className="bg-input rad15 w-full"
-                                value={loc.nama_location_point}
-                                onChange={(e) => handleChange(index, "nama_location_point", e.target.value)}
-                                error={!!errors[index]?.nama_location_point}
-                                helperText={errors[index]?.nama_location_point}
+                                value={loc.nama_geospasial}
+                                onChange={(e) => handleChange(index, "nama_geospasial", e.target.value)}
+                                error={!!errors[index]?.nama_geospasial}
+                                helperText={errors[index]?.nama_geospasial}
                                 InputLabelProps={{ shrink: false }}
                                 sx={(theme) => textFieldStyle(theme)}
                                 InputProps={{
                                   endAdornment: (
                                     <>
-                                      {loc.title && (
+                                      {loc.nama_geospasial && (
                                         <InputAdornment position="end">
                                           <IconButton
-                                            onClick={() => handleChange(index, "title","")}
-                                            edge="end"
-                                            size="small"
-                                          >
-                                            <ClearIcon />
-                                          </IconButton>
-                                        </InputAdornment>
-                                      )}
-                                    </>
-                                  ),
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div> 
-                        <div className="md:col-span-3 col-span-6 -mt-2">
-                          <div className="mt-1">
-                            <div className="p-3 rad15 border bg-white shadow-sm">
-
-                              <label className="font_weight600 textsize12 mb-2 d-block">
-                                Longitude
-                              </label>
-
-                              <TextField
-                                className="bg-input rad15 w-full"
-                                value={loc.coordinatlon}
-                                onChange={(e) => handleChange(index, "coordinatlon", e.target.value)}
-                                error={!!errors[index]?.coordinatlon}
-                                helperText={errors[index]?.coordinatlon}
-                                InputLabelProps={{ shrink: false }}
-                                sx={(theme) => textFieldStyle(theme)}
-                                InputProps={{
-                                  endAdornment: (
-                                    <>
-                                      {loc.coordinatlon && (
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            onClick={() => handleChange(index, "coordinatlon","")}
-                                            edge="end"
-                                            size="small"
-                                          >
-                                            <ClearIcon />
-                                          </IconButton>
-                                        </InputAdornment>
-                                      )}
-                                    </>
-                                  ),
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div> 
-                        <div className="md:col-span-3 col-span-6 -mt-2">
-                          <div className="mt-1">
-                            <div className="p-3 rad15 border bg-white shadow-sm">
-
-                              <label className="font_weight600 textsize12 mb-2 d-block">
-                                Longitude
-                              </label>
-
-                              <TextField
-                                className="bg-input rad15 w-full"
-                                value={loc.coordinatlat}
-                                onChange={(e) => handleChange(index, "coordinatlat", e.target.value)}
-                                error={!!errors[index]?.coordinatlat}
-                                helperText={errors[index]?.coordinatlat}
-                                InputLabelProps={{ shrink: false }}
-                                sx={(theme) => textFieldStyle(theme)}
-                                InputProps={{
-                                  endAdornment: (
-                                    <>
-                                      {loc.coordinatlat && (
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            onClick={() => handleChange(index, "coordinatlat","")}
+                                            onClick={() => handleChange(index, "nama_geospasial","")}
                                             edge="end"
                                             size="small"
                                           >
@@ -631,6 +699,213 @@ function ModalTambahMulti() {
                             </div>
                           </div>
                         </div>
+                        <div className="md:col-span-2 col-span-6 -mt-2">
+                          <div className="mt-1">
+                            <div className="p-3 rad15 border bg-white shadow-sm">
+
+                              <label className="font_weight600 textsize12 mb-2 d-block">
+                                Luas Area
+                              </label>
+                              <TextField
+                                className="bg-input rad15 w-full"
+                                value={loc.luas_area}
+                                type='number'
+                                onChange={(e) => handleChange(index, "luas_area", e.target.value)}
+                                error={!!errors[index]?.luas_area}
+                                helperText={errors[index]?.luas_area}
+                                InputLabelProps={{ shrink: false }}
+                                sx={(theme) => textFieldStyle(theme)}
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      {loc.luas_area && (
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                            onClick={() => handleChange(index, "luas_area","")}
+                                            edge="end"
+                                            size="small"
+                                          >
+                                            <ClearIcon />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div> 
+                        <div className="md:col-span-2 col-span-6 -mt-2">
+                          <div className="mt-1">
+                            <div className="p-3 rad15 border bg-white shadow-sm">
+
+                              <label className="font_weight600 textsize12 mb-2 d-block">
+                                Satuan
+                              </label>
+
+                              <Autocomplete
+                                className="tsize-110"
+                                isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                id="combo-box-satuan"
+                                options={[
+                                  { label: "Ha", value: "Ha" },
+                                  { label: "Km", value: "Km" }
+                                ]}
+                                getOptionLabel={(option) => option.label || ""}
+                                value={loc.satuan}
+                                onChange={(event, newValue) => handleChange(index, "satuan",newValue)}
+                                
+                                clearOnEscape
+                                disableClearable
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    className="bg-input rad15 w-full"
+                                    InputLabelProps={{ shrink: false }}
+                                    sx={(theme) => textFieldStyle(theme)}
+                                    error={!!errors[index]?.satuan}
+                                    helperText={errors[index]?.satuan}
+                                  />
+                                )}
+                                sx={{
+                                  width: "100%",
+                                  "& .MuiAutocomplete-popupIndicator": {
+                                    color: "#1976d2",
+                                    transition: "transform 0.3s",
+                                  },
+                                  "& .MuiAutocomplete-popupIndicatorOpen": {
+                                    transform: "rotate(180deg)",
+                                  },
+                                }}
+                              />
+                                
+                            </div>
+                          </div>
+                        </div>
+                        <div className="md:col-span-2 col-span-6 -mt-2">
+                          <div className="mt-1">
+                            <div className="p-3 rad15 border bg-white shadow-sm">
+
+                              <label className="font_weight600 textsize12 mb-2 d-block">
+                                Map Color
+                              </label>
+                              <TextField
+                                className="bg-input rad15 w-full"
+                                value={loc.map_color}
+                                onChange={(e) => handleChange(index, "map_color", e.target.value)}
+                                error={!!errors[index]?.map_color}
+                                helperText={errors[index]?.map_color}
+                                InputLabelProps={{ shrink: false }}
+                                sx={(theme) => textFieldStyle(theme)}
+                               
+                                InputProps={{
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <div
+                                        onClick={() => setOpenColor(true)}
+                                        className="cursor-pointer"
+                                        style={{
+                                          width: 22,
+                                          height: 22,
+                                          borderRadius: 6,
+                                          backgroundColor: loc.map_color || "#ccc",
+                                          border: "1px solid #999"
+                                        }}
+                                      />
+                                    </InputAdornment>
+                                  ),
+                                  endAdornment: (
+                                    <>
+                                      <InputAdornment position="end">
+                                        <IconButton
+                                          onClick={() => setOpenColor(true)}
+                                          size="small"
+                                        >
+                                          <PaletteIcon />
+                                        </IconButton>
+                                      </InputAdornment>
+
+                                      {loc.map_color && (
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                           onClick={() => handleChange(index, "map_color","")}
+                                            size="small"
+                                          >
+                                            <ClearIcon />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )}
+                                    </>
+                                  )
+                                }}
+                              />
+                              {/* =====================
+                                    DIALOG COLOR PICKER
+                                  ===================== */}
+                                <Dialog open={openColor} onClose={() => setOpenColor(false)}>
+                                  <DialogContent className="text-center">
+                                    <input
+                                      type="color"
+                                      value={loc.map_color || "#00ff88"}
+                                      onChange={(e) => {
+                                        handleChange(index, "map_color", e.target.value);
+                                        setOpenColor(false);
+                                      }}
+                                      style={{
+                                        width: 120,
+                                        height: 120,
+                                        border: "none",
+                                        cursor: "pointer"
+                                      }}
+                                    />
+                                    <p className="textsize12 mt-2">{loc.map_color}</p>
+                                  </DialogContent>
+                                </Dialog>
+                            </div>
+                          </div>
+                        </div> 
+                        <div className="md:col-span-6 col-span-6 -mt-2">
+                          <div className="mt-1">
+                            <div className="p-3 rad15 border bg-white shadow-sm">
+
+                              <label className="font_weight600 textsize12 mb-2 d-block">
+                                GeoJson
+                              </label>
+                              <TextField
+                                className="bg-input rad15 w-full"
+                                value={loc.geojson}
+                                multiline   // <-- ini bikin jadi textarea
+                                rows={10}    // <-- tinggi awal textarea
+                                onChange={(e) => handleChange(index, "geojson", e.target.value)}
+                                error={!!errors[index]?.geojson}
+                                helperText={errors[index]?.geojson}
+                                InputLabelProps={{ shrink: false }}
+                                sx={(theme) => textFieldStyleMultiline(theme)}
+                                InputProps={{
+                                  endAdornment: (
+                                    <>
+                                      {loc.geojson && (
+                                        <InputAdornment position="end">
+                                          <IconButton
+                                            onClick={() => handleChange(index, "geojson","")}
+                                            edge="end"
+                                            size="small"
+                                          >
+                                            <ClearIcon />
+                                          </IconButton>
+                                        </InputAdornment>
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div> 
+                       
+                        
                       </div>
                      
                       {locations.length > 1 && index !== 0 && (

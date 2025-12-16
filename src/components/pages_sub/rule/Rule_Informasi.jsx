@@ -319,7 +319,7 @@ const Datasetlist = () => {
                   <p
                     className={`
                       px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
-                      ${statusStyle['pending']}
+                      ${statusStyle['draft']}
                     `}
                     style={{width:"150px"}}
                   >
@@ -332,7 +332,7 @@ const Datasetlist = () => {
                   <p
                     className={`
                       px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
-                      ${statusStyle['verified']}
+                      ${statusStyle['draft']}
                     `}
                     style={{width:"150px"}}
                   >
@@ -346,7 +346,7 @@ const Datasetlist = () => {
                   <p
                     className={`
                       px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
-                      ${statusStyle['publik']}
+                      ${statusStyle['draft']}
                     `}
                     style={{width:"150px"}}
                   >
@@ -359,7 +359,7 @@ const Datasetlist = () => {
                   <p
                     className={`
                       px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
-                      ${statusStyle['privat']}
+                      ${statusStyle['draft']}
                     `}
                     style={{width:"150px"}}
                   >
@@ -368,6 +368,50 @@ const Datasetlist = () => {
                   <p className="mt-1">Mengajukan mapset berupa layout, marker dan geospasial</p>
                   
               </Col>
+            </Row>
+            <Row className="mt-5">
+              <p className="textsize12 font_weight600">Satu Peta:</p>
+              <Col sm={12} className="d-flex" >
+                  <p
+                    className={`
+                      px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block
+                      ${statusStyle['draft']}
+                    `}
+                    style={{width:"150px"}}
+                  >
+                    Lokasi Peta
+                  </p>
+                  <p className="mt-1">CRUD data untuk mengelompokkan lokasi marker</p>
+                  
+              </Col>
+              <Col sm={12} className="d-flex">
+                  <p
+                    className={`
+                      px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                      ${statusStyle['draft']}
+                    `}
+                    style={{width:"150px"}}
+                  >
+                    Koleksi Peta
+                  </p>
+                  <p className="mt-1">CRUD data peta interaktif dan layout</p>
+                  
+              </Col>
+              <Col sm={12} className="d-flex">
+                  <p
+                    className={`
+                      px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                      ${statusStyle['draft']}
+                    `}
+                    style={{width:"150px"}}
+                  >
+                    Titik Lokasi
+                  </p>
+                  <p className="mt-1">CRUD data titik lokasi marker ( berupa titik koordinat Lan dan Lon) </p>
+                  
+              </Col>
+              
+              
             </Row>
           </Container>
         </section>

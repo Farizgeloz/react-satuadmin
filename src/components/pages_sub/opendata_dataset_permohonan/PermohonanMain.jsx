@@ -128,7 +128,6 @@ const Datasetlist = () => {
       const res = await api_url_satuadmin.get(`api/opendata/dataset_permohonan/detail_jumlah/${id}`);
       const tiket = res.data.tiket || [];
       setJumlahTiketMap(prev => ({ ...prev, [id]: tiket.length }));
-      console.log("getJumlahTiket",tiket);
       
     } catch (err) {
       console.error("Gagal ambil jumlah tiket:", err);

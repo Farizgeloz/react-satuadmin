@@ -40,6 +40,8 @@ import Satupeta_Location_Maplist from "./components/pages/Halaman_Satupeta_Locat
 import Satupeta_Location_Maplist_Update from "./components/pages/Halaman_Satupeta_Location_Maplist_Update";
 import Satupeta_Locationpoint from "./components/pages/Halaman_Satupeta_Locationpoint";
 import Satupeta_Locationpoint_Update from "./components/pages/Halaman_Satupeta_Locationpoint_Update";
+import Satupeta_Location_Geospasial from "./components/pages/Halaman_Satupeta_Location_Geospasial";
+import Satupeta_Location_Geospasial_Update from "./components/pages/Halaman_Satupeta_Location_Geospasial_Update";
 import Satupeta_Iklan from "./components/pages/Halaman_Satupeta_Iklan";
 import Satupeta_Iklan_Update from "./components/pages/Halaman_Satupeta_Iklan_Update";
 import Satupeta_Berita from "./components/pages/Halaman_Satupeta_Berita";
@@ -362,6 +364,22 @@ function App() {
             <ProtectedRoute>
               <RequireRole allowedRoles={['Operator','Operator Opd','Admin','Super Admin']}>
                 <Satupeta_Locationpoint_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/Satupeta/Geospasial" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Admin','Super Admin']}>
+                <Satupeta_Location_Geospasial />
+              </RequireRole>
+            </ProtectedRoute>
+          }
+          />
+          <Route path="/Satupeta/Geospasial/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Operator','Operator Opd','Admin','Super Admin']}>
+                <Satupeta_Location_Geospasial_Update />
               </RequireRole>
             </ProtectedRoute>
             }

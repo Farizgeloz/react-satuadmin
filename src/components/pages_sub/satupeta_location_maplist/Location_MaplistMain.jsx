@@ -154,7 +154,7 @@ const Datasetlist = () => {
     },
     { 
       field: "koleksi_tipe", 
-      headerName: "Koleksi", 
+      headerName: "Tipe Peta", 
       flex: 1,
       minWidth: 100,
       filterable: true,
@@ -184,7 +184,7 @@ const Datasetlist = () => {
     },
     { 
       field: "title", 
-      headerName: "Nama Maplist", 
+      headerName: "Nama Koleksi", 
       flex: 3,
       minWidth: 100,
       filterable: true,
@@ -311,7 +311,7 @@ const Datasetlist = () => {
     },
     { 
       field: "koleksi_tipe", 
-      headerName: "Koleksi", 
+      headerName: "Tipe Peta", 
       flex: 1,
       minWidth: 100,
       filterable: true,

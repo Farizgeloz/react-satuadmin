@@ -132,7 +132,6 @@ const Datasetlist = () => {
       
       setSelectedDetail(ambil_titik);
       
-      console.log("setSelectedDetail",ambil_titik);
       
     } catch (err) {
       console.error("Gagal ambil detail:", err);

@@ -16,11 +16,11 @@ import Swal from 'sweetalert2';
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 
-
 function ModalTambahUser() {
    const [locationku, setlocationku] = useState([]);
   const [kecamatanku, setkecamatanku] = useState([]);
   const [desaku, setdesaku] = useState([]);
+  const [maplistku, setmaplistku] = useState([]);
   const [nama_location_point, setnama_location_point] = useState("");
   const [coordinatlon, setcoordinatlon] = useState("");
   const [coordinatlat, setcoordinatlat] = useState("");
@@ -54,7 +54,7 @@ function ModalTambahUser() {
     const response = await api_url_satuadmin.get('api/satupeta/map_data/admin');
 
     const data = response.data;
-    setlocationku(response.data.resultlocation);
+    setmaplistku(response.data.resultlocationmaplistUrls);
     setkecamatanku(response.data.resultkecamatan);
     setdesaku(response.data.resultdesa);
   };
@@ -208,7 +208,7 @@ function ModalTambahUser() {
                           exit={{ opacity: 0, y: -20 }}
                           transition={{ duration: 0.3 }}
                           className="w-100 mx-auto">
-                            {/* STEP INDICATOR */}
+                          {/* STEP INDICATOR */}
                           <div className="mt-4 flex items-center justify-between relative">
 
                             {/* STEP 1 */}

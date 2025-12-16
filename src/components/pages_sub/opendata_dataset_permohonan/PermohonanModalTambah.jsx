@@ -80,7 +80,6 @@ function ModalTambahUser() {
     formData.append("kecamatan_id",kecamatan.value);
     formData.append("desa_id",desa.value);
 
-    console.log("coba:"+lokasi.value);
 
     try {
       await axios.post(apiurl + 'api/satupeta/location_point/add', formData);

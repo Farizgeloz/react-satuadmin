@@ -94,7 +94,6 @@ function ModalTambahMulti() {
         desa_id: loc.desa_id.value.toString()            // <-- pastikan string
     }));
 
-    console.log("Payload locations:", payloadLocations);
 
     try {
       setLoading(true);

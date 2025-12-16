@@ -78,7 +78,6 @@ function ModalTambahUser() {
     formData.append("kecamatan_id",kecamatan.value);
     formData.append("desa_id",desa.value);
 
-    console.log("coba:"+lokasi.value);
 
     try {
       await api_url_satuadmin.post('api/satupeta/location_point/add', formData);

@@ -17,7 +17,6 @@ const portal = "Portal Satu Admin";
 
 const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
   
-    console.log("itemmenu layout:",itemmenu);
   const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
   const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
   const userloginsatker = userlogin.opd_id || '';
@@ -504,6 +503,19 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
                     Titik Lokasi Peta
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={`/Satupeta/Geospasial`}
+                  className={`tsize-100 block py-1 btn-white-a flex ${
+                    itemmenu === "Satupeta Geospasial" ? "active-menu" : ""
+                  }`}
+                >
+                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
+                    Geospasial
                   </span>
                 </Link>
               </li>

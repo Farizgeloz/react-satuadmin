@@ -283,7 +283,7 @@ const Datasetlist = () => {
       <NavSub title="Satupeta Titik Lokasi Peta" />
       <Row className="rounded g-4 drop-shadow-lg">
         {/* Breadcrumb */}
-        <Col md={8} xs={12}>
+        <Col md={12} xs={12}>
           <p className="textsize10 font-semibold text-gray-300 d-flex pt-2 mt-2 mx-3 mb-0">
             <NavLink
               to="/Dashboard"
@@ -303,29 +303,31 @@ const Datasetlist = () => {
           </p>
         </Col>
 
-        {/* DatasetModals */}
-        <Col md={4} xs={12}>
-          <Row className="g-4 drop-shadow-lg">
-            <Col xs={12}>
-              <DatasetModalTambah />
-            </Col>
-            {/* <Col xs={6}>
-              <DatasetModalTambahFile />
-            </Col> */}
-          </Row>
-        </Col>
+        
 
         {/* Download Buttons */}
-        {/* <Col md={4} xs={12}>
+        <Col md={7} xs={12}>
           <Row className="g-4 drop-shadow-lg">
-            <Col xs={6}>
+            <Col xs={3}>
               <Downloaddataku dataku={dataku} />
             </Col>
             <Col xs={6}>
               <Downloadku />
             </Col>
           </Row>
-        </Col> */}
+        </Col>
+        {/* DatasetModa
+        {/* DatasetModals */}
+        <Col md={5} xs={12} className="bg-blue">
+          <Row className="g-4 drop-shadow-lg px-3">
+            <Col md={5} xs={12}>
+              <DatasetModalTambah />
+            </Col>
+            <Col md={6} xs={6}>
+              <DatasetModalTambahFile />
+            </Col>
+          </Row>
+        </Col>
       </Row>
 
       <div className='overflow-xx-auto mb-9 p-2'>

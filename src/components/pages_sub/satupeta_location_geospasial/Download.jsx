@@ -32,7 +32,7 @@ const DownloadTemplateDropdown = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "template_location_points.csv";
+    a.download = "template_geospasial.csv";
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -44,7 +44,7 @@ const DownloadTemplateDropdown = () => {
     ]);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Template");
-    XLSX.writeFile(workbook, "template_location_points.xlsx");
+    XLSX.writeFile(workbook, "template_geospasial.xlsx");
   };
 
   return (

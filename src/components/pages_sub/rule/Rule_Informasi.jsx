@@ -410,6 +410,19 @@ const Datasetlist = () => {
                   <p className="mt-1">CRUD data titik lokasi marker ( berupa titik koordinat Lan dan Lon) </p>
                   
               </Col>
+              <Col sm={12} className="d-flex">
+                  <p
+                    className={`
+                      px-2 py-1 mx-3 textsize10 rounded-lg font-semibold inline-block w-fit
+                      ${statusStyle['draft']}
+                    `}
+                    style={{width:"150px"}}
+                  >
+                    Geospasial
+                  </p>
+                  <p className="mt-1">CRUD data geojson untuk geomap ( berupa json koordinat polygon) </p>
+                  
+              </Col>
               
               
             </Row>

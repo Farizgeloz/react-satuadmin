@@ -91,72 +91,137 @@ function DatasetModalTambahFile() {
     
   };
 
-  const handleFileChange = (e) => {
-    const f = e.target.files[0];
-    if (!f) return;
+  const isValidCoordinate = (value) => {
+    if (!value) return false;
 
-    setFile(f);
+    const v = String(value).trim();
 
-    const ext = f.name.split('.').pop().toLowerCase();
-
-    // reset error dulu
-    setErrorLocation("");
-
-    // 👉 allowed location dari JSON locationku
-    const allowedValues = locationku.map((loc) => String(loc.id_location));
-
-    if (ext === "csv") {
-      Papa.parse(f, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function (results) {
-          const rows = results.data;
-
-          // VALIDASI LOCATION
-          const invalid = rows.filter(
-            (r) => !allowedValues.includes(String(r.location).trim())
-          );
-
-          if (invalid.length > 0) {
-            setErrorLocation(
-              `❌ Ada baris dengan nilai 'location' tidak valid. Hanya boleh: ${allowedValues.join(", ")}.`
-            );
-          } else {
-            setErrorLocation("");
-          }
-
-          setPreviewData(rows);
-          setShowPreview(true);
-        },
-      });
-    } 
-    else if (ext === "xlsx" || ext === "xls") {
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        const bstr = evt.target.result;
-        const workbook = XLSX.read(bstr, { type: "binary" });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-
-        // VALIDASI LOCATION
-        const invalid = data.filter(
-          (r) => !allowedValues.includes(String(r.location).trim())
-        );
-
-        if (invalid.length > 0) {
-          setErrorLocation(
-            `❌ Ada baris dengan nilai 'location' tidak valid. Hanya boleh: ${allowedValues.join(", ")}.`
-          );
-        } else {
-          setErrorLocation("");
-        }
-
-        setPreviewData(data);
-        setShowPreview(true);
-      };
-      reader.readAsBinaryString(f);
+    // HARUS format JSON ARRAY: [x,y]
+    if (!v.startsWith("[") || !v.endsWith("]")) {
+      return false;
     }
+
+    let arr;
+    try {
+      arr = JSON.parse(v);
+    } catch {
+      return false; // bukan JSON valid
+    }
+
+    // HARUS array 2 elemen
+    if (!Array.isArray(arr) || arr.length !== 2) {
+      return false;
+    }
+
+    const [lon, lat] = arr;
+
+    // HARUS number murni
+    if (
+      typeof lon !== "number" ||
+      typeof lat !== "number" ||
+      !Number.isFinite(lon) ||
+      !Number.isFinite(lat)
+    ) {
+      return false;
+    }
+
+    // RANGE GEO
+    if (
+      lon < -180 || lon > 180 ||
+      lat < -90 || lat > 90
+    ) {
+      return false;
+    }
+
+    return true;
   };
+
+
+const handleFileChange = (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+
+  setFile(f);
+
+  const ext = f.name.split(".").pop().toLowerCase();
+
+  // reset error dulu
+  setErrorLocation("");
+
+  // 👉 allowed location dari JSON locationku
+  const allowedValues = locationku.map((loc) => String(loc.id_location));
+
+  const processRows = (rows) => {
+    // VALIDASI LOCATION
+    const invalidLocation = rows.filter(
+      (r) => !allowedValues.includes(String(r.location ?? "").trim())
+    );
+
+    // VALIDASI COORDINATE + INDEX
+    const invalidCoordinate = rows
+      .map((r, i) => ({
+        index: i,
+        row: i + 2,
+        value: String(r.coordinat ?? "").trim(),
+      }))
+      .filter(
+        (r) =>
+          r.value !== "" &&
+          r.value !== "-" &&
+          r.value.toLowerCase() !== "null" &&
+          r.value.toLowerCase() !== "undefined" &&
+          r.value !== "[]" &&
+          !isValidCoordinate(r.value)
+      );
+
+    // Tandai baris yang error
+    const invalidSet = new Set(invalidCoordinate.map((r) => r.index));
+
+    const rowsWithError = rows.map((r, i) => ({
+      ...r,
+      __coordError: invalidSet.has(i),
+    }));
+
+    if (invalidLocation.length > 0) {
+      setErrorLocation(
+        `❌ Ada baris dengan nilai 'location' tidak valid. Hanya boleh: ${allowedValues.join(
+          ", "
+        )}.`
+      );
+    } else if (invalidCoordinate.length > 0) {
+      setErrorLocation(
+        `❌ Coordinate tidak valid pada baris: ${invalidCoordinate
+          .map((r) => r.row)
+          .join(", ")}`
+      );
+    } else {
+      setErrorLocation("");
+    }
+
+    setPreviewData(rowsWithError);
+    setShowPreview(true);
+  };
+
+  if (ext === "csv") {
+    Papa.parse(f, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => processRows(results.data),
+    });
+  } else if (ext === "xlsx" || ext === "xls") {
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const bstr = evt.target.result;
+      const workbook = XLSX.read(bstr, { type: "binary" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+      processRows(data);
+    };
+    reader.readAsBinaryString(f);
+  }
+};
+
+
 
 
 
@@ -195,9 +260,9 @@ function DatasetModalTambahFile() {
       
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage(`❌ Upload gagal: ${err.response.data.error} (${err.response.data.detail})`);
+        sweeterror(`❌ Upload gagal: ${err.response.data.error} (${err.response.data.detail})`);
       } else {
-        setMessage(`❌ Terjadi error: ${err.message}`);
+        sweeterror(`❌ Terjadi error: ${err.message}`);
       }
     } finally {
       setLoading(false);
@@ -240,9 +305,9 @@ function DatasetModalTambahFile() {
 
   return (
     <>
-      <Link onClick={handleShow} className="col-span-1 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right mt-2 ">
+      <Link onClick={handleShow} className="col-span-1 max-[640px]:col-span-2 tsize-110 font-semibold text-white-a flex-right mt-2 ">
         <button 
-          className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
+          className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-3 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
             <MdAddCircle className="mt-1 mx-1" /><span>Upload Data</span>
         </button>
       </Link>
@@ -277,7 +342,7 @@ function DatasetModalTambahFile() {
                 />
               </Form.Group>
              
-            </Form>
+            
             {message && (
               <Alert className="mt-3" variant={message.startsWith("✅") ? "success" : "danger"}>
                 {message}
@@ -337,34 +402,49 @@ function DatasetModalTambahFile() {
 
                     <tbody>
                       {previewData
-                        .slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)
+                        .slice(
+                          (currentPage - 1) * rowsPerPage,
+                          currentPage * rowsPerPage
+                        )
                         .map((row, i) => {
                           const allowedValues = locationku.map((loc) =>
                             String(loc.id_location)
                           );
-                          const isValid = allowedValues.includes(
-                            String(row.location).trim()
+
+                          const isValidLocation = allowedValues.includes(
+                            String(row.location ?? "").trim()
                           );
 
                           return (
                             <tr key={i}>
-                              {Object.keys(row).map((col) => (
-                                <td
-                                  key={col}
-                                  className={
-                                    col === "location"
-                                      ? isValid
-                                        ? "bg-success text-white"
-                                        : "bg-danger text-white"
-                                      : ""
-                                  }
-                                >
-                                  {row[col]}
-                                </td>
-                              ))}
+                              {Object.keys(row).map((col) => {
+                                // sembunyikan flag internal
+                                if (col === "__coordError") return null;
+
+                                let className = "";
+
+                                // VALIDASI LOCATION
+                                if (col === "location") {
+                                  className = isValidLocation
+                                    ? "bg-success text-white"
+                                    : "bg-danger text-white";
+                                }
+
+                                // VALIDASI COORDINAT (BACKGROUND MERAH)
+                                if (col === "coordinat" && row.__coordError) {
+                                  className = "bg-danger text-white";
+                                }
+
+                                return (
+                                  <td key={col} className={className}>
+                                    {row[col]}
+                                  </td>
+                                );
+                              })}
                             </tr>
                           );
                         })}
+
                     </tbody>
                   </table>
                 </div>
@@ -381,15 +461,14 @@ function DatasetModalTambahFile() {
 
                 {errorLocation && (
                   <p className="text-danger mt-2">
-                    ⚠ Ada baris yang kolom <b>location</b>-nya tidak sesuai. Hanya boleh:{" "}
-                    <b>{locationku.map((l) => l.nama_location+"=>"+l.id_location).join(", ")}</b>
+                    {errorLocation}
                   </p>
                 )}
               </div>
             )}
 
 
-
+          </Form>  
               
           </Modal.Body>
           <Modal.Footer>

@@ -241,9 +241,9 @@ const handleFileChange = (e) => {
       
     } catch (err) {
       if (err.response?.status === 400) {
-        setMessage(`❌ Upload gagal: ${err.response.data.error} (${err.response.data.detail})`);
+        sweeterror(`❌ Upload gagal: ${err.response.data.error} (${err.response.data.detail})`);
       } else {
-        setMessage(`❌ Terjadi error: ${err.message}`);
+        sweeterror(`❌ Terjadi error: ${err.message}`);
       }
     } finally {
       setLoading(false);
@@ -286,9 +286,9 @@ const handleFileChange = (e) => {
 
   return (
     <>
-      <Link onClick={handleShow} className="col-span-1 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right mt-2 ">
+      <Link onClick={handleShow} className="col-span-1 max-[640px]:col-span-2 tsize-110 font-semibold text-white-a flex-right mt-2 ">
         <button 
-          className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
+          className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-3 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
             <MdAddCircle className="mt-1 mx-1" /><span>Upload Data</span>
         </button>
       </Link>
@@ -322,16 +322,7 @@ const handleFileChange = (e) => {
                   sx={(theme) => textFieldStyle(theme)}
                 />
               </Form.Group>
-               {/* UPLOAD BUTTON */}
-                 {!errorGeojson && (
-                  <button 
-                      type="submit"
-                      disabled={errorGeojson}
-                      className="w-50 bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1 mt-3">
-                      <MdOutlineSave  className='mt-1 mx-1'  /><span>{loading ? <Spinner animation="border" size="sm" /> : "✔ Konfirmasi & Upload"}</span>
-                  </button>  
-                )}
-            </Form>
+               
             {message && (
               <Alert className="mt-3" variant={message.startsWith("✅") ? "success" : "danger"}>
                 {message}
@@ -427,9 +418,20 @@ const handleFileChange = (e) => {
                     {errorGeojson}
                   </p>
                 )}
+
+                 {/* UPLOAD BUTTON */}
+              {!errorGeojson && (
+                  <button 
+                      type="submit"
+                      disabled={errorGeojson}
+                      className="w-50 bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1 mt-3">
+                      <MdOutlineSave  className='mt-1 mx-1'  /><span>{loading ? <Spinner animation="border" size="sm" /> : "✔ Konfirmasi & Upload"}</span>
+                  </button>  
+                )}
               </div>
             )}
-
+           
+            </Form>
 
 
               

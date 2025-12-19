@@ -151,10 +151,41 @@ const handleFileChange = (e) => {
   const allowedValues = maplistku.map((l) => String(l.id_maplist));
   const ext = f.name.split(".").pop().toLowerCase();
 
+  // ⬇️ DAFTAR KOLOM WAJIB
+  const requiredColumns = ['nama_geospasial',
+                'jenis',
+                'geojson',
+                'koleksi',
+                'luas_area',
+                'satuan',
+                'kecamatan',
+                'desa',
+                'map_color'];
+  
+
   const processRows = (rows) => {
+    if (!rows || rows.length === 0) return;
+
+    // 🔴 VALIDASI KOLOM WAJIB ADA / TIDAK
+    const headerColumns = Object.keys(rows[0] || {});
+    const missingColumns = requiredColumns.filter(
+      (c) => !headerColumns.includes(c)
+    );
+
+    if (missingColumns.length > 0) {
+      setErrorGeojson(
+        `❌ Kolom wajib tidak ditemukan: ${missingColumns.join(", ")}`
+      );
+      setPreviewData([]);
+      setShowPreview(true);
+      return; // ⛔ STOP PROSES
+    }
+
     const processed = rows.map((row, index) => {
       const geo = validateGeoJsonPolygon(row.geojson);
-      const koleksiValid = allowedValues.includes(String(row.koleksi).trim());
+      const koleksiValid = allowedValues.includes(
+        String(row.koleksi ?? "").trim()
+      );
 
       return {
         ...row,
@@ -169,7 +200,7 @@ const handleFileChange = (e) => {
     const koleksiErrorRow = processed.find((r) => !r.__koleksiValid);
 
     if (koleksiErrorRow) {
-      setErrorLocation(
+      setErrorGeojson(
         `❌ Koleksi salah di baris ke-${koleksiErrorRow.__rowIndex}`
       );
     }
@@ -374,9 +405,11 @@ const handleFileChange = (e) => {
                   <table className="table table-bordered table-sm">
                     <thead>
                       <tr>
-                        {Object.keys(previewData[0] || {}).map((col) => (
-                          <th key={col}>{col}</th>
-                        ))}
+                        {Object.keys(previewData[0] || {})
+                          .filter((c) => !c.startsWith("__"))
+                          .map((col) => (
+                            <th key={col}>{col}</th>
+                          ))}
                       </tr>
                     </thead>
 

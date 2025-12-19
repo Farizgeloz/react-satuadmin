@@ -18,6 +18,7 @@ import {
   columnChartOptions,
   lineChartOptions
 } from "../chartku/options";
+import { api_url_satuadmin } from "../../api/axiosConfig";
 
 
 const Beranda = () => {
@@ -35,7 +36,7 @@ const Beranda = () => {
 
   const getPenduduk = async () => {
     const response = await api_url_satuadmin.get(
-      apiurl+`backend_dashboard`
+      `backend_dashboard`
     );
     setPenduduk(response.data.resultpenduduk);
     setLahirMonth(response.data.resultlahirmonth);

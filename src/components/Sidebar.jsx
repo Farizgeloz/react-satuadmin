@@ -105,18 +105,27 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
 
 
   return (
-    <div className={` ${ open ? "w-rem16 " : "w-16 " } bg-linear-10 shadow-md border-solid border-2 h-100v  pt-2 relative duration-300 z-8 max-[680px]:hidden  `} >
+    <div className={` ${ open ? "w-rem16 " : "w-17 " } bg-linear-10 shadow-md border-solid border-2 h-100v  pt-2 relative duration-300 z-8 max-[680px]:hidden  `} >
       {/*<img src="/assetku/control.png" className={`absolute cursor-pointer -right-3 top-9 w-7  border-dark-purple
           border-2 rounded-full  ${!open && "rotate-180"}`}
         onClick={() => setOpen(!open)} />*/}
       <div className={` ${ open ? "w-46 " : "w-16 " } gap-x-4 items-center py-1 pb-2  garis7  bg-linear-10`}>
         
-        <img src={image2} className={` ${ open ? "ml-1 mx-auto d-block " : " mt-1 mx-auto d-block" } img-50 cursor-pointer duration-500 ${ open && "rotate-[360deg]" }`} onClick={() => setOpen(!open)}  />
+        <img
+          src="/logo.png"
+          className={`${
+            open ? "ml-1 mx-auto d-block" : "mt-1 mx-auto d-block"
+          } img-45 cursor-pointer duration-500 ${open && "rotate-[360deg]"}`}
+          onClick={() => setOpen(!open)}
+          data-bs-toggle="tooltip"
+          data-bs-placement="right"
+          title={open ? "Sembunyikan Menu" : "Tampilkan Menu"}
+        />
         <div>
           <p className={`text-white origin-left text-center  textsize12 font_weight600 duration-200 mb-0 ${ !open && "hidden" }`} >
             SATU ADMIN
           </p>
-          <p className={`text-white bg-red rad15 text-center textsize11 duration-200 mb-0 px-2 ${ !open && "hidden" }`} >
+          <p className={`text-white bg-red rad15 text-center textsize10 duration-200 mx-2 mb-0 px-2 ${ !open && "hidden" }`} >
             KAB. PROBOLINGGO
           </p>
         </div>

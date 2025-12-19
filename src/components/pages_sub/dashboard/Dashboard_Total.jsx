@@ -122,7 +122,7 @@ const Welcome = () => {
 
       <Container className="mb-5">
         {/* Satu Portal Info Title */}
-        <Row>
+        {/* <Row>
           <Col>
             <p className="textsize10 mt-5">Open Data Info</p>
           </Col>
@@ -131,7 +131,7 @@ const Welcome = () => {
           <InfoBox bgClass="#B71C1C" title="Iklan" count={count_satuportal_iklan} Icon={IoPricetagOutline} />
           <InfoBox bgClass="#B71C1C" title="Pengumuman" count={count_satuportal_pengumuman} Icon={IoMegaphoneOutline } />
           <InfoBox bgClass="#B71C1C" title="Visitor" count={count_satuportal_visitors} Icon={IoEyeOutline} />
-        </Row>
+        </Row> */}
         {/* Open Data Info Title */}
         <Row>
           <Col>

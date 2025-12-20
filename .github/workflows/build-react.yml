@@ -1,24 +1,32 @@
-name: Build React App + Deploy to Server
+name: Build & Deploy React (Staging & Production)
 
 on:
   push:
     branches:
       - main
+      - staging  # branch staging otomatis deploy ke server staging
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
+    env:
+      # Tentukan environment berdasarkan branch
+      ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
     steps:
-      - name: Checkout repository
+      # 1. Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v3
 
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Cache node modules
+      # 3. Cache npm dependencies
+      - name: Cache npm
         uses: actions/cache@v3
         with:
           path: ~/.npm
@@ -26,18 +34,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      # 4. Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build React app
+      # 5. Build React
+      - name: Build React
         run: npm run build
 
-      #- name: Deploy build to server via SCP
-      #  uses: appleboy/scp-action@v0.1.7
-      #  with:
-      ##    host: ${ secrets.SERVER_HOST }}
-       #   username: ${ secrets.SERVER_USER }}
-       #   key: ${ secrets.SERVER_SSH_KEY }}
-       #   port: ${ secrets.SERVER_PORT || 22 }}
-        #  source: "dist/*"
-       #   target: "/var/www/react-app"
+      # 6. Upload build folder via rsync (hanya file berubah)
+      #- name: Deploy to server via SSH
+       # uses: appleboy/ssh-action@v0.1.7
+       # with:
+       #   host: ${{ secrets.SERVER_HOST }}
+        #  username: ${{ secrets.SERVER_USER }}
+        #  key: ${{ secrets.SERVER_SSH_KEY }}
+        #  port: ${{ secrets.SERVER_PORT }}
+        #  script: |
+         #   echo "Deploying ${ENV} build..."
+            # Backup current version (rollback)
+         #   if [ -d /var/www/html/myapp ]; then
+         #     mv /var/www/html/myapp /var/www/html/myapp_backup_$(date +%Y%m%d%H%M%S)
+         #   fi
+            # Copy build
+        #    rsync -av --delete ./dist/ /var/www/html/myapp/
+            # Restart server
+        #    sudo systemctl restart nginx

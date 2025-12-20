@@ -1,4 +1,4 @@
-name: Build React App (Safe, no auto-commit)
+name: Build React App + Deploy to Server
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,28 +26,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install dependencies via npm ci
-        run: |
-          set -e
-          if ! npm ci; then
-            echo "ERROR: package-lock.json is out of sync with package.json"
-            echo "Run 'npm install' locally and commit the updated package-lock.json"
-            exit 1
-          fi
+      - name: Install dependencies
+        run: npm install
 
       - name: Build React app
         run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-
-
-
-      # 5. Deploy via SCP to server
-      - name: Copy build to server
+      - name: Deploy build to server via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}

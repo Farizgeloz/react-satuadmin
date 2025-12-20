@@ -30,7 +30,7 @@ import { MdDashboard,MdDataset,MdEditSquare,
 import KontenEditor from "../KontenEditor";
 
 import _ from "lodash";
-import { api_url_satudata } from '../../../../../frontend_opendata/src/api/axiosConfig';
+import { api_url_satudata } from '../../../api/axiosConfig';
 import { api_url_satuadmin } from '../../../api/axiosConfig';
 
 

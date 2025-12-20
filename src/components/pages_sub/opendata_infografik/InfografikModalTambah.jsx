@@ -22,7 +22,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Modal from 'react-bootstrap/Modal';
 import "../../../App.css";
 import Swal from 'sweetalert2';
-import { api_url_satudata } from "../../../../../frontend_opendata/src/api/axiosConfig";
+import { api_url_satudata } from "../../../api/axiosConfig";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
 
 

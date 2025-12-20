@@ -151,23 +151,33 @@ const handleFileChange = (e) => {
   const allowedValues = maplistku.map((l) => String(l.id_maplist));
   const ext = f.name.split(".").pop().toLowerCase();
 
-  // ⬇️ DAFTAR KOLOM WAJIB
-  const requiredColumns = ['nama_geospasial',
-                'jenis',
-                'geojson',
-                'koleksi',
-                'luas_area',
-                'satuan',
-                'kecamatan',
-                'desa',
-                'map_color'];
-  
+  const requiredColumns = [
+    'nama_geospasial',
+    'jenis',
+    'geojson',
+    'koleksi',
+    'luas_area',
+    'satuan',
+    'kecamatan',
+    'desa',
+    'map_color'
+  ];
+
+  const normalizeRow = (row) => {
+    const clean = {};
+    Object.keys(row).forEach(k => {
+      clean[k.trim()] =
+        typeof row[k] === "string" ? row[k].trim() : row[k];
+    });
+    return clean;
+  };
 
   const processRows = (rows) => {
     if (!rows || rows.length === 0) return;
 
-    // 🔴 VALIDASI KOLOM WAJIB ADA / TIDAK
-    const headerColumns = Object.keys(rows[0] || {});
+    const normalizedRows = rows.map(normalizeRow);
+
+    const headerColumns = Object.keys(normalizedRows[0] || {});
     const missingColumns = requiredColumns.filter(
       (c) => !headerColumns.includes(c)
     );
@@ -178,10 +188,10 @@ const handleFileChange = (e) => {
       );
       setPreviewData([]);
       setShowPreview(true);
-      return; // ⛔ STOP PROSES
+      return;
     }
 
-    const processed = rows.map((row, index) => {
+    const processed = normalizedRows.map((row, index) => {
       const geo = validateGeoJsonPolygon(row.geojson);
       const koleksiValid = allowedValues.includes(
         String(row.koleksi ?? "").trim()
@@ -215,22 +225,63 @@ const handleFileChange = (e) => {
     setShowPreview(true);
   };
 
+  // ===============================
+  // ✅ CSV → AUTO CONVERT TO XLSX
+  // ===============================
   if (ext === "csv") {
     Papa.parse(f, {
       header: true,
       skipEmptyLines: true,
-      complete: (res) => processRows(res.data),
+      delimiter: ",",
+      quoteChar: '"',
+      escapeChar: '"',
+      dynamicTyping: false,
+      transformHeader: h => h.trim(),
+      transform: v => (typeof v === "string" ? v.trim() : v),
+      complete: (res) => {
+        if (!res.data || !res.data.length) return;
+
+        // ⬇️ AUTO CREATE XLSX IN MEMORY
+        const ws = XLSX.utils.json_to_sheet(res.data, {
+          raw: false
+        });
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "DATA");
+
+        // ⬇️ BACA ULANG SEPERTI FILE XLSX ASLI
+        const jsonRows = XLSX.utils.sheet_to_json(
+          wb.Sheets.DATA,
+          { defval: "", raw: false }
+        );
+
+        processRows(jsonRows);
+      },
+      error: () => {
+        setErrorGeojson("❌ Gagal membaca CSV. Pastikan format valid.");
+      }
     });
-  } else {
+  }
+
+  // ===============================
+  // ✅ XLSX / XLS NORMAL
+  // ===============================
+  else {
     const reader = new FileReader();
     reader.onload = (e) => {
       const wb = XLSX.read(e.target.result, { type: "binary" });
       const ws = wb.Sheets[wb.SheetNames[0]];
-      processRows(XLSX.utils.sheet_to_json(ws, { defval: "" }));
+      processRows(
+        XLSX.utils.sheet_to_json(ws, {
+          defval: "",
+          raw: false
+        })
+      );
     };
     reader.readAsBinaryString(f);
   }
 };
+
 
 
 
@@ -331,7 +382,7 @@ const handleFileChange = (e) => {
           keyboard={false}
       >
           <Modal.Header closeButton className="border-b ">
-              <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Lokasi Maplist Lewat File</h4>
+              <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Geospasial Lewat File</h4>
               
           </Modal.Header>
           <Modal.Body className="mt-2 bg-silver-light px-5">

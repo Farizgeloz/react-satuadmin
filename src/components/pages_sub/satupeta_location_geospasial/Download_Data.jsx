@@ -37,29 +37,48 @@ const DownloadTemplateDropdown = ({ dataku }) => {
 
   // CSV
   const downloadTemplateCSV = () => {
+    const escapeCSV = (value) => {
+      if (value === null || value === undefined) return "";
+
+      const str = String(value);
+
+      // jika mengandung koma, newline, atau quote → WAJIB di-quote
+      if (/[",\n]/.test(str)) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+
+      return str;
+    };
+
     const rows = [
-      headers,
+      headers.map(escapeCSV),
       ...dataku.map(item => [
-        item.nama_geospasial || "",
-        item.jenis || "",
-        item.geojson || "",
-        item.id_maplist || "",
-        item.luas_area || "",
-        item.satuan || "",
-        item.kecamatan_id || "",
-        item.desa_id || "",
-        item.map_color || ""
+        escapeCSV(item.nama_geospasial || ""),
+        escapeCSV(item.jenis || ""),
+        escapeCSV(item.geojson || ""),     // ⬅️ INI SEKARANG AMAN
+        escapeCSV(item.id_maplist || ""),
+        escapeCSV(item.luas_area || ""),
+        escapeCSV(item.satuan || ""),
+        escapeCSV(item.kecamatan_id || ""),
+        escapeCSV(item.desa_id || ""),
+        escapeCSV(item.map_color || "")
       ])
     ];
 
-    const csvContent = rows.map(e => e.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const csvContent = rows.map(row => row.join(",")).join("\n");
+
+    const blob = new Blob(
+      [csvContent],
+      { type: "text/csv;charset=utf-8;" }
+    );
+
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
     a.href = url;
     a.download = `${today}_map_geospasial.csv`;
     a.click();
+
     URL.revokeObjectURL(url);
   };
 
@@ -95,9 +114,9 @@ const DownloadTemplateDropdown = ({ dataku }) => {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item as="button" onClick={downloadTemplateExcel}>
+         {/*  <Dropdown.Item as="button" onClick={downloadTemplateExcel}>
             Download xlsx
-          </Dropdown.Item>
+          </Dropdown.Item> */}
           <Dropdown.Item as="button" onClick={downloadTemplateCSV}>
             Download CSV
           </Dropdown.Item>

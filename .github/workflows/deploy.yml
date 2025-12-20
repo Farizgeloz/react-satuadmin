@@ -5,6 +5,9 @@ on:
     branches:
       - main   # ganti kalau branch utama kamu bukan 'main'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,8 +32,8 @@ jobs:
         run: npm run build
 
       # Deploy ke GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v4
+     #    with:
+      #     github_token: ${ secrets.GITHUB_TOKEN }}
+       #    publish_dir: ./build

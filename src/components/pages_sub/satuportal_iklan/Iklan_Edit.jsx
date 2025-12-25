@@ -109,7 +109,7 @@ function IklanPengelolah() {
  
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`open-item/ekosistem-iklan/detail/${id}`);
+    const response = await api_url_satuadmin.get(`openitem/ekosistem-iklan/detail/${id}`);
     setid(response.data.id);
     settitle(response.data.title);
     setimages(response.data.presignedUrl);
@@ -142,7 +142,7 @@ function IklanPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`open-item/ekosistem-iklan/update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`openitem/ekosistem-iklan/update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

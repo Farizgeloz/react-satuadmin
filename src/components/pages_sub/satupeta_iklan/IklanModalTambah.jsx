@@ -144,7 +144,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('open-item/satupeta-iklan/add', formData);
+      await api_url_satuadmin.post('openitem/satupeta-iklan/add', formData);
 
       setShow(false);
       setLoading(false);

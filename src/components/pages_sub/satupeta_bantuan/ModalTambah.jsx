@@ -103,7 +103,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('open-item/satupeta-bantuan/add', formData);
+      await api_url_satuadmin.post('openitem/satupeta-bantuan/add', formData);
 
       setShow(false);
       setLoading(false);

@@ -48,7 +48,7 @@ function ModalDelete(props) {
         komponen: "Delete Iklan Satu Peta"
       };
 
-      await api_url_satuadmin.delete(`open-item/satupeta-iklan/delete/${id}`, {
+      await api_url_satuadmin.delete(`openitem/satupeta-iklan/delete/${id}`, {
         data: payload, // body DELETE dikirim lewat "data"
         headers: { 'Content-Type': 'application/json' }
       });

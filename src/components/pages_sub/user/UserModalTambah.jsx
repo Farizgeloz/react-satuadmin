@@ -102,7 +102,7 @@ function ModalTambahUser() {
   }, [satker]);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get('open-item/satker', {
+    const response = await api_url_satuadmin.get('openitem/satker', {
       params: {
         search_satker: userloginsatker
       },

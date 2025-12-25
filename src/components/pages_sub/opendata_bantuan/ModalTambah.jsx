@@ -104,7 +104,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('open-item/opendata-bantuan/add', formData);
+      await api_url_satuadmin.post('openitem/opendata-bantuan/add', formData);
 
       setShow(false);
       setLoading(false);

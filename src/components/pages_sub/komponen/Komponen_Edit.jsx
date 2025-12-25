@@ -202,7 +202,7 @@ function Satuportal_listPengelolah() {
   
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`open-item/komponen_detail/${id}`);
+    const response = await api_url_satuadmin.get(`openitem/komponen_detail/${id}`);
     setid(response.data.id);
     setkategori(response.data.kategori);
     settitle(response.data.title);
@@ -248,7 +248,7 @@ function Satuportal_listPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`open-item/komponen_update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`openitem/komponen_update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

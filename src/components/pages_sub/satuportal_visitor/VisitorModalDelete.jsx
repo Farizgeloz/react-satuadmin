@@ -38,7 +38,7 @@ function ModalDelete(props) {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.delete(`open-item/ekosistem-visitor/delete/${id}`);
+      await api_url_satuadmin.delete(`openitem/ekosistem-visitor/delete/${id}`);
       //navigate("/");
       setShow(false);
       setLoading(false);

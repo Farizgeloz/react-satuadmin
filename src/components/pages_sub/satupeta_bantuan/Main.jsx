@@ -39,7 +39,7 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`open-item/satupeta-bantuan`);
+    const res = await api_url_satuadmin.get(`openitem/satupeta-bantuan`);
     const data = res.data.resultWithUrls || [];
     setDatasetku(data);
     setRowsFiltered(data);

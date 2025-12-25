@@ -113,7 +113,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('open-item/opendata-iklan/add', formData);
+      await api_url_satuadmin.post('openitem/opendata-iklan/add', formData);
 
       setShow(false);
       setLoading(false);

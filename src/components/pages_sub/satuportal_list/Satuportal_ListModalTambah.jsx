@@ -200,7 +200,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('open-item/komponen_add', formData);
+      await api_url_satuadmin.post('openitem/komponen_add', formData);
 
       setShow(false);
       setLoading(false);

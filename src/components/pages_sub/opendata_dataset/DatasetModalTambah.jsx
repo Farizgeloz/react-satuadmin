@@ -87,7 +87,7 @@ function ModalTambahUser() {
      
 
       try {
-        const response = await api_url_satuadmin.get('open-item/satker_code_search', {
+        const response = await api_url_satuadmin.get('openitem/satker_code_search', {
           params: {
             search_satker: satkeri.value
           }

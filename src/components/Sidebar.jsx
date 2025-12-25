@@ -89,7 +89,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
     try {
       
 
-      const response_image = await api_url_satuadmin.get('open-item/images_item', {
+      const response_image = await api_url_satuadmin.get('openitem/images_item', {
         params: {
           portal:portal
         }
@@ -112,7 +112,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
       <div className={` ${ open ? "w-46 " : "w-16 " } gap-x-4 items-center py-1 pb-2  garis7  bg-linear-10`}>
         
         <img
-          src="/logo.png"
+          src="./logo.png"
           className={`${
             open ? "ml-1 mx-auto d-block" : "mt-1 mx-auto d-block"
           } img-45 cursor-pointer duration-500 ${open && "rotate-[360deg]"}`}
@@ -130,7 +130,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
           </p>
         </div>
       </div>
-      <ul className="pt-6 pr-3  h-85v overflow-yy-auto" style={{ margin: "0px 0px 0px -20px"}}>
+      <ul className="pt-6 pr-3  h-85v overflow-yy-auto" style={{ margin: "0px 0px 0px 0px"}}>
         <p className={`text-sage-light  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
         <li className={`-right-20 `}>
           {/* button */}
@@ -621,7 +621,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
       {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
       <>
 
-      <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Data Item</p>
+      <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Lainnya</p>
       <li className={`-right-20 mb-1`}>
         {/* button */}
         <Link

@@ -47,7 +47,7 @@ const ColorPickerDialog = ({ isOpen, onClose, rowData, onSave }) => {
 
   const getSatuportal_listSearch = async () => {
     try {
-      const response = await api_url_satuadmin.get('open-item/site_opendata_setting');
+      const response = await api_url_satuadmin.get('openitem/site_opendata_setting');
       const res = response.data;
 
       if (Array.isArray(res) && res.length > 0) {
@@ -94,7 +94,7 @@ const ColorPickerDialog = ({ isOpen, onClose, rowData, onSave }) => {
       });
       console.log(`colorku:` + colors.id);
       
-      await api_url_satuadmin.patch(`open-item/site_opendata_setting_update/${colors.id}`, formData, {
+      await api_url_satuadmin.patch(`openitem/site_opendata_setting_update/${colors.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -53,7 +53,7 @@ const Satuportal_listlist = () => {
 
   const getSatuportal_listSearch = async () => {
     try {
-      const response = await api_url_satuadmin.get('open-item/site_opendata_setting');
+      const response = await api_url_satuadmin.get('openitem/site_opendata_setting');
       const res = response.data;
       setRowsFiltered([res]);
 

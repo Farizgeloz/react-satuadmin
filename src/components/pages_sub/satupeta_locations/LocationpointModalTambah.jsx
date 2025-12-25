@@ -51,7 +51,7 @@ function ModalTambahUser() {
   const handleShow = () => setShow(true);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get('api/satupeta/map_data/admin');
+    const response = await api_url_satuadmin.get('satupeta/map_data/admin');
 
     const data = response.data;
     setlocationku(response.data.resultlocation);
@@ -81,7 +81,7 @@ function ModalTambahUser() {
 
 
     try {
-      await api_url_satuadmin.post('api/satupeta/location_point/add', formData);
+      await api_url_satuadmin.post('satupeta/location_point/add', formData);
 
       setShow(false);
       sweetsuccess();

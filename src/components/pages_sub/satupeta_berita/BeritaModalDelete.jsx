@@ -48,7 +48,7 @@ function ModalDelete(props) {
         komponen: "Delete Artikel Satu Peta"
       };
 
-      await api_url_satuadmin.delete(`api/satupeta/map_artikel/delete/${id}`, {
+      await api_url_satuadmin.delete(`satupeta/map_artikel/delete/${id}`, {
         data: payload, // body DELETE dikirim lewat "data"
         headers: { 'Content-Type': 'application/json' }
       });

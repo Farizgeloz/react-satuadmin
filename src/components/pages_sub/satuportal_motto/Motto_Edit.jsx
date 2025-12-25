@@ -148,7 +148,7 @@ function MottoPengelolah() {
  
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`api/open-item/komponen_detail/${id}`);
+    const response = await api_url_satuadmin.get(`open-item/komponen_detail/${id}`);
     setid(response.data.id);
     settitle(response.data.title);
     setcontents(response.data.contents);
@@ -178,7 +178,7 @@ function MottoPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/open-item/komponen_update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`open-item/komponen_update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

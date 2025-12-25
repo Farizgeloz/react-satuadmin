@@ -139,7 +139,7 @@ function IklanPengelolah() {
  
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`api/open-item/opendata-iklan/detail/${id}`);
+    const response = await api_url_satuadmin.get(`open-item/opendata-iklan/detail/${id}`);
     setid(response.data.id);
     settitle(response.data.title);
     setimages(response.data.presignedUrl);
@@ -172,7 +172,7 @@ function IklanPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/open-item/opendata-iklan/update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`open-item/opendata-iklan/update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -391,7 +391,7 @@ function IklanPengelolah() {
                               <div className="p-3 rad15 border bg-white shadow-sm">
 
                                 <label className="font_weight600 textsize12 mb-2 d-block">
-                                  Tautan Url
+                                  Tautan Link
                                 </label>
 
                                 <TextField

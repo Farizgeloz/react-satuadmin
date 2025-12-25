@@ -184,7 +184,7 @@ function DatasetPengelolah() {
 
   const getDataById = async () => {
     try {
-      const response = await api_url_satuadmin.get(`api/satupeta/Koleksi-Peta/detail/${id}`);
+      const response = await api_url_satuadmin.get(`satupeta/Koleksi-Peta/detail/${id}`);
 
       // Ambil data utama
       setid_data(response.data.data.id_maplist);
@@ -252,7 +252,7 @@ function DatasetPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/satupeta/Koleksi-Peta/update/${id_data}`, formData, {
+      await api_url_satuadmin.patch(`satupeta/Koleksi-Peta/update/${id_data}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

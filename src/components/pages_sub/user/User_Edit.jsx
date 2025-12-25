@@ -109,7 +109,7 @@ function UserEdit() {
   }, [satker]);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get('api/open-item/satker', {
+    const response = await api_url_satuadmin.get('open-item/satker', {
       params: {
         search_satker: userloginsatker
       },
@@ -126,7 +126,7 @@ function UserEdit() {
   
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`api/open-user/user/${id}`);
+    const response = await api_url_satuadmin.get(`open-user/user/${id}`);
     setid(response.data.uuid);
     setname(response.data.name);
     setnick(response.data.nick);
@@ -152,7 +152,7 @@ function UserEdit() {
       formData.append("jenis", "Satu Admin Pengguna");
       formData.append("komponen", "Update Pengguna Satu Admin" );
       try {
-        await api_url_satuadmin.patch(`api/open-user/user/update/${idku}`, formData, {
+        await api_url_satuadmin.patch(`open-user/user/update/${idku}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

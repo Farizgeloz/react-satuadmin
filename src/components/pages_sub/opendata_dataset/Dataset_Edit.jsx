@@ -135,7 +135,7 @@ function DatasetPengelolah() {
   
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get('api/opendata/dataset_item');
+    const response = await api_url_satuadmin.get('opendata/dataset_item');
 
     const data = response.data;
     setProdukDataku(response.data.resultSatker);
@@ -144,7 +144,7 @@ function DatasetPengelolah() {
   
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`api/opendata/dataset_data_detail/${id}`);
+    const response = await api_url_satuadmin.get(`opendata/dataset_data_detail/${id}`);
     setid(response.data.id);
     setkode(response.data.kode);
     setwilayah(response.data.wilayah);
@@ -187,7 +187,7 @@ function DatasetPengelolah() {
     formData.append("keterangan",keterangan);
     formData.append("tag",tag);
     try {
-      await axios.patch(`api/opendata/dataset_data_update/${idku}`, formData, {
+      await axios.patch(`opendata/dataset_data_update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

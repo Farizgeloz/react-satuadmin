@@ -102,7 +102,7 @@ function ModalTambahUser() {
   }, [satker]);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get('api/open-item/satker', {
+    const response = await api_url_satuadmin.get('open-item/satker', {
       params: {
         search_satker: userloginsatker
       },
@@ -127,7 +127,7 @@ function ModalTambahUser() {
     formData.append("komponen", "Tambah Pengguna Satu Admin" );
     
     try {
-      await api_url_satuadmin.post('api/open-user/user/add', formData);
+      await api_url_satuadmin.post('open-user/user/add', formData);
       setShow(false);
       sweetsuccess();
     

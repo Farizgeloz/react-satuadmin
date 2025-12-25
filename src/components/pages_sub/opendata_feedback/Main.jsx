@@ -45,7 +45,7 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`api/open-item/opendata_feedback`);
+    const res = await api_url_satuadmin.get(`open-item/opendata_feedback`);
     const data = res.data || [];
     setDatasetku(data);
     setRowsFiltered(data);
@@ -117,7 +117,7 @@ export default function Iklanlist() {
     if (confirm.isConfirmed) {
       try {
   
-        await api_url_satuadmin.post(`api/open-item/opendata_feedback/delete`, {
+        await api_url_satuadmin.post(`open-item/opendata_feedback/delete`, {
           ids: selectedIds,
           admin: userloginadmin,
           jenis: "Open Data Feedback",

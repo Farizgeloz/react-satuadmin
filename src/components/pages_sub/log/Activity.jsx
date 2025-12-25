@@ -29,7 +29,7 @@ function Activity(kunci) {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`api/open-item/log`);
+    const res = await api_url_satuadmin.get(`open-item/log`);
     const data = res.data.data || [];
     //console.log("kunci : ", kunci);
     

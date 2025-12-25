@@ -228,7 +228,7 @@ function IklanPengelolah() {
   const getDataById = async () => {
     
     
-    const response = await api_url_satuadmin.get(`api/satupeta/map_artikel/detail_admin/${id}`);
+    const response = await api_url_satuadmin.get(`satupeta/map_artikel/detail_admin/${id}`);
     setid(response.data.id_artikel);
     settitle(response.data.title);
     setcontent_a(response.data.content_a);
@@ -274,7 +274,7 @@ function IklanPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/satupeta/map_artikel/update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`satupeta/map_artikel/update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -49,7 +49,7 @@ const Userlist = () => {
     setUsers(response.data);
   };*/
   const getUsers = async () => {
-    const response = await api_url_satuadmin.get('api/open-user/user', {
+    const response = await api_url_satuadmin.get('open-user/user', {
       params: {
         search_opd: userloginsatker,
         search_role: rolelogin

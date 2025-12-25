@@ -202,7 +202,7 @@ function Satuportal_listPengelolah() {
   
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`api/open-item/komponen_detail/${id}`);
+    const response = await api_url_satuadmin.get(`open-item/komponen_detail/${id}`);
     setid(response.data.id);
     setkategori(response.data.kategori);
     settitle(response.data.title);
@@ -248,7 +248,7 @@ function Satuportal_listPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/open-item/komponen_update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`open-item/komponen_update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -426,7 +426,7 @@ function Satuportal_listPengelolah() {
                             <div className="p-3 rad15 border bg-white shadow-sm">
 
                               <label className="font_weight600 textsize12 mb-2 d-block">
-                                Judul Portal List
+                                Judul Komponen
                               </label>
 
                               <TextField
@@ -534,7 +534,7 @@ function Satuportal_listPengelolah() {
                             </div>
                           </div>
                         </div>   
-                        <div className="md:col-span-5 col-span-6 -mt-2">
+                        {/* <div className="md:col-span-5 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm mb-2">
                                 <label className="font_weight600 textsize12 mb-2 d-block">
@@ -598,7 +598,6 @@ function Satuportal_listPengelolah() {
   
                             </div>
                           </div>
-                          {/* AREA PREVIEW GAMBAR */}
                           {logo_a && (
                             <div className="md:col-span-1  col-span-6 -mt-4">
                               <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
@@ -690,7 +689,6 @@ function Satuportal_listPengelolah() {
   
                             </div>
                           </div>
-                          {/* AREA PREVIEW GAMBAR */}
                           {logo_b && (
                             <div className="md:col-span-1  col-span-6 -mt-4">
                               <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
@@ -781,7 +779,6 @@ function Satuportal_listPengelolah() {
   
                             </div>
                           </div>
-                          {/* AREA PREVIEW GAMBAR */}
                           {logo_c && (
                             <div className="md:col-span-1  col-span-6 -mt-4">
                               <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
@@ -806,9 +803,9 @@ function Satuportal_listPengelolah() {
                                 />
                               </div>
                             </div>
-                          )}
+                          )} */}
                           
-                          <div className="md:col-span-6 col-span-6 -mt-2">
+                          {/* <div className="md:col-span-6 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm">
   
@@ -844,7 +841,7 @@ function Satuportal_listPengelolah() {
                                 {validasi_title_images_a && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                           <div className="md:col-span-5 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm mb-2">
@@ -937,7 +934,7 @@ function Satuportal_listPengelolah() {
                           )}
 
 
-                          <div className="md:col-span-6 col-span-6 -mt-2">
+                          {/* <div className="md:col-span-6 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm">
   
@@ -973,7 +970,7 @@ function Satuportal_listPengelolah() {
                                 {validasi_title_images_b && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                           <div className="md:col-span-5 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm mb-2">
@@ -1065,7 +1062,7 @@ function Satuportal_listPengelolah() {
                             </div>
                           )}
 
-                          <div className="md:col-span-6 col-span-6 -mt-2">
+                          {/* <div className="md:col-span-6 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm">
   
@@ -1101,7 +1098,7 @@ function Satuportal_listPengelolah() {
                                 {validasi_title_images_c && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi...</p>}
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                           <div className="md:col-span-5 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm mb-2">

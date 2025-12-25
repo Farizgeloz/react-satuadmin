@@ -151,7 +151,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('api/open-item/opendata-iklan/add', formData);
+      await api_url_satuadmin.post('open-item/opendata-iklan/add', formData);
 
       setShow(false);
       setLoading(false);
@@ -250,7 +250,7 @@ function ModalTambahUser() {
          <Link onClick={handleShow} className="col-span-2 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right ">
           <button 
             className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Opendata Iklan</span>
+              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
           </button>
         </Link>
       
@@ -350,7 +350,7 @@ function ModalTambahUser() {
                               <div className="p-3 rad15 border bg-white shadow-sm">
 
                                 <label className="font_weight600 textsize12 mb-2 d-block">
-                                  Tautan Url
+                                  Tautan Link
                                 </label>
 
                                 <TextField

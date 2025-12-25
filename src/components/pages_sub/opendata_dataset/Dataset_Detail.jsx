@@ -106,7 +106,7 @@ function DatasetPengelolah() {
     setTimeout(() => {
       const getDataById = async () => {
         try {
-          const response = await api_url_satuadmin.get(`api/opendata/dataset_data_detail/${id}`);
+          const response = await api_url_satuadmin.get(`opendata/dataset_data_detail/${id}`);
           setid(response.data.id);
           setnama_dataset(response.data.nama_dataset);
           setkode(response.data.kode);

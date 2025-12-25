@@ -57,7 +57,7 @@ const Satuportal_listlist = () => {
 
   const getSatuportal_listSearch = async () => {
     try {
-      const response = await api_url_satuadmin.get('api/open-item/site_ekosistem_setting');
+      const response = await api_url_satuadmin.get('open-item/site_ekosistem_setting');
       const res = response.data;
       setRowsFiltered([res]);
 

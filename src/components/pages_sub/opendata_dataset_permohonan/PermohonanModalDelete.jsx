@@ -39,7 +39,7 @@ function ModalDelete(props) {
           Swal.showLoading();
         },
       });
-      await axios.delete(apiurl+`api/satupeta/location_point/delete/${id}`);
+      await axios.delete(apiurl+`satupeta/location_point/delete/${id}`);
       //navigate("/");
       setShow(false);
       setLoading(false);

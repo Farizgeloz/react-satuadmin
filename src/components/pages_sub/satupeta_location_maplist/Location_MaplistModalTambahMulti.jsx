@@ -170,10 +170,7 @@ function ModalTambahMulti() {
       periode: loc.periode?.value ?? "",
       tahun_rilis: loc.tahun_rilis?.toString() ?? "",
       pengukuran: loc.pengukuran?.trim() ?? "",
-      visibilitas:
-      rolelogin === "Super Admin" || rolelogin === "Admin"
-        ? loc.visibilitas?.value ?? "Privat"
-        : "Privat",
+      visibilitas:loc.visibilitas?.value?.toString() ?? "",
       deskripsi: loc.deskripsi?.trim() ?? "",
       admin: userloginadmin?.toString() ?? "",
     }));
@@ -257,7 +254,7 @@ function ModalTambahMulti() {
     console.log("coba:"+lokasi.value);
 
     try {
-      await axios.post(apiurl + 'api/satupeta/map_data/admin/add', formData);
+      await axios.post(apiurl + 'satupeta/map_data/admin/add', formData);
 
       setShow(false);
       sweetsuccess();
@@ -350,11 +347,11 @@ function ModalTambahMulti() {
         rowErrors.tahun_rilis = "Tahun rilis harus 4 digit";
       }
 
-      if(rolelogin === "Super Admin" || rolelogin === "Admin"){
+      //if(rolelogin === "Super Admin" || rolelogin === "Admin"){
         if (!loc.visibilitas) {
           rowErrors.visibilitas = "Visibilitas wajib dipilih";
         }
-      }
+      //}
       
 
       // ✅ Validasi file upload
@@ -382,6 +379,43 @@ function ModalTambahMulti() {
     nextStep();
   };
 
+  const getStatusOptions = () => {
+    if (rolelogin === "Super Admin") {
+      return [
+        { label: "Draft", value: "Draft" },
+        { label: "Pending", value: "Pending" },
+        { label: "Verified", value: "Verified" },
+        { label: "Publik", value: "Publik" },
+        { label: "Privat", value: "Privat" },
+      ];
+    } else if (rolelogin === "Admin") {
+      return [
+        { label: "Draft", value: "Draft" },
+        { label: "Pending", value: "Pending" },
+        { label: "Verified", value: "Verified" },
+        { label: "Publik", value: "Publik" },
+        { label: "Privat", value: "Privat" },
+      ];
+      
+    } else if (rolelogin === "Operator") {
+      return [
+        { label: "Pending", value: "Pending" },
+        { label: "Verified", value: "Verified" },
+      ]; // atau return [] jika tidak boleh pilih sama sekali
+    } else if (rolelogin === "Operator Opd") {
+      return [
+        { label: "Draft", value: "Draft" }
+      ]; // atau return [] jika tidak boleh pilih sama sekali
+    } else if (rolelogin === "Verifikator Opd") {
+      return [
+        { label: "Draft", value: "Draft" },
+        { label: "Pending", value: "Pending" },
+      ]; // atau return [] jika tidak boleh pilih sama sekali
+    } else {
+      return [];
+    }
+  };
+
 
   
 
@@ -402,7 +436,7 @@ function ModalTambahMulti() {
         >
             <form onSubmit={saveDataset}>
             <Modal.Header closeButton className="border-b ">
-                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Lokasi Maplist</h4>
+                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Koleksi Peta</h4>
                 
             </Modal.Header>
             <Modal.Body className="mt-2 bg-silver-light px-5 py-2">
@@ -682,7 +716,7 @@ function ModalTambahMulti() {
                               <div className="p-3 rad15 border bg-white shadow-sm">
   
                                 <label className="font_weight600 textsize12 mb-2 d-block">
-                                  Satker / OPD
+                                  Sektor
                                 </label>
   
                                 <Autocomplete
@@ -863,24 +897,17 @@ function ModalTambahMulti() {
   
                                 <Autocomplete
                                   className="tsize-110"
-                                  disabled={rolelogin !== "Super Admin" && rolelogin !== "Admin"}
+                                  //disabled={rolelogin !== "Super Admin" && rolelogin !== "Admin"}
                                   isOptionEqualToValue={(option, value) => option?.value === value?.value}
                                   id="combo-box-location"
-                                  options={[
-                                    { label: "Privat", value: "Privat" },
-                                    { label: "Publik", value: "Publik" }
-                                  ]}
+                                  options={getStatusOptions()}
                                   getOptionLabel={(option) => option.label || ""}
                                   
                                   // jika bukan admin, value dipaksa privat
-                                  value={
-                                    rolelogin !== "Super Admin" && rolelogin !== "Admin"
-                                      ? { label: "Privat", value: "Privat" }
-                                      : loc.visibilitas
-                                  }
+                                  value={loc.visibilitas}
 
                                   onChange={(event, newValue) => {
-                                    if (rolelogin !== "Super Admin" && rolelogin !== "Admin") return;
+                                    //if (rolelogin !== "Super Admin" && rolelogin !== "Admin") return;
                                     handleChange(index, "visibilitas", newValue);
                                   }}
 

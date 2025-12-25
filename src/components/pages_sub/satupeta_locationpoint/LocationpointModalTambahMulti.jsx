@@ -187,7 +187,7 @@ function ModalTambahMulti() {
     console.log("coba:"+lokasi.value);
 
     try {
-      await axios.post(apiurl + 'api/satupeta/map_data/admin/add', formData);
+      await axios.post(apiurl + 'satupeta/map_data/admin/add', formData);
 
       setShow(false);
       sweetsuccess();

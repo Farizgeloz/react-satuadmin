@@ -52,7 +52,7 @@ const Satuportal_listlist = () => {
 
   const getSatuportal_listSearch = async () => {
     try {
-      const response = await api_url_satuadmin.get('api/open-item/site_satupeta_setting');
+      const response = await api_url_satuadmin.get('open-item/site_satupeta_setting');
       const res = response.data;
 
       setRowsFiltered([res]);
@@ -227,7 +227,7 @@ const Satuportal_listlist = () => {
   
   return (
     <div className="bg-slate-100  max-h-screen sm:pt-0  max-[640px]:mt-12 ">
-      <NavSub  title="Satu Peta Color" />
+      <NavSub  title="Satu Peta Warna Tema" />
       
 
       <div className="col-span-3 rounded grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-6 drop-shadow-lg">
@@ -237,7 +237,7 @@ const Satuportal_listlist = () => {
               <MdDashboard className="mt-1 textsize10"/>Dashboard
             </NavLink> / 
             <NavLink to="#" className="textsize11 text-silver-a mr-2 flex">
-              <MdDataset className="mt-1 textsize10" />Satupeta Color
+              <MdDataset className="mt-1 textsize10" />Satupeta Warna Tema
             </NavLink>
           </p>
         </div>

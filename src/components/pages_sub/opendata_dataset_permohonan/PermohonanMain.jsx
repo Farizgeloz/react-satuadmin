@@ -125,7 +125,7 @@ const Datasetlist = () => {
 
   const getJumlahTiket = async (id) => {
     try {
-      const res = await api_url_satuadmin.get(`api/opendata/dataset_permohonan/detail_jumlah/${id}`);
+      const res = await api_url_satuadmin.get(`opendata/dataset_permohonan/detail_jumlah/${id}`);
       const tiket = res.data.tiket || [];
       setJumlahTiketMap(prev => ({ ...prev, [id]: tiket.length }));
       
@@ -140,7 +140,7 @@ const Datasetlist = () => {
     setSelectedDetail(null);
 
     try {
-      const res = await api_url_satuadmin.get(`api/opendata/dataset_permohonan/detail/${id}`);
+      const res = await api_url_satuadmin.get(`opendata/dataset_permohonan/detail/${id}`);
       const permohonan = res.data.permohonan;
       const tiket = res.data.tiket; // kalau butuh tiket juga
       
@@ -194,8 +194,8 @@ const Datasetlist = () => {
     const fetchData = async () => {
       try {
         /*const [searchRes, itemRes] = await Promise.all([
-          axios.get(apiurl + 'api/satupeta/map_data/admin')
-          //axios.get(apiurl + 'api/opendata/dataset_item')
+          axios.get(apiurl + 'satupeta/map_data/admin')
+          //axios.get(apiurl + 'opendata/dataset_item')
         ]);*/
         const searchRes = await api_url_satuadmin.get("api/opendata/dataset_permohonan");
     

@@ -48,7 +48,7 @@ function ModalDelete(props) {
         komponen: "Delete Motto Satu Portal"
       };
 
-      await api_url_satuadmin.delete(`api/open-item/komponen_delete/${id}`, {
+      await api_url_satuadmin.delete(`open-item/komponen_delete/${id}`, {
         data: payload, // body DELETE dikirim lewat "data"
         headers: { 'Content-Type': 'application/json' }
       });

@@ -39,7 +39,7 @@ function ModalDelete(props) {
             Swal.showLoading();
           },
         });
-      await api_url_satuadmin.delete(`api/open-item/opendata-iklan/delete/${id}`);
+      await api_url_satuadmin.delete(`open-item/opendata-iklan/delete/${id}`);
       //navigate("/");
       setShow(false);
       setLoading(false);

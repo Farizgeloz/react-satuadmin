@@ -127,7 +127,7 @@ const Datasetlist = () => {
     setNamaLokasi(nama);
 
     try {
-      const res = await api_url_satuadmin.get(`api/satupeta/map_data/locationpoint/${id}`);
+      const res = await api_url_satuadmin.get(`satupeta/map_data/locationpoint/${id}`);
       const ambil_titik = res.data?.result;
       
       setSelectedDetail(ambil_titik);

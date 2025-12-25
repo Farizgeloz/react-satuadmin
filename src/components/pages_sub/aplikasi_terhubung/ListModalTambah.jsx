@@ -200,7 +200,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('api/open-item/komponen_add', formData);
+      await api_url_satuadmin.post('open-item/komponen_add', formData);
 
       setShow(false);
       setLoading(false);
@@ -274,18 +274,6 @@ function ModalTambahUser() {
     const isContentsValid = contents?.trim().length >= 5;
     const isLinkedValid = linked?.trim().length >= 1;
 
-    setvalidasi_title(!isTitleValid);
-    setvalidasi_contents(!isContentsValid);
-    setvalidasi_linked(!isLinkedValid);
-
-    if (isTitleValid && isContentsValid && isLinkedValid) {
-      nextStep();
-    } else {
-      console.warn('⛔ Tidak lolos validasi step 1');
-    }
-  };
-
-  const handle_step2 = () => {
     const isTitleAValid = title_images_a?.trim().length >= 1;
     const isTitleBValid = title_images_b?.trim().length >= 1;
     const isTitleCValid = title_images_c?.trim().length >= 1;
@@ -294,13 +282,17 @@ function ModalTambahUser() {
     const isLogoBValid = !!file_logo_b;
     const isLogoCValid = !!file_logo_c;
 
+
     const isImageAValid = !!file_images_a;
     const isImageBValid = !!file_images_b;
     const isImageCValid = !!file_images_c;
 
-    setvalidasi_title_images_a(!isTitleAValid);
+    setvalidasi_title(!isTitleValid);
+    setvalidasi_contents(!isContentsValid);
+    setvalidasi_linked(!isLinkedValid);
+    /* setvalidasi_title_images_a(!isTitleAValid);
     setvalidasi_title_images_b(!isTitleBValid);
-    setvalidasi_title_images_c(!isTitleCValid);
+    setvalidasi_title_images_c(!isTitleCValid); */
 
     setvalidasi_logo_a(!isLogoAValid);
     setvalidasi_logo_b(!isLogoBValid);
@@ -311,15 +303,19 @@ function ModalTambahUser() {
     setvalidasi_image_c(!isImageCValid);
 
     if (
-      isTitleAValid && isTitleBValid && isTitleCValid &&
+      isTitleValid && isContentsValid && isLinkedValid &&
+      //isTitleAValid && isTitleBValid && isTitleCValid &&
       isLogoAValid && isLogoBValid && isLogoCValid &&
       isImageAValid && isImageBValid && isImageCValid
+    
     ) {
       nextStep();
     } else {
-      console.warn('⛔ Tidak lolos validasi step 2');
+      console.warn('⛔ Tidak lolos validasi step 1');
     }
   };
+
+  
 
  
 
@@ -331,7 +327,7 @@ function ModalTambahUser() {
          <Link onClick={handleShow} className="col-span-2 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right ">
           <button 
             className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Link</span>
+              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
           </button>
         </Link>
       
@@ -501,65 +497,7 @@ function ModalTambahUser() {
                                 {validasi_linked && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Minimal 5 karakter...</p>}
                               </div>
                             </div>
-                          </div>         
-                            
-                            
-                            
-                            
-                        </div>
-                        
-                        <div className="flex justify-center mt-12">
-                            
-                              <button 
-                                type="button"
-                                onClick={() => {
-                                  handle_step1();
-                                }}
-                                className="bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
-                                <span>Lanjut</span><MdArrowCircleRight  className='mt-1 mx-1'  />
-                            </button>
-                              
-                        </div>
-                    </motion.div>
-                  )}
-                  {step === 2 && (
-                      <motion.div
-                        key={step} // Add this line
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                        className="md:w-full mx-auto">
-                        {/* STEP INDICATOR */}
-                        <div className="mt-4 flex items-center justify-between relative">
-
-                          {/* STEP 1 */}
-                          <div className="flex flex-col items-center z-10 w-1/2">
-                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
-                              1
-                            </div>
-                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
-                              Form Input
-                            </span>
-                          </div>
-
-                          {/* STEP 2 */}
-                          <div className="flex flex-col items-center z-10 w-1/2">
-                            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-600 text-white font-semibold shadow">
-                              2
-                            </div>
-                            <span className="mt-1 text-xs text-cyan-700 font-semibold">
-                              Konfirmasi
-                            </span>
-                          </div>
-
-                          {/* PROGRESS LINE */}
-                          <div className="absolute top-4 left-0 right-0 h-1 bg-cyan-200 rounded-full">
-                            <div className="h-full bg-cyan-600 rounded-full transition-all duration-300 w-full" />
-                          </div>
-
-                        </div>
-                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                          </div>  
                           <div className="md:col-span-5 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm mb-2">
@@ -575,6 +513,9 @@ function ModalTambahUser() {
                                     shrink: false,
                                   }}
                                   onChange={loadImage_Logo_a}
+                                  required
+                                  error={validasi_logo_a}
+                                  helperText={validasi_logo_a ? "Logo 1 wajib diunggah" : ""}
                                   InputProps={{
                                     endAdornment: (
                                       <>
@@ -612,11 +553,11 @@ function ModalTambahUser() {
                                   })}
                                 />
                                 {fileError_logo_a && (
-                                <p className="text-red-600 mt-2 d-flex">
-                                  <MdOutlineErrorOutline className="mt-1 me-2" />
-                                  {fileError_logo_a}
-                                </p>
-                              )}
+                                  <p className="text-red-600 mt-2 d-flex">
+                                    <MdOutlineErrorOutline className="mt-1 me-2" />
+                                    {fileError_logo_a}
+                                  </p>
+                                )}
   
                                 
   
@@ -667,6 +608,9 @@ function ModalTambahUser() {
                                     shrink: false,
                                   }}
                                   onChange={loadImage_Logo_b}
+                                  required
+                                  error={validasi_logo_b}
+                                  helperText={validasi_logo_b ? "Logo 2 wajib diunggah" : ""}
                                   InputProps={{
                                     endAdornment: (
                                       <>
@@ -758,6 +702,9 @@ function ModalTambahUser() {
                                     shrink: false,
                                   }}
                                   onChange={loadImage_Logo_c}
+                                  required
+                                  error={validasi_logo_c}
+                                  helperText={validasi_logo_c ? "Logo 3 wajib diunggah" : ""}
                                   InputProps={{
                                     endAdornment: (
                                       <>
@@ -1217,28 +1164,29 @@ function ModalTambahUser() {
                                 />
                               </div>
                             </div>
-                          )}
+                          )}       
+                            
+                            
+                            
                             
                         </div>
+                        
                         <div className="flex justify-center mt-12">
-
-                          <button 
-                              onClick={prevStep} className="bg-gray-500 hover:bg-gray-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-gray-700 hover:border-gray-500 rounded-xl d-flex mx-1">
-                              <MdOutlineArrowCircleLeft   className='mt-1 mx-1'  /><span>Kembali</span>
-                          </button>
-                          
-                          <button 
-                            type='button'
-                            onClick={() => {
-                              handle_step2();
-                            }}
-                            className="bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
-                            <span>Lanjut</span><MdOutlineArrowCircleRight  className='mt-1 mx-1'  />
-                          </button>
+                            
+                              <button 
+                                type="button"
+                                onClick={() => {
+                                  handle_step1();
+                                }}
+                                className="bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
+                                <span>Lanjut</span><MdArrowCircleRight  className='mt-1 mx-1'  />
+                            </button>
+                              
                         </div>
-                      </motion.div>
+                    </motion.div>
                   )}
-                  {step === 3 && (
+                  
+                  {step === 2 && (
                     <motion.div
                         key={step} // Add this line
                         initial={{ opacity: 0, y: 20 }}

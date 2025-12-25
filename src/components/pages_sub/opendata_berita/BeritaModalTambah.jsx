@@ -206,7 +206,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('api/opendata/artikel/add', formData);
+      await api_url_satuadmin.post('opendata/artikel/add', formData);
 
       setShow(false);
       setLoading(false);

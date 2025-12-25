@@ -41,7 +41,7 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`api/open-item/ekosistem-visitor`);
+    const res = await api_url_satuadmin.get(`open-item/ekosistem-visitor`);
     const data = res.data.data2 || [];
     setDataku(data);
     setRowsFiltered(data);
@@ -99,7 +99,7 @@ export default function Iklanlist() {
 
     if (confirm.isConfirmed) {
       try {
-        await axios.post(`api/open-item/ekosistem-visitor/delete`, {
+        await axios.post(`open-item/ekosistem-visitor/delete`, {
           ids: selectedIds,
         });
 

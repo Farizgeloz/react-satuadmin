@@ -47,7 +47,7 @@ const ColorPickerDialog = ({ isOpen, onClose, rowData, onSave }) => {
 
   const getSatuportal_listSearch = async () => {
     try {
-      const response = await api_url_satuadmin.get('api/open-item/site_ekosistem_setting');
+      const response = await api_url_satuadmin.get('open-item/site_ekosistem_setting');
       const res = response.data;
 
       if (Array.isArray(res) && res.length > 0) {
@@ -92,7 +92,7 @@ const ColorPickerDialog = ({ isOpen, onClose, rowData, onSave }) => {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/open-item/site_ekosistem_setting_update/${colors.id}`, formData, {
+      await api_url_satuadmin.patch(`open-item/site_ekosistem_setting_update/${colors.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

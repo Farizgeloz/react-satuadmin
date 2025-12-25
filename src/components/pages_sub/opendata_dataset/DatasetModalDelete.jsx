@@ -29,7 +29,7 @@ function ModalDelete(props) {
   const deleteUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.delete(apiurl+`api/opendata/dataset_data_delete/${id}`);
+      await axios.delete(apiurl+`opendata/dataset_data_delete/${id}`);
       //navigate("/");
       setShow(false);
       sweetsuccess();

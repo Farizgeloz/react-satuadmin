@@ -1,23 +1,26 @@
 import axios from "axios";
 
 const api_url_satudata = axios.create({
-  baseURL: "https://api.mataprabulinggih.net/api/v1/public/",
+  /* baseURL: "https://api.mataprabulinggih.net/api/v1/public/", */
+  baseURL: "/api-mataprabu/",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 const api_url_satuadmin = axios.create({
-  baseURL: "http://localhost:3010/",
+ /*  baseURL: "http://localhost:3000/api/", */
   /* baseURL: "https://api-satu.mataprabulinggih.net/", */
+  baseURL: "/api/",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 const api_url_satuadmin_create = axios.create({
-  baseURL: "http://localhost:3010/",
+  /* baseURL: "http://localhost:3000/api/", */
   /* baseURL: "https://api-satu.mataprabulinggih.net/", */
+  baseURL: "/api/",
 });
 
 export { api_url_satudata, api_url_satuadmin, api_url_satuadmin_create };

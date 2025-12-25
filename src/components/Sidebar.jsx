@@ -70,7 +70,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
       setCollapsed_OpenData(true);
       setCollapsed_SatuPortal(true);
     }
-    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Log"){
+    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Aplikasi Terhubung" || itemmenu==="Log"){
       setCollapsed_SatuPeta(true);
       setCollapsed_OpenData(true);
       setCollapsed_SatuPortal(true);
@@ -89,7 +89,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
     try {
       
 
-      const response_image = await api_url_satuadmin.get('api/open-item/images_item', {
+      const response_image = await api_url_satuadmin.get('open-item/images_item', {
         params: {
           portal:portal
         }
@@ -396,7 +396,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                 >
                   <FaClone className="mt-1 text-sky-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Color
+                    Warna Tema
                   </span>
                 </Link>
               </li>
@@ -587,7 +587,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                 >
                   <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
                   <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Color
+                    Warna Tema
                   </span>
                 </Link>
               </li>

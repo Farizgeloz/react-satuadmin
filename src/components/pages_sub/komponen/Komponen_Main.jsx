@@ -68,7 +68,7 @@ const Satuportal_listlist = () => {
   const getSatuportal_listSearch = async () => {
     try {
 
-      const res = await api_url_satuadmin.get('api/open-item/komponen');
+      const res = await api_url_satuadmin.get('open-item/komponen');
 
       const data = res.data.resultWithUrls || [];
       //console.log('Failed to fetch data:', error);
@@ -81,7 +81,7 @@ const Satuportal_listlist = () => {
   };
 
   const getSatuportal_listItem = async () => {
-    const response = await api_url_satuadmin.get('api/satupeta/map_item2');
+    const response = await api_url_satuadmin.get('satupeta/map_item2');
 
     const data = response.data;
     setsatker(response.data.resultsatker);

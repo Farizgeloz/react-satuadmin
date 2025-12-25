@@ -40,7 +40,7 @@ function ModalDelete(props) {
             Swal.showLoading();
           },
         });
-      await axios.delete(apiurl+`api/open-item/opendata-iklan/delete/${id}`);
+      await axios.delete(apiurl+`open-item/opendata-iklan/delete/${id}`);
       //navigate("/");
       setShow(false);
       setLoading(false);

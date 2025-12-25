@@ -220,7 +220,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('api/satupeta/map_artikel/add', formData);
+      await api_url_satuadmin.post('satupeta/map_artikel/add', formData);
 
       setShow(false);
       setLoading(false);

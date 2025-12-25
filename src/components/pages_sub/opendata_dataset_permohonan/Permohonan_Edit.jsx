@@ -117,7 +117,7 @@ function DatasetPengelolah() {
 
   const getDataById = async () => {
     try {
-      const res = await api_url_satuadmin.get(`api/opendata/dataset_permohonan/detail/${id}`);
+      const res = await api_url_satuadmin.get(`opendata/dataset_permohonan/detail/${id}`);
       const permohonan = res.data.permohonan;
       const tiket = res.data.tiket; // kalau butuh tiket juga
       

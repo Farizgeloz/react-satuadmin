@@ -78,7 +78,7 @@ const Welcome = () => {
 
   const getPenduduk = async () => {
     const response = await api_url_satuadmin.get(
-      `api/open-item/view_count`
+      `open-item/view_count`
     );
     setcount_satuportal_iklan(response.data.count_satuportal_iklan);
     setcount_satuportal_pengumuman(response.data.count_satuportal_pengumuman);

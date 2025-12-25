@@ -74,7 +74,7 @@ function ModalTambahUser() {
   const handleShow = () => setShow(true);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get('api/opendata/dataset_item');
+    const response = await api_url_satuadmin.get('opendata/dataset_item');
 
     const data = response.data;
     setprodukdataku(response.data.resultSatker);
@@ -87,7 +87,7 @@ function ModalTambahUser() {
      
 
       try {
-        const response = await api_url_satuadmin.get('api/open-item/satker_code_search', {
+        const response = await api_url_satuadmin.get('open-item/satker_code_search', {
           params: {
             search_satker: satkeri.value
           }
@@ -126,7 +126,7 @@ function ModalTambahUser() {
     formData.append("createdAt", createdAt);
 
     try {
-      await axios.post(apiurl + 'api/opendata/dataset_data_add', formData);
+      await axios.post(apiurl + 'opendata/dataset_data_add', formData);
 
       setShow(false);
       sweetsuccess();

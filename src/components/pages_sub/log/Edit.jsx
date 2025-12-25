@@ -101,7 +101,7 @@ function IklanPengelolah() {
  
 
   const getDataById = async () => {
-    const response = await api_url_satuadmin.get(`api/open-item/opendata-bantuan/detail/${id}`);
+    const response = await api_url_satuadmin.get(`open-item/opendata-bantuan/detail/${id}`);
     setid(response.data.id);
     settitle(response.data.title);
     setseksi(response.data.seksi);
@@ -136,7 +136,7 @@ function IklanPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/open-item/opendata-bantuan/update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`open-item/opendata-bantuan/update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

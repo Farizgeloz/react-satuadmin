@@ -56,7 +56,7 @@ const Mottolist = () => {
 
   const getMottoSearch = async () => {
     const response = await api_url_satuadmin.get(
-      `api/open-item/komponen`
+      `open-item/komponen`
     );
     //console.log(response.data.resultsearch);
     setMottoSearch(response.data.resultWithUrls_satuportal_motto);

@@ -154,7 +154,7 @@ function DatasetPengelolah() {
 
   const getDataById = async () => {
     try {
-      const response = await api_url_satuadmin.get(`api/satupeta/geospasial/detail/${id}`);
+      const response = await api_url_satuadmin.get(`satupeta/geospasial/detail/${id}`);
 
       // Ambil data utama
       setnama_geospasial(response.data.nama_geospasial);
@@ -210,7 +210,7 @@ function DatasetPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/satupeta/geospasial/update/${id}`, formData, {
+      await api_url_satuadmin.patch(`satupeta/geospasial/update/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

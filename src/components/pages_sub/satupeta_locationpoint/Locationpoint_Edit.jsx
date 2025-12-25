@@ -119,7 +119,7 @@ function DatasetPengelolah() {
 
   const getDataById = async () => {
     try {
-      const response = await api_url_satuadmin.get(`api/satupeta/location_point/detail/${id}`);
+      const response = await api_url_satuadmin.get(`satupeta/location_point/detail/${id}`);
 
       // Ambil data utama
       setnama_location_point(response.data.nama_location_point);
@@ -167,7 +167,7 @@ function DatasetPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/satupeta/location_point/update/${id}`, formData, {
+      await api_url_satuadmin.patch(`satupeta/location_point/update/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

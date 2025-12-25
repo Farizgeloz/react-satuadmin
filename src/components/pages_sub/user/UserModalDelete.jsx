@@ -37,7 +37,7 @@ function ModalDelete(props) {
         komponen: "Delete Pengguna Satu Admin"
       };
 
-      await api_url_satuadmin.delete(`api/open-user/user/delete/${id}`, {
+      await api_url_satuadmin.delete(`open-user/user/delete/${id}`, {
         data: payload, // body DELETE dikirim lewat "data"
         headers: { 'Content-Type': 'application/json' }
       });

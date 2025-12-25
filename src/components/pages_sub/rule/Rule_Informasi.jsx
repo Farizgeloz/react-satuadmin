@@ -122,7 +122,7 @@ const Datasetlist = () => {
     setNamaLokasi(nama);
 
     try {
-      const res = await api_url_satuadmin.get(`api/satupeta/map_data/locationpoint/${id}`);
+      const res = await api_url_satuadmin.get(`satupeta/map_data/locationpoint/${id}`);
       const ambil_titik = res.data?.result;
       
       setSelectedDetail(ambil_titik);
@@ -394,7 +394,7 @@ const Datasetlist = () => {
                   >
                     Koleksi Peta
                   </p>
-                  <p className="mt-1">CRUD data peta interaktif dan layout</p>
+                  <p className="mt-1">CRUD data peta interaktif dan layout serta publikasi</p>
                   
               </Col>
               <Col sm={12} className="d-flex">
@@ -407,7 +407,7 @@ const Datasetlist = () => {
                   >
                     Titik Lokasi
                   </p>
-                  <p className="mt-1">CRUD data titik lokasi marker ( berupa titik koordinat Lan dan Lon) </p>
+                  <p className="mt-1">CRUD data titik lokasi tipe marker ( berupa titik koordinat Lan dan Lon) </p>
                   
               </Col>
               <Col sm={12} className="d-flex">
@@ -420,7 +420,7 @@ const Datasetlist = () => {
                   >
                     Geospasial
                   </p>
-                  <p className="mt-1">CRUD data geojson untuk geomap ( berupa json koordinat polygon) </p>
+                  <p className="mt-1">CRUD data geojson untuk tipe geomap ( berupa json koordinat polygon) </p>
                   
               </Col>
               

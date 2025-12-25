@@ -64,8 +64,8 @@ const Datasetlist = () => {
       const fetchData = async () => {
         try {
           const [searchRes, itemRes] = await Promise.all([
-            axios.get(apiurl + 'api/opendata/dataset_data'),
-            axios.get(apiurl + 'api/opendata/dataset_item')
+            axios.get(apiurl + 'opendata/dataset_data'),
+            axios.get(apiurl + 'opendata/dataset_item')
           ]);
           setDatasetSearch(searchRes.data || []);
           setDatasetSifatData(itemRes.data?.resultSifatData || []);

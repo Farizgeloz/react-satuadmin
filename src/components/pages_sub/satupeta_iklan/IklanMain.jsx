@@ -38,7 +38,7 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`api/open-item/satupeta-iklan`);
+    const res = await api_url_satuadmin.get(`open-item/satupeta-iklan`);
     const data = res.data.resultWithUrls2 || [];
     setDatasetku(data);
     setRowsFiltered(data);

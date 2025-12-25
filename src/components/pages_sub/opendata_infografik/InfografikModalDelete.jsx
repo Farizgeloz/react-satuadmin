@@ -47,7 +47,7 @@ function ModalDelete(props) {
         komponen: "Delete Infografik Open Data"
       };
 
-      await api_url_satuadmin.delete(`api/opendata/infografik/delete/${id}`, {
+      await api_url_satuadmin.delete(`opendata/infografik/delete/${id}`, {
         data: payload, // body DELETE dikirim lewat "data"
         headers: { 'Content-Type': 'application/json' }
       });

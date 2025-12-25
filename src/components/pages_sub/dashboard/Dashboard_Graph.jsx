@@ -34,7 +34,7 @@ const DatasetGraph = () => {
   
   const getStatistik = async () => {
     try {
-      const response2 = await api_url_satuadmin.get('api/opendata/count');
+      const response2 = await api_url_satuadmin.get('opendata/count');
       const data2 = response2.data;
       console.log('DATA DARI BACKEND:', response2.data);
       setCountDataset(data2.totalDatasetPublik);
@@ -51,7 +51,7 @@ const DatasetGraph = () => {
 
   const getData = async () => {
     try {
-      const response = await api_url_satuadmin.get('api/opendata/dataset_graph_satker');
+      const response = await api_url_satuadmin.get('opendata/dataset_graph_satker');
 
       setRowsGraph(response.data.countPerSatker);
     } catch (error) {

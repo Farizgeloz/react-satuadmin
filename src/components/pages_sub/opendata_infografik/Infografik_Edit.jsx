@@ -177,7 +177,7 @@ function IklanPengelolah() {
 
   const getDataById = async () => {
     try {
-      const response = await api_url_satuadmin.get(`api/opendata/infografik/detail_admin/${id}`);
+      const response = await api_url_satuadmin.get(`opendata/infografik/detail_admin/${id}`);
 
       // Set data utama infografik
       setid(response.data.id_infografik);
@@ -268,7 +268,7 @@ function IklanPengelolah() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.patch(`api/opendata/infografik/update/${idku}`, formData, {
+      await api_url_satuadmin.patch(`opendata/infografik/update/${idku}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

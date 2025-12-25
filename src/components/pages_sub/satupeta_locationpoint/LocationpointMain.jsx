@@ -114,8 +114,8 @@ const Datasetlist = () => {
     const fetchData = async () => {
       try {
         /*const [searchRes, itemRes] = await Promise.all([
-          axios.get(apiurl + 'api/satupeta/map_data/admin')
-          //axios.get(apiurl + 'api/opendata/dataset_item')
+          axios.get(apiurl + 'satupeta/map_data/admin')
+          //axios.get(apiurl + 'opendata/dataset_item')
         ]);*/
         //const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin");
         const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin", {

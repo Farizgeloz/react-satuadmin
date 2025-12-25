@@ -225,7 +225,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('api/opendata/infografik/add', formData);
+      await api_url_satuadmin.post('opendata/infografik/add', formData);
 
       setShow(false);
       setLoading(false);

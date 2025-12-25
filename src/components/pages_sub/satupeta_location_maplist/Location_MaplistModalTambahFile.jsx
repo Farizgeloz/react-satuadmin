@@ -152,7 +152,7 @@ function DatasetModalTambahFile() {
           keyboard={false}
       >
           <Modal.Header closeButton className="border-b ">
-              <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Lokasi Maplist Lewat File</h4>
+              <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Koleksi Peta Lewat File</h4>
               
           </Modal.Header>
           <Modal.Body className="mt-2 bg-silver-light px-5">

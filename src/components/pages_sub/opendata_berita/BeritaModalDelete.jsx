@@ -47,7 +47,7 @@ function ModalDelete(props) {
         komponen: "Delete Artikel Open Data"
       };
 
-      await api_url_satuadmin.delete(`api/opendata/artikel/delete/${id}`, {
+      await api_url_satuadmin.delete(`opendata/artikel/delete/${id}`, {
         data: payload, // body DELETE dikirim lewat "data"
         headers: { 'Content-Type': 'application/json' }
       });

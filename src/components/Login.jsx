@@ -116,7 +116,7 @@ const Login = () => {
           <div className="col-span-6 sm:mx-auto sm:w-full sm:max-w-sm margin-t10">
             <img
               alt="Kabupaten Probolinggo"
-              src={`/logo.png`}
+              src={`./logo.png`}
               className="mx-auto h-20 w-auto"
             />
             <p className="col-span-6 mt-2 text-center textsize20 font-bold tracking-tight text-gray-900">

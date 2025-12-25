@@ -130,7 +130,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
           </p>
         </div>
       </div>
-      <ul className="pt-6 pr-3  h-85v overflow-yy-auto" style={{ margin: "0px 0px 0px 0px"}}>
+      <ul className="pt-6 pr-3  h-85v overflow-yy-auto" style={{ margin: "0px 0px 0px 5px"}}>
         <p className={`text-sage-light  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
         <li className={`-right-20 `}>
           {/* button */}

@@ -109,7 +109,7 @@ const Login = () => {
   return (
       <div className=" grid grid-cols-1 md:grid-cols-6 h-100v justify-center bg-gray-200 overflow-hidden">
        
-         <div className="col-span-3 h-100v p-5 my-auto  max-[670px]:hidden" style={{backgroundColor:"#0D47A1"}}>
+         <div className="col-span-3 h-100v p-5 my-auto align-items-center justify-content-center  max-[670px]:hidden" style={{backgroundColor:"#0D47A1"}}>
           <Image data-aos="zoom-in-up" className=" margin-t10" src='./assetku/login.png' />
          </div>
         <div className="col-span-3 grid grid-cols-6 gap-1 w-full bg-white text-center  h-100v pt-5">

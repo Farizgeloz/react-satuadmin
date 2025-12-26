@@ -104,7 +104,7 @@ function MottoPengelolah() {
     if (!image) return;
 
     // ✅ Validasi tipe file (JPG, JPEG, PNG)
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
     if (!allowedTypes.includes(image.type)) {
       Swal.fire({

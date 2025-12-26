@@ -125,7 +125,7 @@ function IklanPengelolah() {
     if (!file) return;
 
     // Validasi tipe file
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
 
     if (!allowedTypes.includes(file.type)) {
       Swal.fire({

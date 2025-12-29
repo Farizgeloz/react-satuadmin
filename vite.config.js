@@ -16,5 +16,5 @@ export default defineConfig({
       '/api': 'http://localhost:3000' // dev proxy ke Hapi
     }
   },
-  base: '/satuadmin/' // path base React build
+  base: '/' // path base React build
 })

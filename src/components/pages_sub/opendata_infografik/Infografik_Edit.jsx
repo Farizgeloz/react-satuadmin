@@ -199,7 +199,7 @@ function IklanPengelolah() {
 
       // 🔹 Ambil semua dataset
       const res3 = await api_url_satudata.get("dataset?limit=1000");
-      const allDataset = res3.data || [];
+      const allDataset = Array.isArray(res3.data) ? res3.data : (res3.data.data || []);
       
       console.log("All Dataset:", allDataset);
       // 🔹 Ambil sektor unik dari dataset
@@ -210,26 +210,39 @@ function IklanPengelolah() {
         }))
         .filter(sektor => sektor.id_sektor && sektor.nama_sektor);
 
-      const uniqueSektor = Array.from(
+     /*  const uniqueSektor = Array.from(
         new Map(sektorList.map(sektor => [sektor.id_sektor, sektor])).values()
+      ); */
+      const uniqueSektor = Array.from(
+        new Map(
+          allDataset
+            .filter(item => item.sektor?.id_sektor) // Pastikan id_sektor ada
+            .map(item => [
+              item.sektor.id_sektor, 
+              { id_sektor: item.sektor.id_sektor, nama_sektor: item.sektor.nama_sektor }
+            ])
+        ).values()
       );
 
       // 🔹 Simpan semua sektor ke state sektorku
       settopikku(uniqueSektor);
 
-      // 🔹 Cari sektor yang cocok dengan response.data.topik
-      const sektorTerpilih = uniqueSektor.find(
-        sektor => sektor.id_sektor === response.data.topik
-      );
+     // 🔹 Cari sektor (Gunakan String() untuk menghindari error tipe data)
+      if (response.data.topik) {
+        const sektorTerpilih = uniqueSektor.find(
+          s => String(s.id_sektor) === String(response.data.topik)
+        );
 
-      // 🔹 Jika ditemukan, set sebagai nilai Autocomplete
-      if (sektorTerpilih) {
-        settopik({
-          value: sektorTerpilih.id_sektor,
-          label: sektorTerpilih.nama_sektor
-        });
-      } else {
-        settopik(null);
+        if (sektorTerpilih) {
+          settopik({
+            value: sektorTerpilih.id_sektor,
+            label: sektorTerpilih.nama_sektor
+          });
+        } else {
+          // Jika ID ada tapi tidak ditemukan di daftar sektor
+          console.warn("ID Topik ditemukan di detail tapi tidak ada di daftar sektor dataset");
+          settopik(null);
+        }
       }
 
     } catch (error) {

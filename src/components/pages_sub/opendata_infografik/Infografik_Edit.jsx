@@ -200,7 +200,8 @@ function IklanPengelolah() {
       // 🔹 Ambil semua dataset
       const res3 = await api_url_satudata.get("dataset?limit=1000");
       const allDataset = res3.data || [];
-
+      
+      logging("All Dataset:", allDataset);
       // 🔹 Ambil sektor unik dari dataset
       const sektorList = allDataset
         .map(item => ({

@@ -199,32 +199,28 @@ function IklanPengelolah() {
 
       // 🔹 Ambil semua dataset
       const res3 = await api_url_satudata.get("dataset?limit=1000");
-      const allDataset = Array.isArray(res3.data) ? res3.data : (res3.data.data || []);
-      
-      console.log("All Dataset:", allDataset);
-      // 🔹 Ambil sektor unik dari dataset
-      const sektorList = allDataset
-        .map(item => ({
-          id_sektor: item.sektor?.id_sektor,
-          nama_sektor: item.sektor?.nama_sektor
-        }))
-        .filter(sektor => sektor.id_sektor && sektor.nama_sektor);
+      // Debug untuk melihat isi asli res3.data
+      console.log("Struktur Res3 Data:", res3.data);
 
-     /*  const uniqueSektor = Array.from(
-        new Map(sektorList.map(sektor => [sektor.id_sektor, sektor])).values()
-      ); */
+      // Cek apakah array ada di res3.data, res3.data.data, atau res3.data.results
+      const allDataset = Array.isArray(res3.data) 
+        ? res3.data 
+        : (res3.data?.data || res3.data?.results || []);
+
+      console.log("Dataset Array yang digunakan:", allDataset);
+
+      // 🔹 Ambil sektor unik (Pastikan allDataset sekarang adalah Array)
       const uniqueSektor = Array.from(
         new Map(
           allDataset
-            .filter(item => item.sektor?.id_sektor) // Pastikan id_sektor ada
+            .filter(item => item?.sektor?.id_sektor) // Filter agar tidak error jika sektor null
             .map(item => [
-              item.sektor.id_sektor, 
+              item.sektor.id_sektor,
               { id_sektor: item.sektor.id_sektor, nama_sektor: item.sektor.nama_sektor }
             ])
         ).values()
       );
 
-      // 🔹 Simpan semua sektor ke state sektorku
       settopikku(uniqueSektor);
 
      // 🔹 Cari sektor (Gunakan String() untuk menghindari error tipe data)

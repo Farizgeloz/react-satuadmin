@@ -201,26 +201,32 @@ function IklanPengelolah() {
      // 1. Ambil data dari API
       const res3 = await api_url_satudata.get("dataset?limit=1000");
 
-      // 2. Pastikan data adalah array (handling jika res3.data adalah objek atau null)
-      const rawData = Array.isArray(res3.data) ? res3.data : (res3.data?.data || []);
+// 1. Log Data Mentah dari API
+console.log("--- DEBUG DATA MENTAH ---");
+console.log("Status Response:", res3.status);
+console.log("Data Asli:", res3.data);
 
-      // 3. Ekstraksi Sektor Unik dengan Map
-      const uniqueSektor = Array.from(
-        new Map(
-          rawData
-            .filter(item => item?.sektor && item.sektor.id_sektor) // Pastikan sektor & id ada
-            .map(item => [
-              item.sektor.id_sektor, 
-              { 
-                value: item.sektor.id_sektor, // Langsung sesuaikan format untuk state (value/label)
-                label: item.sektor.nama_sektor 
-              }
-            ])
-        ).values()
-      );
+// 2. Cek apakah ada ID 3 di dalam data mentah
+const cekID3 = res3.data.filter(item => item?.sektor?.id_sektor === 3 || item?.sektor?.id_sektor === "3");
+console.log("Apakah ID 3 ada di data mentah?", cekID3.length > 0 ? "ADA" : "TIDAK ADA");
+if (cekID3.length > 0) console.log("Contoh data dengan ID 3:", cekID3[0]);
 
-      // Simpan daftar semua sektor unik untuk dropdown
-      settopikku(uniqueSektor);
+// 3. Log Daftar Sektor yang berhasil diekstrak sebelum masuk ke State
+const uniqueSektor = Array.from(
+  new Map(
+    res3.data
+      .filter(item => item?.sektor?.id_sektor)
+      .map(item => [
+        item.sektor.id_sektor,
+        { id_sektor: item.sektor.id_sektor, nama_sektor: item.sektor.nama_sektor }
+      ])
+  ).values()
+);
+
+console.log("--- DAFTAR SEKTOR UNIK YANG TERBENTUK ---");
+console.table(uniqueSektor);
+
+settopikku(uniqueSektor);
 
       console.log("Total Sektor Unik:", uniqueSektor.length);
 console.table(uniqueSektor);

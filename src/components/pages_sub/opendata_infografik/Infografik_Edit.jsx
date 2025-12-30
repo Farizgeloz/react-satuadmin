@@ -198,45 +198,44 @@ function IklanPengelolah() {
       });
 
       // 🔹 Ambil semua dataset
+     // 1. Ambil data dari API
       const res3 = await api_url_satudata.get("dataset?limit=1000");
-      // Debug untuk melihat isi asli res3.data
-      console.log("Struktur Res3 Data:", res3.data);
 
-      // Cek apakah array ada di res3.data, res3.data.data, atau res3.data.results
-      const allDataset = Array.isArray(res3.data) 
-        ? res3.data 
-        : (res3.data?.data || res3.data?.results || []);
+      // 2. Pastikan data adalah array (handling jika res3.data adalah objek atau null)
+      const rawData = Array.isArray(res3.data) ? res3.data : (res3.data?.data || []);
 
-      console.log("Dataset Array yang digunakan:", allDataset);
-
-      // 🔹 Ambil sektor unik (Pastikan allDataset sekarang adalah Array)
+      // 3. Ekstraksi Sektor Unik dengan Map
       const uniqueSektor = Array.from(
         new Map(
-          allDataset
-            .filter(item => item?.sektor?.id_sektor) // Filter agar tidak error jika sektor null
+          rawData
+            .filter(item => item?.sektor && item.sektor.id_sektor) // Pastikan sektor & id ada
             .map(item => [
-              item.sektor.id_sektor,
-              { id_sektor: item.sektor.id_sektor, nama_sektor: item.sektor.nama_sektor }
+              item.sektor.id_sektor, 
+              { 
+                value: item.sektor.id_sektor, // Langsung sesuaikan format untuk state (value/label)
+                label: item.sektor.nama_sektor 
+              }
             ])
         ).values()
       );
 
+      // Simpan daftar semua sektor unik untuk dropdown
       settopikku(uniqueSektor);
 
-     // 🔹 Cari sektor (Gunakan String() untuk menghindari error tipe data)
-      if (response.data.topik) {
-        const sektorTerpilih = uniqueSektor.find(
-          s => String(s.id_sektor) === String(response.data.topik)
-        );
+      console.log("Total Sektor Unik:", uniqueSektor.length);
+console.table(uniqueSektor);
+
+      // 4. Sinkronisasi dengan data "Topik" yang sudah ada (Detail Response)
+      if (response.data && response.data.topik) {
+        const targetId = String(response.data.topik);
+        
+        // Cari di dalam uniqueSektor yang sudah diformat
+        const sektorTerpilih = uniqueSektor.find(s => String(s.value) === targetId);
 
         if (sektorTerpilih) {
-          settopik({
-            value: sektorTerpilih.id_sektor,
-            label: sektorTerpilih.nama_sektor
-          });
+          settopik(sektorTerpilih); // Set object {value, label}
         } else {
-          // Jika ID ada tapi tidak ditemukan di daftar sektor
-          console.warn("ID Topik ditemukan di detail tapi tidak ada di daftar sektor dataset");
+          console.warn(`ID Topik [${targetId}] tidak ditemukan dalam daftar sektor dataset.`);
           settopik(null);
         }
       }

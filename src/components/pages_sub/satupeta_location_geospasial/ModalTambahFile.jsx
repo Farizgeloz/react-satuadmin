@@ -84,7 +84,7 @@ function DatasetModalTambahFile() {
   }, []);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+    const response = await api_url_satuadmin.get("satupeta/map_data/admin", {
       params: { search_satker:userloginsatker }
     });
 
@@ -314,7 +314,7 @@ const handleFileChange = (e) => {
       });
       setMessage("");
       const res = await api_url_satuadmin.post(
-        "api/satupeta/geospasial/addcsv",
+        "satupeta/geospasial/addcsv",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

@@ -91,7 +91,7 @@ const Datasetlist = () => {
     try {
       setLoading(true);
       setMessage("");
-      const res = await api_url_satuadmin.post("api/satupeta/location_point/addcsv", formData, {
+      const res = await api_url_satuadmin.post("satupeta/location_point/addcsv", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -117,8 +117,8 @@ const Datasetlist = () => {
           axios.get(apiurl + 'satupeta/map_data/admin')
           //axios.get(apiurl + 'opendata/dataset_item')
         ]);*/
-        //const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin");
-        const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+        //const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin");
+        const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin", {
                   params: { search_satker:userloginsatker }
                 });
     

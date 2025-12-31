@@ -106,7 +106,7 @@ function ModalTambahMulti() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post("api/satupeta/location_point/addmulti", 
+      await api_url_satuadmin.post("satupeta/location_point/addmulti", 
         { locations: payloadLocations },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -152,7 +152,7 @@ function ModalTambahMulti() {
   };
 
   const getDatasetItem2 = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+    const response = await api_url_satuadmin.get("satupeta/map_data/admin", {
       params: { search_kecamatan: kecamatan ? kecamatan.value : "" }
     });
     const data = response.data;

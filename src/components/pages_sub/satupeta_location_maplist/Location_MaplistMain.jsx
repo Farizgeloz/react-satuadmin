@@ -74,7 +74,7 @@ const Datasetlist = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const searchRes = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+        const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin", {
           params: { search_satker:userloginsatker,search_role:rolelogin }
         });
     

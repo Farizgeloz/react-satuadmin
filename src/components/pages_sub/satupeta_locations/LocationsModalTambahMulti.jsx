@@ -99,7 +99,7 @@ function ModalTambahMulti() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post("api/satupeta/locations/addmulti", 
+      await api_url_satuadmin.post("satupeta/locations/addmulti", 
         { 
           locations: payloadLocations,
           admin : String(userloginadmin),
@@ -135,7 +135,7 @@ function ModalTambahMulti() {
   const handleShow = () => setShow(true);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_item2", {
+    const response = await api_url_satuadmin.get("satupeta/map_item2", {
       params: { search_satker:userloginsatker }
     });
     const data = response.data;

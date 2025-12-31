@@ -167,7 +167,7 @@ function ModalTambahUser() {
   }, []);
 
    const getDatasetItem = async () => {
-      const response = await api_url_satuadmin.get("api/satupeta/map_item2", {
+      const response = await api_url_satuadmin.get("satupeta/map_item2", {
         params: { search_satker:userloginsatker }
       });
       //setlocationku(response.data.resultlocation);

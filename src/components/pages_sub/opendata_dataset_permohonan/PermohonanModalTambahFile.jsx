@@ -89,7 +89,7 @@ function DatasetModalTambahFile() {
       });
       setMessage("");
       const res = await api_url_satuadmin.post(
-        "api/satupeta/location_point/addcsv",
+        "satupeta/location_point/addcsv",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

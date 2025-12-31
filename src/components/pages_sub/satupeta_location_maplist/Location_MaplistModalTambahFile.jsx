@@ -85,7 +85,7 @@ function DatasetModalTambahFile() {
       setLoading(true);
       setMessage("");
       const res = await api_url_satuadmin.post(
-        "api/satupeta/Koleksi-Peta/addcsv",
+        "satupeta/Koleksi-Peta/addcsv",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

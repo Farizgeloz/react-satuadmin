@@ -199,7 +199,7 @@ function ModalTambahMulti() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post("api/satupeta/Koleksi-Peta/addmulti", formData, {
+      await api_url_satuadmin.post("satupeta/Koleksi-Peta/addmulti", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -229,7 +229,7 @@ function ModalTambahMulti() {
   const handleShow = () => setShow(true);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_item2", {
+    const response = await api_url_satuadmin.get("satupeta/map_item2", {
       params: { search_satker:userloginsatker }
     });
     setlocationku(response.data.resultlocation);

@@ -60,7 +60,7 @@ function ModalTambahUser() {
   };
 
   const getDatasetItem2 = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+    const response = await api_url_satuadmin.get("satupeta/map_data/admin", {
       params: { search_kecamatan: kecamatan ? kecamatan.value : "" }
     });
     const data = response.data;

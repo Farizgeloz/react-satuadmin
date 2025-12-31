@@ -134,7 +134,7 @@ function DatasetPengelolah() {
   }, [kecamatan]);
 
   const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+    const response = await api_url_satuadmin.get("satupeta/map_data/admin", {
       params: { search_satker:userloginsatker,search_kecamatan: kecamatan ? kecamatan.value : "" }
     });
     const data = response.data;
@@ -144,7 +144,7 @@ function DatasetPengelolah() {
   };
 
   const getDatasetItem2 = async () => {
-    const response = await api_url_satuadmin.get("api/satupeta/map_data/admin", {
+    const response = await api_url_satuadmin.get("satupeta/map_data/admin", {
       params: { search_satker:userloginsatker,search_kecamatan: kecamatan ? kecamatan.value : "" }
     });
     const data = response.data;

@@ -173,7 +173,7 @@ const handleSubmit = async (e) => {
       komponen: "Balas Permohonan Dataset"
     };
 
-    await api_url_satuadmin.post("api/opendata/dataset_permohonan/tiket", payload);
+    await api_url_satuadmin.post("opendata/dataset_permohonan/tiket", payload);
     sweetsuccess();
     //console.log("pesannya" + response.data.msg);
 

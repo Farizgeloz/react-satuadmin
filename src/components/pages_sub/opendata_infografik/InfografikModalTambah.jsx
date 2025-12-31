@@ -163,39 +163,19 @@ function ModalTambahUser() {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    getData()
-    
-
+    getDatasetItem();
   }, []);
 
-  const getData = async () => {
-    try {
-      
+   const getDatasetItem = async () => {
+      const response = await api_url_satuadmin.get("api/satupeta/map_item2", {
+        params: { search_satker:userloginsatker }
+      });
+      //setlocationku(response.data.resultlocation);
+      settopikku(response.data.resultsektor);
+      //setsatkerku(response.data.resultsatker);
+    };
 
-      // 🔹 Ambil semua dataset
-      const res3 = await api_url_satudata.get("dataset?limit=1000");
-      const allDataset = res3.data || [];
-
-      // 🔹 Ambil sektor unik dari dataset
-      const sektorList = allDataset
-        .map(item => ({
-          id_sektor: item.sektor?.id_sektor,
-          nama_sektor: item.sektor?.nama_sektor
-        }))
-        .filter(sektor => sektor.id_sektor && sektor.nama_sektor);
-
-      const uniqueSektor = Array.from(
-        new Map(sektorList.map(sektor => [sektor.id_sektor, sektor])).values()
-      );
-
-      // 🔹 Simpan semua sektor ke state sektorku
-      settopikku(uniqueSektor);
-
-
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  
 
   const saveIklan = async (e) => {
     e.preventDefault();

@@ -169,7 +169,7 @@ function IklanPengelolah() {
    
   useEffect(() => {
     getDataById()
-    
+    getDatasetItem();
 
   }, [id]);
 
@@ -197,58 +197,20 @@ function IklanPengelolah() {
         label: response.data.visibilitas
       });
 
-      // 🔹 Ambil semua dataset
-     // 1. Ambil data dari API
-      const res3 = await api_url_satudata.get("dataset?limit=1000");
+      settopik({ value: response.data.id_sektor, label: response.data.nama_sektor });
 
-// 1. Log Data Mentah dari API
-console.log("--- DEBUG DATA MENTAH ---");
-console.log("Status Response:", res3.status);
-console.log("Data Asli:", res3.data);
-
-// 2. Cek apakah ada ID 3 di dalam data mentah
-const cekID3 = res3.data.filter(item => item?.sektor?.id_sektor === 3 || item?.sektor?.id_sektor === "3");
-console.log("Apakah ID 3 ada di data mentah?", cekID3.length > 0 ? "ADA" : "TIDAK ADA");
-if (cekID3.length > 0) console.log("Contoh data dengan ID 3:", cekID3[0]);
-
-// 3. Log Daftar Sektor yang berhasil diekstrak sebelum masuk ke State
-const uniqueSektor = Array.from(
-  new Map(
-    res3.data
-      .filter(item => item?.sektor?.id_sektor)
-      .map(item => [
-        item.sektor.id_sektor,
-        { id_sektor: item.sektor.id_sektor, nama_sektor: item.sektor.nama_sektor }
-      ])
-  ).values()
-);
-
-console.log("--- DAFTAR SEKTOR UNIK YANG TERBENTUK ---");
-console.table(uniqueSektor);
-
-settopikku(uniqueSektor);
-
-      console.log("Total Sektor Unik:", uniqueSektor.length);
-console.table(uniqueSektor);
-
-      // 4. Sinkronisasi dengan data "Topik" yang sudah ada (Detail Response)
-      if (response.data && response.data.topik) {
-        const targetId = String(response.data.topik);
-        
-        // Cari di dalam uniqueSektor yang sudah diformat
-        const sektorTerpilih = uniqueSektor.find(s => String(s.value) === targetId);
-
-        if (sektorTerpilih) {
-          settopik(sektorTerpilih); // Set object {value, label}
-        } else {
-          console.warn(`ID Topik [${targetId}] tidak ditemukan dalam daftar sektor dataset.`);
-          settopik(null);
-        }
-      }
-
+     
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data by ID:", error);
     }
+  }
+  const getDatasetItem = async () => {
+    const response = await api_url_satuadmin.get("api/satupeta/map_item2", {
+      params: { search_satker:userloginsatker }
+    });
+    //setlocationku(response.data.resultlocation);
+    settopikku(response.data.resultsektor);
+    //setsatkerku(response.data.resultsatker);
   };
 
 

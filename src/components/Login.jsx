@@ -50,7 +50,7 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     getMenu();
   }, []);
 
@@ -69,7 +69,7 @@ const Login = () => {
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
-  };
+  }; */
 
   function sweetsuccess(user){
     Swal.fire({

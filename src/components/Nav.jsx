@@ -60,7 +60,7 @@ const Nav = (props) => {
     ];
     let [open,setOpen]=useState(false);
 
-    useEffect(() => {
+    /* useEffect(() => {
       getMenu();
     }, []);
 
@@ -79,7 +79,7 @@ const Nav = (props) => {
       } catch (error) {
         console.error("Failed to fetch data:", error);
       }
-    };
+    }; */
 
 
     const rolelogin = localStorage.getItem('role');
@@ -122,7 +122,7 @@ const Nav = (props) => {
     <div className='bg-blue-800 drop-shadow-lg w-full top-0 left-0 font-[Poppins] min-[680px]:hidden max-[640px]:fixed z-10' style={{height:'8vh'}}>
       <div className='md:flex items-center justify-between  py-2 md:px-10 px-7  height1   bg-linear-10'>
         <div className='w-100 font-bold cursor-pointer flex items-center font-[Poppins] '>
-          <img src={image1} className=" w-50 cursor-pointer duration-500 mr-2" />
+          <img src="./logo.png" className=" w-50 cursor-pointer duration-500 mr-2" />
         </div>
       
         <div onClick={()=>setOpen(!open)} className='text-silver text-3xl absolute right-8 top-2 cursor-pointer md:hidden'>

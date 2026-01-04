@@ -82,10 +82,10 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
   }, [rolelogin]);
 
   useEffect(() => {
-    getMenu();
+    //getMenu();
   }, []);
 
-  const getMenu = async () => {
+  /* const getMenu = async () => {
     try {
       
 
@@ -100,7 +100,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
-  };
+  }; */
 
 
 

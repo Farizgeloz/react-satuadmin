@@ -113,76 +113,87 @@ const Login = () => {
   };
 
   return (
-      <div className=" grid grid-cols-1 md:grid-cols-6 h-100v justify-center bg-gray-200 overflow-hidden">
-       
-         <div className="col-span-3 h-100v p-5 my-auto align-items-center justify-content-center  max-[670px]:hidden" style={{backgroundColor:"#0D47A1"}}>
-          <Image data-aos="zoom-in-up" className=" margin-t10" src='./assetku/login.png' />
-         </div>
-        <div className="col-span-3 grid grid-cols-6 gap-1 w-full bg-white text-center  h-100v pt-5">
-          <div className="col-span-6 sm:mx-auto sm:w-full sm:max-w-sm margin-t10">
-            <img
-              src={`./logo.png`}
-              className="mx-auto h-20 w-auto"
-            />
-            <p className="col-span-6 mt-2 text-center textsize20 font-bold tracking-tight text-gray-900">
-              MASUK SATU ADMIN 
+    <div className="min-h-screen bg-gray-200 flex items-center justify-center">
+
+      <div
+        className="grid grid-cols-1 md:grid-cols-6 
+                  w-full max-w-6xl h-full mx-auto
+                  rounded-2xl overflow-hidden shadow-xl"
+      >
+
+        {/* KIRI */}
+        <div
+          className="col-span-3 hidden md:flex items-center justify-center"
+          style={{ backgroundColor: "#0D47A1" }}
+        >
+          <Image
+            data-aos="zoom-in-up"
+            className="max-w-md"
+            src="./assetku/login.png"
+          />
+        </div>
+
+        {/* KANAN */}
+        <div className="col-span-3 flex items-center justify-center bg-white">
+          <div className="w-full max-w-sm px-4 text-center">
+
+            <img src="./logo.png" className="mx-auto h-20" />
+
+            <p className="mt-2 textsize14 font-bold text-gray-900">
+              MASUK SATU ADMIN
             </p>
-            <form onSubmit={loginUser} className="space-y-1  mx-2 col-span-4 col-start-2">
-              <div className=" text-center">
-                <label htmlFor="email" className="block textsize12 font-medium text-gray-900">
+
+            <form onSubmit={loginUser} className="space-y-3 mt-4">
+              <div>
+                <label className="block textsize10 font-medium text-gray-900">
                   Email address
                 </label>
-                <div className="mt-1">
-                  <input
-                    type="text"
-                    name="email"
-                    className="input-gray  textsize14 py-2 px-3 rad15 w-100"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value.toLowerCase())}
-                    placeholder="Email"
-                    autoComplete="email"
-
-                  />
-                </div>
-              </div>
-
-              <div className="mt-3 text-center">
-                  <label htmlFor="password" className="block textsize12 font-medium text-gray-900">
-                    Password
-                  </label>
-                <div className="mt-1">
-                  <input
-                    type="password"
-                    name="email"
-                    autoComplete="current-password"
-                    className="input-gray textsize14  py-2 px-3 rad15 w-100"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="******"
-                  />
-                </div>
+                <input
+                  type="text"
+                  className="input-gray w-full py-2 px-3 rad15"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                  placeholder="Email"
+                />
               </div>
 
               <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-sky-600 px-3 py-3 mt-5 textsize12 font-semibold text-white shadow-xs hover:bg-sky-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
-                >
-                  Masuk
-                </button>
-              
+                <label className="block textsize10 font-medium text-gray-900">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  className="input-gray w-full py-2 px-3 rad15"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="******"
+                />
               </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-lg bg-sky-600 py-2 mt-3 text-white textsize12 font-semibold hover:bg-sky-500"
+              >
+                Masuk
+              </button>
             </form>
-         
-            <p className="mt-2 text-center text-sm/6 text-gray-500 col-span-6">
+
+            <p className="mt-3 text-sm text-gray-500">
               {isLoading ? "Loading..." : "Silahkan Hubungi Admin Jika Belum Punya Akun"}
             </p>
-          
-            {isError && <p className="text-centered textsize12 text-red-400">{message}</p>}
-         
+
+            {isError && (
+              <p className="textsize12 text-red-400 mt-1">{message}</p>
+            )}
+          </div>
         </div>
+
       </div>
-    </div>  
+    </div>
+
+
+
+ 
     
   );
 };

@@ -85,31 +85,519 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
     //getMenu();
   }, []);
 
-  /* const getMenu = async () => {
-    try {
-      
-
-      const response_image = await api_url_satuadmin.get('openitem/images_item', {
-        params: {
-          portal:portal
-        }
-      });
-      const data_image = response_image.data.image_logo;
-      setImage1(data_image.presignedUrl1);
-      setImage2(data_image.presignedUrl3);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
-  }; */
-
-
-
   return (
-    <div className={` ${ open ? "w-rem16 " : "w-17 " } bg-linear-10 shadow-md border-solid border-2 h-100v  pt-2 relative duration-300 z-8 max-[680px]:hidden  `} >
-      {/*<img src="/assetku/control.png" className={`absolute cursor-pointer -right-3 top-9 w-7  border-dark-purple
-          border-2 rounded-full  ${!open && "rotate-180"}`}
-        onClick={() => setOpen(!open)} />*/}
-      <div className={` ${ open ? "w-46 " : "w-16 " } gap-x-4 items-center py-1 pb-2  garis7  bg-linear-10`}>
+    <>
+    <div
+      className={`
+        group
+        ${open ? "w-rem16" : "w-17 hover:w-rem16"}
+        overflow-yy-auto
+        box-border
+        transition-[width]
+        duration-300
+        bg-linear-10 shadow-md border-2
+        h-100v pt-2 relative z-8
+        max-[680px]:hidden
+      `}
+    >
+      {/* HEADER */}
+      <div className="w-full gap-x-4 items-center py-1 pb-2 garis7 bg-linear-10" style={{height:"120px"}}>
+        <img
+          src="./logo.png"
+          onClick={() => setOpen(!open)}
+          className={`
+            img-45 cursor-pointer mx-auto d-block
+            duration-500
+            ${open && "rotate-[360deg]"}
+          `}
+          title={open ? "Sembunyikan Menu" : "Tampilkan Menu"}
+        />
+
+        <div>
+          <p
+            className={`
+              text-white text-center textsize12 font_weight600 mb-0
+              transition-all duration-200
+              ${open ? "block" : "hidden group-hover:block"}
+            `}
+          >
+            SATU ADMIN
+          </p>
+          <p
+            className={`
+              text-white bg-red rad15 text-center textsize10 mx-2 mb-0 px-2
+              transition-all duration-200
+              ${open ? "block" : "hidden group-hover:block"}
+            `}
+          >
+            KAB. PROBOLINGGO
+          </p>
+        </div>
+      </div>
+
+      {/* MENU */}
+      <ul className="pt-6 pr-3 h-70v overflow-yy-auto" style={{ marginLeft: 5 }}>
+        <p
+          className={`
+            text-sage-light textsize12 mb-2 transition-all duration-200
+            ${open ? "block" : "hidden group-hover:block"}
+          `}
+        >
+          Navigasi
+        </p>
+
+        {/* DASHBOARD */}
+        <li>
+          <Link
+            to="/Dashboard"
+            className={`side-li flex text-white-a ${itemmenu === "Dashboard" ? "active-menu" : ""}`}
+          >
+            <MdDashboard className="mt-1 text-orange-500 tsize-150" />
+            <span
+              className={`
+                ml-1 mt-1 transition-all duration-200
+                ${open ? "inline" : "hidden group-hover:inline"}
+              `}
+            >
+              Dashboard
+            </span>
+          </Link>
+        </li>
+
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+          <>
+          <li className={`-right-20 mt-2`}>
+            <Link
+              to={`/Data-User`}
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "User" ? "active-menu" : ""
+              }`}
+            >
+                <FaPeopleLine className="mt-1 text-teal-500 tsize-150"  />
+                <span className={` ${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1 mb-2`}>Data Pengguna</span>
+            </Link>
+          </li>
+          </>
+        ) : null
+        } 
+
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' || rolelogin==='CS' ? (
+          <>
+            <li className={`-right-20`}>
+              <button
+                onClick={toggleCollapse_OpenData}
+                className="side-li flex tsize-100 w-full items-center justify-between"
+                type="button"
+              >
+                <div className="flex items-center">
+                  <FaClone className="mt-1 text-sky-500 tsize-150" />
+                  <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1 text-white-a`}>
+                    Open Data
+                  </span>
+                </div>
+                <svg
+                  className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
+                    collapsed_opendata ? "" : "rotate-90"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <ul
+                className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
+                  collapsed_opendata ? "max-h-0" : ""
+                }`}
+              >
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='CS' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Opendata/Dataset/Permohonan`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Permohonan" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Permohonan
+                    </span>
+                  </Link>
+                </li>
+                </>
+                ) : null
+                }
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Opendata/Iklan`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Iklan" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Iklan
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Opendata/Artikel`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Artikel" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Artikel
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Opendata/Infografik`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Infografik" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Infografik
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={`/Opendata/Bantuan`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Bantuan" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Bantuan
+                    </span>
+                  </Link>
+                </li>
+                
+                </>
+                ) : null
+                }
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+                <>
+                <li>
+                  <Link
+                    to={`/Opendata/Color`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Color" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Warna Tema
+                    </span>
+                  </Link>
+                </li>
+                <li className='mb-3'>
+                  <Link
+                    to={`/Opendata/Feedback`}
+                    className={`tsize-100 block py-1 btn-white-a flex ${
+                      itemmenu === "Opendata Feedback" ? "active-menu" : ""
+                    }`}
+                  >
+                    <FaClone className="mt-1 text-sky-500 tsize-150" />
+                    <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                      Feedback
+                    </span>
+                  </Link>
+                </li>
+                </>
+                ) : null
+                }
+              </ul>
+            </li>
+          </>
+        ) : null
+        }   
+
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
+          <>
+          <li className={`-right-20`}>
+            <button
+              onClick={toggleCollapse_SatuPeta}
+              className="side-li flex tsize-100 w-full items-center justify-between"
+              type="button"
+            >
+              <div className="flex items-center">
+                <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1 text-white-a`}>
+                  Satu Peta
+                </span>
+              </div>
+              
+              <svg
+                className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
+                  collapsed_satupeta ? "" : "rotate-90"
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            <ul
+              className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
+                collapsed_satupeta ? "max-h-0" : "max-h-50"
+              }`}
+            >
+              {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
+                <>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Lokasi-Peta`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Lokasi" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Lokasi Peta
+                      </span>
+                    </Link>
+                  </li>
+                </>
+              ) : null
+              } 
+              {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
+                <>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Koleksi-Peta`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Koleksi" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Koleksi Peta
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Titik-Lokasi-Peta`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Titik" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Titik Lokasi Peta
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Geospasial`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Geospasial" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Geospasial
+                      </span>
+                    </Link>
+                  </li>
+                </>
+              ) : null
+              } 
+              {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
+                <>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Iklan`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Iklan" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Iklan
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Artikel`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Artikel" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Artikel
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Bantuan`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Bantuan" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Bantuan
+                      </span>
+                    </Link>
+                  </li>
+                
+                </>
+                ) : null
+                } 
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+                <>
+                  <li>
+                    <Link
+                      to={`/Satupeta/Color`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Color" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Warna Tema
+                      </span>
+                    </Link>
+                  </li>
+                  <li className='mb-3'>
+                    <Link
+                      to={`/Satupeta/Feedback`}
+                      className={`tsize-100 block py-1 btn-white-a flex ${
+                        itemmenu === "Satupeta Feedback" ? "active-menu" : ""
+                      }`}
+                    >
+                      <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
+                      <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                        Feedback
+                      </span>
+                    </Link>
+                  </li>
+                </>
+              ) : null
+              } 
+            </ul>
+          </li>
+          
+          </>
+        ) : null
+        }     
+
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
+          <>
+
+          <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Lainnya</p>
+          <li className={`-right-20 mb-1`}>
+            <Link
+              to={`/Komponen-Statik`}
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "Komponen Statik" ? "active-menu" : ""
+              }`}
+            >
+                <MdDataset className="mt-1 text-red-500 tsize-150"  />
+                <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              to={`/Aplikasi-Terhubung`}
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "Aplikasi Terhubung" ? "active-menu" : ""
+              }`}
+            >
+              <MdDataset className="mt-1 text-red-500 tsize-150"  />
+              <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>
+                Aplikasi Terhubung
+              </span>
+            </Link>
+          </li>
+          <li className={`-right-20 mb-1`}>
+            <Link
+              to={`/Bioinfo`}
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "Bio Info" ? "active-menu" : ""
+              }`}
+            >
+                <MdDataset className="mt-1 text-red-500 tsize-150"  />
+                <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>Bio Info</span>
+            </Link>
+          </li>
+          
+          <li className={`-right-20 mb-5`}>
+            <Link
+              to={`/Log`}
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "Log" ? "active-menu" : ""
+              }`}
+            >
+                <MdDataset className="mt-1 text-red-500 tsize-150"  />
+                <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>Aktivitas</span>
+            </Link>
+          </li>
+          
+            </>
+          ) : null
+        }   
+        {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
+          <li className={`-right-20 mb-5`}>
+            <Link
+              to={`/Rule-Informasi`}
+              className={`side-li flex tsize-100 text-white-a ${
+                itemmenu === "Rule Informasi" ? "active-menu" : ""
+              }`}
+            >
+                <MdDataset className="mt-1 text-red-500 tsize-150"  />
+                <span className={`${open ? "inline" : "hidden group-hover:inline"} origin-left duration-300 ml-1 mt-1`}>Rule Informasi</span>
+            </Link>
+          </li>
+        ) : null}
+
+      </ul>
+     <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          height: "20px",
+          background: "#f8f9fa",
+          textAlign: "center",
+          zIndex: 999
+        }}
+        className={`w-100 textsize6 mx-1`}
+      >
+        <p className='mt-1'>@ 2026 Satu Admin Kab. Prob v 1.0.1</p>
+      </div>
+    </div>
+    
+    </>
+  );
+
+
+  /* return (
+    <div className={` ${ open ? "w-rem16 " : "w-17" } bg-linear-10 shadow-md border-solid border-2 h-100v  pt-2 relative duration-300 z-8 max-[680px]:hidden  `} >
+      
+      <div className={` ${ open ? "w-46 " : "w-16" } gap-x-4 items-center py-1 pb-2  garis7  bg-linear-10`}>
         
         <img
           src="./logo.png"
@@ -133,7 +621,6 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
       <ul className="pt-6 pr-3  h-85v overflow-yy-auto" style={{ margin: "0px 0px 0px 5px"}}>
         <p className={`text-sage-light  textsize12 duration-200 mb-2  ${ !open && "hidden" }`}>Navigasi</p>
         <li className={`-right-20 `}>
-          {/* button */}
           <Link
             to={`/Dashboard`}
             className={`side-li flex tsize-100 text-white-a ${
@@ -148,7 +635,6 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
         {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
           <>
           <li className={`-right-20 mt-2`}>
-            {/* button */}
             <Link
               to={`/Data-User`}
               className={`side-li flex tsize-100 text-white-a ${
@@ -162,537 +648,24 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
           </>
         ) : null
         }
-        {/*rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
-          <>
-          <li className={`-right-20 mt-2`}>
-            <button
-              onClick={toggleCollapse_SatuPortal}
-              className="side-li flex tsize-100 w-full items-center justify-between"
-              type="button"
-            >
-              <div className="flex items-center">
-                <FaGg className="mt-1 text-red-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-white-a`}>
-                  Satu Portal
-                </span>
-              </div>
-              <svg
-                className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
-                  collapsed_satuportal ? "" : "rotate-90"
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
-            <ul
-              className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
-                collapsed_satuportal ? "max-h-0" : "max-h-50"
-              }`}
-            >
-              <li>
-                <Link
-                  to={`/Satuportal/Motto`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satuportal Motto" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaGg className="mt-1 text-red-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal Motto
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Satuportal/Iklan`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satuportal Iklan" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaGg className="mt-1 text-red-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal Iklan
-                  </span>
-                </Link>
-              </li>
-              {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
-              <>
-              <li>
-                <Link
-                  to={`/Satuportal/Visitor`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satuportal Visitor" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaGg className="mt-1 text-red-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal Visitor
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Satuportal/List`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satuportal List" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaGg className="mt-1 text-red-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal List
-                  </span>
-                </Link>
-              </li>
-              <li className='mb-3'>
-                <Link
-                  to={`/Satuportal/Color`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satuportal Color" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaGg className="mt-1 text-red-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Satu Portal Color
-                  </span>
-                </Link>
-              </li>
-              </>
-              ) : null
-              }
-            </ul>
-          </li>
-        </>
-        ) : null*/
-        }
+        
         
 
 
         
 
-      {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' || rolelogin==='CS' ? (
-        <>
-          <li className={`-right-20`}>
-            {/* tombol utama */}
-            <button
-              onClick={toggleCollapse_OpenData}
-              className="side-li flex tsize-100 w-full items-center justify-between"
-              type="button"
-            >
-              <div className="flex items-center">
-                <FaClone className="mt-1 text-sky-500 tsize-150" />
-                <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-white-a`}>
-                  Open Data
-                </span>
-              </div>
-              {/* icon panah collapse */}
-              <svg
-                className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
-                  collapsed_opendata ? "" : "rotate-90"
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
-            {/* isi collapse */}
-            <ul
-              className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
-                collapsed_opendata ? "max-h-0" : ""
-              }`}
-            >
-              {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='CS' ? (
-              <>
-              <li>
-                <Link
-                  to={`/Opendata/Dataset/Permohonan`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Permohonan" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Permohonan
-                  </span>
-                </Link>
-              </li>
-              </>
-              ) : null
-              }
-              {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
-              <>
-              <li>
-                <Link
-                  to={`/Opendata/Iklan`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Iklan" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Iklan
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Opendata/Artikel`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Artikel" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Artikel
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Opendata/Infografik`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Infografik" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Infografik
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Opendata/Bantuan`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Bantuan" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Bantuan
-                  </span>
-                </Link>
-              </li>
-              
-              </>
-              ) : null
-              }
-              {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
-              <>
-              <li>
-                <Link
-                  to={`/Opendata/Color`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Color" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Warna Tema
-                  </span>
-                </Link>
-              </li>
-              <li className='mb-3'>
-                <Link
-                  to={`/Opendata/Feedback`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Opendata Feedback" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaClone className="mt-1 text-sky-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Feedback
-                  </span>
-                </Link>
-              </li>
-              </>
-              ) : null
-              }
-              {/* <li>
-                <a
-                  href="/Opendata/Dataset"
-                  className="tsize-100 block py-1 text-white-a flex"
-                >
-                  <FaClone className="mt-1 text-white tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Open Data Dataset
-                  </span>
-                
-                </a>
-              </li> */}
-            </ul>
-          </li>
-        </>
-      ) : null
-      } 
-
-      {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
-      <>
-      <li className={`-right-20`}>
-        {/* tombol utama */}
-        <button
-          onClick={toggleCollapse_SatuPeta}
-          className="side-li flex tsize-100 w-full items-center justify-between"
-          type="button"
-        >
-          <div className="flex items-center">
-            <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-            <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1 text-white-a`}>
-              Satu Peta
-            </span>
-          </div>
-          {/* icon panah collapse */}
-          <svg
-            className={`w-4 h-4 ml-2 transition-transform duration-300 text-white ${
-              collapsed_satupeta ? "" : "rotate-90"
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-
-        {/* isi collapse */}
-        <ul
-          className={`pl-2 mt-2 space-y-1 overflow-hidden transition-[max-height] duration-300 ${
-            collapsed_satupeta ? "max-h-0" : "max-h-50"
-          }`}
-        >
-          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
-            <>
-              <li>
-                <Link
-                  to={`/Satupeta/Lokasi-Peta`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Lokasi" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Lokasi Peta
-                  </span>
-                </Link>
-              </li>
-            </>
-          ) : null
-          } 
-          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
-            <>
-              <li>
-                <Link
-                  to={`/Satupeta/Koleksi-Peta`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Koleksi" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Koleksi Peta
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Satupeta/Titik-Lokasi-Peta`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Titik" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Titik Lokasi Peta
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Satupeta/Geospasial`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Geospasial" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Geospasial
-                  </span>
-                </Link>
-              </li>
-            </>
-          ) : null
-          } 
-          {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
-            <>
-              <li>
-                <Link
-                  to={`/Satupeta/Iklan`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Iklan" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Iklan
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Satupeta/Artikel`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Artikel" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Artikel
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={`/Satupeta/Bantuan`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Bantuan" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Bantuan
-                  </span>
-                </Link>
-              </li>
-            
-            </>
-            ) : null
-            } 
-            {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
-            <>
-              <li>
-                <Link
-                  to={`/Satupeta/Color`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Color" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Warna Tema
-                  </span>
-                </Link>
-              </li>
-              <li className='mb-3'>
-                <Link
-                  to={`/Satupeta/Feedback`}
-                  className={`tsize-100 block py-1 btn-white-a flex ${
-                    itemmenu === "Satupeta Feedback" ? "active-menu" : ""
-                  }`}
-                >
-                  <FaMapMarkerAlt className="mt-1 text-yellow-500 tsize-150" />
-                  <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-                    Feedback
-                  </span>
-                </Link>
-              </li>
-            </>
-          ) : null
-          } 
-        </ul>
-      </li>
       
-      </>
-      ) : null
-      } 
+
+      
 
 
        
         
        
-      {rolelogin ==='Super Admin' || rolelogin==='Admin' ? (
-      <>
-
-      <p className={`text-sage-light  textsize12 duration-200 mb-2 mt-3  ${ !open && "hidden" }`}>Lainnya</p>
-      <li className={`-right-20 mb-1`}>
-        {/* button */}
-        <Link
-          to={`/Komponen-Statik`}
-          className={`side-li flex tsize-100 text-white-a ${
-            itemmenu === "Komponen Statik" ? "active-menu" : ""
-          }`}
-        >
-            <MdDataset className="mt-1 text-red-500 tsize-150"  />
-            <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Komponen Statik</span>
-        </Link>
-      </li>
-      <li>
-        <Link
-          to={`/Aplikasi-Terhubung`}
-          className={`side-li flex tsize-100 text-white-a ${
-            itemmenu === "Aplikasi Terhubung" ? "active-menu" : ""
-          }`}
-        >
-          <MdDataset className="mt-1 text-red-500 tsize-150"  />
-          <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
-            Aplikasi Terhubung
-          </span>
-        </Link>
-      </li>
-      <li className={`-right-20 mb-1`}>
-        {/* button */}
-        <Link
-          to={`/Bioinfo`}
-          className={`side-li flex tsize-100 text-white-a ${
-            itemmenu === "Bio Info" ? "active-menu" : ""
-          }`}
-        >
-            <MdDataset className="mt-1 text-red-500 tsize-150"  />
-            <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Bio Info</span>
-        </Link>
-      </li>
       
-      <li className={`-right-20 mb-5`}>
-        {/* button */}
-        <Link
-          to={`/Log`}
-          className={`side-li flex tsize-100 text-white-a ${
-            itemmenu === "Log" ? "active-menu" : ""
-          }`}
-        >
-            <MdDataset className="mt-1 text-red-500 tsize-150"  />
-            <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Aktivitas</span>
-        </Link>
-      </li>
-      
-        </>
-      ) : null
-      }   
-      {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd'  || rolelogin==='Verifikator Opd' ? (
-        <li className={`-right-20 mb-5`}>
-          {/* button */}
-          <Link
-            to={`/Rule-Informasi`}
-            className={`side-li flex tsize-100 text-white-a ${
-              itemmenu === "Rule Informasi" ? "active-menu" : ""
-            }`}
-          >
-              <MdDataset className="mt-1 text-red-500 tsize-150"  />
-              <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Rule Informasi</span>
-          </Link>
-        </li>
-      ) : null}
     </ul>
     </div>
-  )
+  ) */
 }
 
 export default Sidebar

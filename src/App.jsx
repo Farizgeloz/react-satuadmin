@@ -88,7 +88,7 @@ function App() {
       const expiredAt = localStorage.getItem('expiredAt');
       if (expiredAt && new Date() > new Date(expiredAt)) {
         localStorage.clear();
-        window.location.href = "/Login";
+        window.location.href = "/";
       }
     }, 5000); // cek tiap 5 detik
 

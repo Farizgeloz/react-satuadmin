@@ -765,3 +765,10 @@ div.MuiAutocomplete-popper div { /* To get rid of the rounding applied by Mui-pa
 .custom-header-logo {
   vertical-align: middle;
 }
+
+.hiddendisplay{
+  opacity: 0;
+}
+.showdisplay{
+  opacity: 1;
+}

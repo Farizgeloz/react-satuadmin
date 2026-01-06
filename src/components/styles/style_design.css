@@ -398,6 +398,13 @@ filter: progid:DXImageTransform.Microsoft.gradient(
     height:85vh;
 }
 
+.h-80v{
+    height:80vh;
+}
+.h-7v{
+    height:70vh;
+}
+
 .h-5v{
     height:5vh;
 }

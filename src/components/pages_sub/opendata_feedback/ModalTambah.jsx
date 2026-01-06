@@ -372,7 +372,6 @@ function ModalTambahUser() {
                                 type="file"
                                 label="Unggah Gambar Konten"
                                 className="bg-input rad15 w-100"
-                                alt=""
                                 InputLabelProps={{
                                   shrink: true, // biar label tetap tampil di atas saat file dipilih
                                 }}
@@ -403,7 +402,6 @@ function ModalTambahUser() {
                           <div className="sm:col-span-1 -mt-4">
                               <img
                                   src={file2}
-                                  alt="gambar"
                                   style={{ maxwidth: "80%", objectFit: "contain" }}
                                   className="rounded border p-1"
                                 />

@@ -166,7 +166,7 @@ function DatasetModalTambahFile() {
                     inputProps={{
                       accept: "image/*", // hanya file gambar
                     }}
-                    alt=""
+                    
                     InputLabelProps={{
                       shrink: true, // biar label tetap tampil di atas saat file dipilih
                     }}

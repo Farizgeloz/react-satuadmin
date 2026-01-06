@@ -21,14 +21,9 @@ import Modal from 'react-bootstrap/Modal';
 import "../../../App.css";
 import Swal from 'sweetalert2';
 
-import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-} from "@material-tailwind/react";
+import KontenEditor from "../KontenEditor";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+
 
 
 const textFieldStyle = (theme) => ({
@@ -70,27 +65,15 @@ function ModalTambahUser() {
 
   
   const [title, settitle] = useState("");
-  const [linked, setlink] = useState("");
+  const [seksi, setseksi] = useState("");
+  const [kategori, setkategori] = useState("");
+  const [content, setcontent] = useState("");
   const [visibilitas, setvisibilitas] = useState("");
-  const [file, setfile] = useState("");
-  const [file2, setfile2] = useState(null);
   const [loading, setLoading] = useState(false);
 
   
 
-  useEffect(() => {
-    
-  }, [title]);
-  
-
-  const loadImage = (e) =>{
-    const image = e.target.files[0];
-    setfile(image);
-    if (image) {
-      setfile2(URL.createObjectURL(image)); // buat URL sementara
-    } else {
-    }
-  }
+ 
 
   const navigate = useNavigate();
 
@@ -101,13 +84,14 @@ function ModalTambahUser() {
   const saveIklan = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("file",file);
     formData.append("title",title);
-    formData.append("linked",linked);
+    formData.append("seksi",seksi);
+    formData.append("kategori",kategori);
+    formData.append("content",content);
     formData.append("visibilitas",visibilitas.value);
     formData.append("admin",userloginadmin);
-    formData.append("jenis","Satu Portal Iklan");
-    formData.append("komponen","Tambah Iklan Satu Portal");
+    formData.append("jenis","Open Data Bantuan");
+    formData.append("komponen","Tambah Bantuan Open Data");
 
     try {
       setLoading(true);
@@ -120,7 +104,7 @@ function ModalTambahUser() {
           Swal.showLoading();
         },
       });
-      await api_url_satuadmin.post('openitem/ekosistem-iklan/add', formData);
+      await api_url_satuadmin.post('openitem/opendata-bantuan/add', formData);
 
       setShow(false);
       setLoading(false);
@@ -131,8 +115,8 @@ function ModalTambahUser() {
     }
   };
 
-  function sweetsuccess() {
-      Swal.fire({
+  function sweetsuccess(){
+    Swal.fire({
         title: "Sukses",
         html: "Data Berhasil Disimpan",
         timer: 2000,
@@ -140,30 +124,35 @@ function ModalTambahUser() {
         timerProgressBar: true,
         didOpen: () => {
           Swal.showLoading();
+          
         },
         willClose: () => {
-          navigate(0);
-        },
+            navigate(0);
+        }
+      }).then((result) => {
       });
-    }
-  
-    function sweeterror(error) {
+  };
+  function sweeterror(error){
       Swal.fire({
-        title: "Gagal",
-        html: error,
-        timer: 1500,
-        icon: "error",
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
-    }
+          title: "Gagal",
+          html: error,
+          timer: 1500,
+          icon: "error",
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading();
+            
+          },
+          willClose: () => {
+          }
+        }).then((result) => {
+        });
+  };
 
   const [step, setStep] = useState(1);
-
   
-
+    
+  
   const nextStep = () => {
       setStep(step + 1);
   };
@@ -177,8 +166,9 @@ function ModalTambahUser() {
   };
 
   const [validasi_title, setvalidasi_title] = useState(false);
+  const [validasi_kategori, setvalidasi_kategori] = useState(false);
+  const [validasi_seksi, setvalidasi_seksi] = useState(false);
   const [validasi_visibilitas, setvalidasi_visibilitas] = useState(false);
-  const [validasi_file, setvalidasi_file] = useState(false);
 
   const handle_step1 = (event) => {
     if (title.length < 3) {
@@ -187,19 +177,24 @@ function ModalTambahUser() {
       setvalidasi_title(false);
     }
 
+    if (!kategori) {
+      setvalidasi_kategori(true);
+    } else {
+      setvalidasi_kategori(false);
+    }
+
+    if (seksi.length < 3) {
+      setvalidasi_seksi(true);
+    } else {
+      setvalidasi_seksi(false);
+    }
     if (!visibilitas) {
       setvalidasi_visibilitas(true);
     } else {
       setvalidasi_visibilitas(false);
     }
 
-    if (!file) {
-      setvalidasi_file(true);
-    } else {
-      setvalidasi_file(false);
-    }
-
-    if (title.length >= 3 && visibilitas && file) {
+    if (title.length >= 3 && (kategori) && (seksi.length >= 3) && (visibilitas)) {
       nextStep();
     }
   };
@@ -214,7 +209,7 @@ function ModalTambahUser() {
          <Link onClick={handleShow} className="col-span-2 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right ">
           <button 
             className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Satu Portal Iklan</span>
+              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
           </button>
         </Link>
       
@@ -226,7 +221,7 @@ function ModalTambahUser() {
         >
             <form onSubmit={saveIklan}>
             <Modal.Header closeButton className="border-b ">
-                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Satu Portal Iklan</h4>
+                <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Opendata Bantuan</h4>
                 
             </Modal.Header>
             <Modal.Body className="mt-2 bg-silver-light p-0">
@@ -277,7 +272,7 @@ function ModalTambahUser() {
                               <div className="p-3 rad15 border bg-white shadow-sm">
   
                                 <label className="font_weight600 textsize12 mb-2 d-block">
-                                  Judul Motto
+                                  Judul Bantuan
                                 </label>
   
                                 <TextField
@@ -309,27 +304,71 @@ function ModalTambahUser() {
                               </div>
                             </div>
                           </div>
-                          <div className="md:col-span-6 col-span-6 -mt-2">
+                          <div className="md:col-span-3 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm">
   
                                 <label className="font_weight600 textsize12 mb-2 d-block">
-                                  Link Url
+                                  Kategori Bantuan
+                                </label>
+  
+                                <Autocomplete
+                                  className="tsize-110"
+                                  isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                                  id="combo-box-location"
+                                  options={[
+                                    { label: "Satupeta", value: "Satupeta" },
+                                    { label: "Mapset", value: "Mapset" }
+                                  ]}
+                                  getOptionLabel={(option) => option.label || ""}
+                                  value={kategori}
+                                  onChange={(event, newValue) => setkategori(newValue)}
+                                  clearOnEscape
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      className="bg-input rad15 w-full"
+                                      InputLabelProps={{ shrink: false }}
+                                      sx={(theme) => textFieldStyle(theme)}
+                                    />
+                                  )}
+                                  sx={{
+                                    width: "100%",
+                                    "& .MuiAutocomplete-popupIndicator": {
+                                      color: "#1976d2",
+                                      transition: "transform 0.3s",
+                                    },
+                                    "& .MuiAutocomplete-popupIndicatorOpen": {
+                                      transform: "rotate(180deg)",
+                                    },
+                                  }}
+                                />
+                                  {validasi_kategori && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih.</p>}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="md:col-span-3 col-span-6 -mt-2">
+                            <div className="mt-1">
+                              <div className="p-3 rad15 border bg-white shadow-sm">
+  
+                                <label className="font_weight600 textsize12 mb-2 d-block">
+                                  Kode Seksi
                                 </label>
   
                                 <TextField
                                   className="bg-input rad15 w-full"
-                                  value={linked}
-                                  onChange={(e) => setlink(e.target.value)}
+                                  value={seksi}
+                                  onChange={(e) => setseksi(e.target.value)}
                                   InputLabelProps={{ shrink: false }}
                                   sx={(theme) => textFieldStyle(theme)}
                                   InputProps={{
                                     endAdornment: (
                                       <>
-                                        {linked && (
+                                        {seksi && (
                                           <InputAdornment position="end">
                                             <IconButton
-                                              onClick={() => setlink("")}
+                                              onClick={() => setseksi("")}
                                               edge="end"
                                               size="small"
                                             >
@@ -342,11 +381,17 @@ function ModalTambahUser() {
                                   }}
                                 />
   
-                               
+                                {validasi_seksi && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Diisi dan Tanpa Spasi...</p>}
                               </div>
                             </div>
                           </div>
-                          {/* VISIBILITAS */}
+                          <div className="sm:col-span-6 -mt-4">
+                            <div className="mt-0">
+                              <KontenEditor content={content} setcontent={setcontent} />
+                            </div>
+                            
+                          </div>
+
                           <div className="md:col-span-6 col-span-6 -mt-2">
                             <div className="mt-1">
                               <div className="p-3 rad15 border bg-white shadow-sm">
@@ -388,99 +433,10 @@ function ModalTambahUser() {
                                   }}
                                 />
   
-                               {validasi_visibilitas && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih...</p>}
-                            
+                                {validasi_visibilitas && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Dipilih.</p>}
                               </div>
                             </div>
                           </div>
-                          
-                          <div className="md:col-span-5 col-span-6 -mt-2">
-                            <div className="mt-1">
-
-                              <div className="p-3 rad15 border bg-white shadow-sm mb-2">
-                                <label className="font_weight600 textsize12 mb-2 d-block">
-                                  Unggah Gambar Konten
-                                </label>
-
-                                <TextField
-                                  type="file"
-                                  accept="image/*"
-                                  className="bg-input rad15 w-100"
-                                  InputLabelProps={{
-                                    shrink: false,
-                                  }}
-                                  onChange={loadImage}
-                                  InputProps={{
-                                    endAdornment: (
-                                      <>
-                                        {file && (
-                                          <InputAdornment position="end">
-                                            <IconButton
-                                              onClick={() => setfile("")}
-                                              edge="end"
-                                              size="small"
-                                              title="Hapus file"
-                                            >
-                                              <ClearIcon />
-                                            </IconButton>
-                                          </InputAdornment>
-                                        )}
-                                      </>
-                                    ),
-                                  }}
-                                  sx={(theme) => ({
-                                    ...textFieldStyle(theme),
-                                    "& .MuiInputBase-root": {
-                                      borderRadius: "12px",
-                                      paddingRight: "8px",
-                                      background: "#fafafa",
-                                    },
-                                    "& input::file-selector-button": {
-                                      marginRight: "15px",
-                                      padding: "7px 14px",
-                                      border: "1px solid #ddd",
-                                      borderRadius: "8px",
-                                      background: "#fff",
-                                      cursor: "pointer",
-                                      fontWeight: 600,
-                                    },
-                                  })}
-                                />
-                                {validasi_file && <p className="transisi mb-0 text-red-700 d-flex"><MdErrorOutline  className="mt-1 mx-2" />Harus Pilih Gambar...</p>}
-                                
-
-                              </div>
-
-                            </div>
-                          </div>
-                          {/* AREA PREVIEW GAMBAR */}
-                          {file2 && (
-                            <div className="md:col-span-1  col-span-6 -mt-4">
-                              <p className="textsize10 mb-1 text-center">Preview Gambar:</p>
-
-                              <div
-                                className="p-2 border rad10 bg-light d-flex align-items-center justify-content-center"
-                                style={{
-                                  width: "100%",
-                                  height: "100px",
-                                  overflow: "hidden",
-                                }}
-                              >
-                                <img
-                                  src={file2}
-                                  
-                                  style={{
-                                    maxHeight: "100%",
-                                    maxWidth: "100%",
-                                    objectFit: "contain",
-                                    borderRadius: "10px",
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          )}
-                          
-                          
                           
                           
                           

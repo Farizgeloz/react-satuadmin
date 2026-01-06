@@ -562,7 +562,7 @@ function ModalTambahUser() {
                             >
                               <img
                                 src={images_a}
-                                alt="preview"
+                                
                                 style={{
                                   maxHeight: "100%",
                                   maxWidth: "100%",
@@ -655,7 +655,7 @@ function ModalTambahUser() {
                             >
                               <img
                                 src={images_b}
-                                alt="preview"
+                                
                                 style={{
                                   maxHeight: "100%",
                                   maxWidth: "100%",
@@ -748,7 +748,7 @@ function ModalTambahUser() {
                             >
                               <img
                                 src={images_c}
-                                alt="preview"
+                                
                                 style={{
                                   maxHeight: "100%",
                                   maxWidth: "100%",

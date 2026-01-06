@@ -458,7 +458,6 @@ function ModalTambahUser() {
                               >
                                 <img
                                   src={file2}
-                                  alt="preview"
                                   style={{
                                     maxHeight: "100%",
                                     maxWidth: "100%",

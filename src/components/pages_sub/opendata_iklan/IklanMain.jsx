@@ -129,7 +129,6 @@ export default function Iklanlist() {
       renderCell: (params) => (
         <img
           src={params.value}
-          alt="gambar"
           style={{
             width: "100%",
             height: "100%", // penuh tinggi cell

@@ -396,7 +396,6 @@ const handleFileChange = (e) => {
                   inputProps={{
                     accept: '.csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/json', // hanya file gambar
                   }}
-                  alt=""
                   InputLabelProps={{
                     shrink: true, // biar label tetap tampil di atas saat file dipilih
                   }}

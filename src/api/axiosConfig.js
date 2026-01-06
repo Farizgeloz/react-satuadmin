@@ -8,6 +8,7 @@ const api_url_satudata = axios.create({
 
 // API SatuAdmin (read)
 const api_url_satuadmin = axios.create({
+  //baseURL: "http://localhost:3000/api",
   baseURL: "https://apisatuadmin.probolinggokab.go.id/api/",
   headers: { "Content-Type": "application/json" },
   withCredentials: true, // wajib kalau backend pakai session/cookie
@@ -15,6 +16,7 @@ const api_url_satuadmin = axios.create({
 
 // API SatuAdmin (create/post)
 const api_url_satuadmin_create = axios.create({
+  //baseURL: "http://localhost:3000/api",
   baseURL: "https://apisatuadmin.probolinggokab.go.id/api/",
   withCredentials: true, // wajib kalau backend pakai session/cookie
 });

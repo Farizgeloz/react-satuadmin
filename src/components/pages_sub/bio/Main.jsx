@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavSub from "../../NavSub";
-import IklanModalTambah from "./IklanModalTambah";
-import IklanModalDelete from "./IklanModalDelete";
+import IklanModalTambah from "./ModalTambah";
+import IklanModalDelete from "./ModalDelete";
 import Activity from "../log/Activity";
 import { Col, Container, Row,Tabs, Tab } from "react-bootstrap";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
@@ -38,34 +38,23 @@ export default function Iklanlist() {
   }, []);
 
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`openitem/satupeta-iklan`);
-    const data = res.data.resultWithUrls2 || [];
+    const res = await api_url_satuadmin.get(`openitem/ekosistem_bio`);
+    const data = res.data || [];
     setDatasetku(data);
     setRowsFiltered(data);
     setLoading(false);
   };
 
-  const handleSearch = (value) => {
-    setSearchText(value);
-    if (value === "") {
-      setRowsFiltered(datasetku);
-    } else {
-      const filtered = datasetku.filter(
-        (item) =>
-          item.title?.toLowerCase().includes(value.toLowerCase()) ||
-          item.content_a?.toLowerCase().includes(value.toLowerCase())
-      );
-      setRowsFiltered(filtered);
-    }
-  };
+
   const rowsku = Array.isArray(rowsFiltered)
     ? rowsFiltered.map((row, index) => ({
         id: index + 1,
         no: index + 1,
-        ...row
+        ...row,
+        media: `${row.instagram ?? ''} ${row.linkedin ?? ''} ${row.facebook ?? ''} ${row.whatapp ?? ''} ${row.twitter ?? ''}`,
       }))
     : [];
-
+  
   const visibilitasStyle = {
     draft: "bg-gray-200 text-gray-700",
     pending: "bg-yellow-100 text-yellow-700",
@@ -82,130 +71,161 @@ export default function Iklanlist() {
       headerClassName: "custom-header", // kelas custom
     },
     { 
-      field: "title", 
-      headerName: "Judul", 
-      flex: 3,  // 30%
-      headerClassName: "custom-header", // kelas custom
-      minWidth: 100,
-      renderCell: (params) => {
-        const row = params.row;
-        return (
-          <p className="textsize10">{row.title}</p>
-        );
-      } 
-    },
-    { 
-      field: "linked", 
-      headerName: "Link", 
-      flex: 3,  // 20%
-      headerClassName: "custom-header", // kelas custom
-      minWidth: 100,
-      renderCell: (params) => {
-        const row = params.row;
-        return (
-          <p className="textsize10">{row.linked}</p>
-        );
-      }  
-    },
-    {
-      field: "presignedUrl",
-      headerName: "Gambar",
-      flex: 1, // 10%
-      headerClassName: "custom-header text-center", // kelas custom
-      disableColumnMenu: true,
-      filterable: false,
-      sortable: false,
-      minWidth: 100,
-      headerAlign: 'center',
-      renderCell: (params) => (
-        <img
-          src={params.value}
-          style={{
-            width: "100%",
-            height: "100%", // penuh tinggi cell
-            objectFit: "contain", // tetap proporsional
-            maxHeight: '100%' // biar tidak overflow
-          }}
-          className="rounded border p-1"
-        />
-      ),
-    },
-    { 
-      field: "visibilitas", 
-      headerName: "Visibilitas", 
-      flex: 1,  // 10%
+      field: "email", 
+      headerName: "email", 
+      flex: 2,  // 30%
       headerClassName: "custom-header", // kelas custom
       minWidth: 100,
       renderCell: (params) => {
         const row = params.row;
         return (
           <>
-            <p 
-            className={`
-                px-2 py-1 textsize10 rounded-lg font-semibold inline-block w-fit
-                ${visibilitasStyle[row.visibilitas?.toLowerCase()] || "bg-gray-100 text-gray-600"}
-              `}
-            >
-              {row.visibilitas}
+            <p className="textsize10">
+              {row.email}
             </p>
           </>
         );
       }  
     },
+    { 
+      field: "telpon", 
+      headerName: "telpon", 
+      flex: 1,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <>
+            <p className="textsize10">
+              {row.telpon}
+            </p>
+          </>
+        );
+      }  
+    },
+     { 
+      field: "fax", 
+      headerName: "fax", 
+      flex: 1,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <>
+            <p className="textsize10">
+              {row.fax}
+            </p>
+          </>
+        );
+      }  
+    },
+    { 
+      field: "alamat", 
+      headerName: "alamat", 
+      flex: 3,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <>
+            <p className="textsize10">
+               {row.alamat.length > 100 
+                ? row.alamat.substring(0, 100) + "..." 
+                : row.alamat}
+            </p>
+          </>
+        );
+      }  
+    },
+     { 
+      field: "media", 
+      headerName: "Media", 
+      flex: 3,  // 30%
+      headerClassName: "custom-header", // kelas custom
+      minWidth: 100,
+      renderCell: (params) => {
+        const row = params.row;
+        return (
+          <>
+            <p className="textsize10">
+              {row.instagram}
+            </p>
+            <p className="textsize10">
+              {row.linkedin}
+            </p>
+            <p className="textsize10">
+              {row.facebook}
+            </p>
+             <p className="textsize10">
+              {row.whatapp}
+            </p>
+            <p className="textsize10">
+              {row.twitter}
+            </p>
+          </>
+        );
+      }  
+    },
+   
+    
+    
+    
+    
+    
     {
       field: "aksi",
       headerName: "Aksi",
       flex: 1, // 20%
       headerClassName: "custom-header", // kelas custom
+      minWidth: 50,
       sortable: false,
       filterable: false,
       disableColumnMenu: true,
       headerAlign: 'center',
       renderCell: (params) => (
         <div className="gap-2 p-2">
-          <Link to={`/Satupeta/Iklan/Update/${params.row.title}`}>
+          <Link to={`/Bioinfo/Update/${params.row.id}`}>
             <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
-              <MdEditSquare className="mr-1" size={18} />
+              <MdEditSquare className="mr-1"  size={18}/>
             </button>
           </Link>
-          <IklanModalDelete id={params.row.id} name={params.row.title} />
         </div>
       ),
     },
   ];
 
+  const filteredRows = rowsku.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchText.toLowerCase())
+    )
+  );
+
 
   return (
     <div className="bg-slate-100 w-full max-h-screen sm:pt-0 max-[640px]:mt-12">
-      <NavSub title="Satu Peta Iklan" />
+      <NavSub title="Bio Info" />
 
       <div className="col-span-3 grid grid-cols-1 md:grid-cols-6 gap-4">
         <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
-            <NavLink to="/Dashboard" className="text-silver-a mr-2 flex textsize10">
+            <NavLink to="/Dashboard" className="textsize10 text-silver-a mr-2 flex">
               <MdDashboard className="mt-1" /> Dashboard
             </NavLink>{" "}
             /{" "}
-            <NavLink to="#" className="text-silver-a mx-2 flex textsize10">
-              <MdDataset className="mt-1" /> Satupeta Iklan
+            <NavLink to="#" className="textsize10 text-silver-a mx-2 flex">
+              <MdDataset className="mt-1" /> Bio Info
             </NavLink>
           </p>
         </div>
-        <div className="md:col-span-2 px-10 mt-2">
-          <IklanModalTambah />
-        </div>
+       
       </div>
 
       <div className="drop-shadow-lg overflow-auto mb-9 p-2">
         <section className="py-3 rounded-lg bg-white px-2">
-          
           <Container fluid>
-            <Tabs
-              defaultActiveKey="tabel"
-              id="example-tabs"
-              className="mb-3"
-            >
-              <Tab eventKey="tabel" title="Tabel">
                 <Row className='portfoliolist'>
                   <Col sm={12}>
                     <motion.div
@@ -217,7 +237,7 @@ export default function Iklanlist() {
                       <ThemeProvider theme={theme}>
                         <DataGrid
                           loading={loading}
-                          rows={datasetku}
+                          rows={filteredRows}
                           columns={columns}
                           pageSizeOptions={[5, 10, 50, 100]}
                           initialState={{
@@ -277,13 +297,8 @@ export default function Iklanlist() {
                       </ThemeProvider>
                     </motion.div>
                   </Col>
-                </Row>    
-              </Tab>
-
-              <Tab eventKey="aktivitas" title="Aktivitas">
-                  <Activity kunci={'Satu Peta Iklan'}/>
-              </Tab>
-            </Tabs>
+                </Row>             
+              
             
           </Container>
         </section>

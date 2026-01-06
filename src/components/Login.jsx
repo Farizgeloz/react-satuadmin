@@ -44,9 +44,15 @@ const Login = () => {
         sweetsuccess(response.data.role);
         navigate("/Dashboard");
       }
-    } catch (error) {
-      sweeterror(error.response.data.message || "Terjadi kesalahan.");
-      
+    }catch (error) {
+      console.error(error);
+
+      const message =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Terjadi kesalahan koneksi ke server';
+
+      sweeterror(message);
     }
   };
 
@@ -115,7 +121,6 @@ const Login = () => {
         <div className="col-span-3 grid grid-cols-6 gap-1 w-full bg-white text-center  h-100v pt-5">
           <div className="col-span-6 sm:mx-auto sm:w-full sm:max-w-sm margin-t10">
             <img
-              alt="Kabupaten Probolinggo"
               src={`./logo.png`}
               className="mx-auto h-20 w-auto"
             />

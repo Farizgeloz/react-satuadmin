@@ -55,7 +55,7 @@ const Satuportal_listlist = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-      getSatuportal_listItem();
+      //getSatuportal_listItem();
     setTimeout(() => {
       getSatuportal_listSearch();
       
@@ -80,13 +80,13 @@ const Satuportal_listlist = () => {
     }
   };
 
-  const getSatuportal_listItem = async () => {
+  /* const getSatuportal_listItem = async () => {
     const response = await api_url_satuadmin.get('satupeta/map_item2');
 
     const data = response.data;
     setsatker(response.data.resultsatker);
     setkategori(response.data.resultbidangurusan);
-  };
+  }; */
 
   
 

@@ -55,6 +55,8 @@ import Komponen from "./components/pages/Halaman_Komponen";
 import Komponen_Update from "./components/pages/Halaman_Komponen_Update";
 import Aplikasi_Terhubung from "./components/pages/Halaman_Aplikasi_Terhubung";
 import Aplikasi_Terhubung_Update from "./components/pages/Halaman_Aplikasi_Terhubung_Update";
+import Bio from "./components/pages/Halaman_Bio";
+import Bio_Update from "./components/pages/Halaman_Bio_Update";
 import Log from "./components/pages/Halaman_Log";
 import RuleInformasi from "./components/pages/Halaman_Rule_Informasi";
 
@@ -478,6 +480,23 @@ function App() {
             <ProtectedRoute>
               <RequireRole allowedRoles={['Admin', 'Super Admin']}>
                 <Aplikasi_Terhubung_Update />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          <Route path="/Bioinfo" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
+                <Bio />
+              </RequireRole>
+            </ProtectedRoute>
+            }
+          />
+          
+          <Route path="/Bioinfo/Update/:id" element={
+            <ProtectedRoute>
+              <RequireRole allowedRoles={['Admin', 'Super Admin']}>
+                <Bio_Update />
               </RequireRole>
             </ProtectedRoute>
             }

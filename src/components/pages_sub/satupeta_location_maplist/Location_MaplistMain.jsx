@@ -236,7 +236,6 @@ const Datasetlist = () => {
             <p className={`my-1 textsize10`}>{row.nama_location}</p>
             <img
               src={row.presignedUrl_tumb}
-              alt="gambar"
               style={{
                 width: "100px",
                 height: "auto", // penuh tinggi cell

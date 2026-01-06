@@ -461,7 +461,7 @@ function IklanPengelolah() {
                             >
                               <img
                                 src={images}
-                                alt="preview"
+                                
                                 style={{
                                   maxHeight: "100%",
                                   maxWidth: "100%",

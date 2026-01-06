@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (!token || isExpired) {
     localStorage.clear(); // hapus semua kalau expired
-    return <Navigate to="/Login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return children;

@@ -1056,7 +1056,7 @@ function ModalTambahMulti() {
                               >
                                 <img
                                   src={loc.images}
-                                  alt="preview"
+                                  
                                   style={{
                                     maxHeight: "100%",
                                     maxWidth: "100%",

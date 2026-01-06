@@ -70,7 +70,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
       setCollapsed_OpenData(true);
       setCollapsed_SatuPortal(true);
     }
-    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Aplikasi Terhubung" || itemmenu==="Log"){
+    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Aplikasi Terhubung" || itemmenu==="Bio Info" || itemmenu==="Log"){
       setCollapsed_SatuPeta(true);
       setCollapsed_OpenData(true);
       setCollapsed_SatuPortal(true);
@@ -645,6 +645,18 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
           <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>
             Aplikasi Terhubung
           </span>
+        </Link>
+      </li>
+      <li className={`-right-20 mb-1`}>
+        {/* button */}
+        <Link
+          to={`/Bioinfo`}
+          className={`side-li flex tsize-100 text-white-a ${
+            itemmenu === "Bio Info" ? "active-menu" : ""
+          }`}
+        >
+            <MdDataset className="mt-1 text-red-500 tsize-150"  />
+            <span className={`${!open && "hidden"} origin-left duration-300 ml-1 mt-1`}>Bio Info</span>
         </Link>
       </li>
       

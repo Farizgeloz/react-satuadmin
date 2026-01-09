@@ -213,7 +213,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                   collapsed_opendata ? "max-h-0" : ""
                 }`}
               >
-                {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='CS' ? (
+                {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator' ? (
                 <>
                 <li>
                   <Link
@@ -392,6 +392,8 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                       </span>
                     </Link>
                   </li>
+                  {rolelogin ==='Super Admin' || rolelogin==='Admin' || rolelogin==='Operator'  || rolelogin==='Operator Opd' ? (
+                  <>
                   <li>
                     <Link
                       to={`/Satupeta/Titik-Lokasi-Peta`}
@@ -405,6 +407,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                       </span>
                     </Link>
                   </li>
+                  
                   <li>
                     <Link
                       to={`/Satupeta/Geospasial`}
@@ -418,6 +421,8 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
                       </span>
                     </Link>
                   </li>
+                  </>
+                   ):""}
                 </>
               ) : null
               } 

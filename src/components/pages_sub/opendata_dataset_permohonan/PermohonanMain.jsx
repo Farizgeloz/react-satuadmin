@@ -118,10 +118,14 @@ const Datasetlist = () => {
 
     const idsBelumAda = dataku
       .map(row => row.id_permohonan)
-      .filter(id => !(id in jumlahTiketMap));
+      .filter(id => !jumlahTiketMap[id]);
 
-    idsBelumAda.forEach(id => getJumlahTiket(id));
-  }, [dataku]);
+    if (idsBelumAda.length === 0) return;
+
+    idsBelumAda.forEach(id => {
+      getJumlahTiket(id);
+    });
+  }, [dataku]); // ⬅️ PENTING: hapus jumlahTiketMap
 
   const getJumlahTiket = async (id) => {
     try {

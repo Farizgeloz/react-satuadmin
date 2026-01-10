@@ -53,6 +53,10 @@ const InfoBox = ({ bgClass, title, count, Icon }) => (
 );
 
 const Welcome = () => {
+  const [rolelogin, setRolelogin] = useState(localStorage.getItem('role'));
+  const [userlogin, setUserlogin] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const userloginsatker = userlogin.opd_id || '';
+  const userloginadmin = userlogin.id || '';
   const [count_satuportal_iklan, setcount_satuportal_iklan] = useState([]);
   const [count_satuportal_pengumuman, setcount_satuportal_pengumuman] = useState([]);
   const [count_satuportal_visitors, setcount_satuportal_visitors] = useState([]);
@@ -70,6 +74,7 @@ const Welcome = () => {
   const [count_satupeta_location_maplist_download, setcount_satupeta_location_maplist_download] = useState([]);
   const [count_satupeta_location_maplist_visitors, setcount_satupeta_location_maplist_visitors] = useState([]);
   const [count_satupeta_location_points, setcount_satupeta_location_points] = useState([]);
+  const [count_satupeta_location_geospasial, setcount_satupeta_location_geospasial] = useState([]);
   const [count_satupeta_visitors, setcount_satupeta_visitors] = useState([]);
 
   useEffect(() => {
@@ -77,9 +82,12 @@ const Welcome = () => {
   }, []);
 
   const getPenduduk = async () => {
-    const response = await api_url_satuadmin.get(
+    /* const response = await api_url_satuadmin.get(
       `openitem/view_count`
-    );
+    ); */
+    const response = await api_url_satuadmin.get("openitem/view_count", {
+        params: { search_satker:userloginsatker }
+      });
     setcount_satuportal_iklan(response.data.count_satuportal_iklan);
     setcount_satuportal_pengumuman(response.data.count_satuportal_pengumuman);
     setcount_satuportal_visitors(response.data.count_satuportal_visitors);
@@ -97,6 +105,7 @@ const Welcome = () => {
     setcount_satupeta_location_maplist_download(response.data.count_satupeta_location_maplist_download);
     setcount_satupeta_location_maplist_visitors(response.data.count_satupeta_location_maplist_visitors);
     setcount_satupeta_location_points(response.data.count_satupeta_location_points);
+    setcount_satupeta_location_geospasial(response.data.count_satupeta_location_geospasial);
     setcount_satupeta_visitors(response.data.count_satupeta_visitors);
   };
   
@@ -133,19 +142,24 @@ const Welcome = () => {
           <InfoBox bgClass="#B71C1C" title="Visitor" count={count_satuportal_visitors} Icon={IoEyeOutline} />
         </Row> */}
         {/* Open Data Info Title */}
-        <Row>
-          <Col>
-            <p className="textsize10 mt-3">Open Data Info</p>
-          </Col>
-        </Row>
-        <Row>
-          <InfoBox bgClass="#0277BD" title="Artikel" count={count_opendata_artikel} Icon={IoDocumentTextOutline} />
-          <InfoBox bgClass="#0277BD" title="Feedback" count={count_opendata_feedback} Icon={IoChatbubblesOutline} />
-          <InfoBox bgClass="#0277BD" title="Iklan" count={count_opendata_iklan} Icon={IoPricetagOutline} />
-          <InfoBox bgClass="#0277BD" title="Visitor" count={count_opendata_visitors} Icon={IoEyeOutline} />
-          <InfoBox bgClass="#0277BD" title="Dataset Download" count={count_opendata_dataset_download} Icon={IoDownloadOutline} />
-          <InfoBox bgClass="#0277BD" title="Dataset Visitor" count={count_opendata_dataset_visitors} Icon={IoEyeOutline} />
-        </Row>
+        {['Super Admin', 'Admin', 'Operator'].includes(rolelogin) && (
+          <>
+            <Row>
+              <Col>
+                <p className="textsize10 mt-3">Open Data Info</p>
+              </Col>
+            </Row>
+            <Row>
+              <InfoBox bgClass="#0277BD" title="Artikel" count={count_opendata_artikel} Icon={IoDocumentTextOutline} />
+              <InfoBox bgClass="#0277BD" title="Feedback" count={count_opendata_feedback} Icon={IoChatbubblesOutline} />
+              <InfoBox bgClass="#0277BD" title="Iklan" count={count_opendata_iklan} Icon={IoPricetagOutline} />
+              <InfoBox bgClass="#0277BD" title="Visitor" count={count_opendata_visitors} Icon={IoEyeOutline} />
+              <InfoBox bgClass="#0277BD" title="Dataset Download" count={count_opendata_dataset_download} Icon={IoDownloadOutline} />
+              <InfoBox bgClass="#0277BD" title="Dataset Visitor" count={count_opendata_dataset_visitors} Icon={IoEyeOutline} />
+            </Row>
+          </>
+        )}
+        
 
         {/* Satu Peta Info Title */}
         <Row>
@@ -154,12 +168,19 @@ const Welcome = () => {
           </Col>
         </Row>
         <Row>
-          <InfoBox bgClass="#F57F17" title="Artikel" count={count_satupeta_artikel} Icon={IoDocumentTextOutline} />
-          <InfoBox bgClass="#F57F17" title="Feedback" count={count_satupeta_feedback} Icon={IoChatbubblesOutline} />
-          <InfoBox bgClass="#F57F17" title="Iklan" count={count_satupeta_iklan} Icon={IoPricetagOutline} />
-          <InfoBox bgClass="#F57F17" title="Satu Peta Visitor" count={count_satupeta_visitors} Icon={IoEyeOutline} />
+           {['Super Admin', 'Admin', 'Operator'].includes(rolelogin) && (
+          <>
+            <InfoBox bgClass="#F57F17" title="Artikel" count={count_satupeta_artikel} Icon={IoDocumentTextOutline} />
+            <InfoBox bgClass="#F57F17" title="Feedback" count={count_satupeta_feedback} Icon={IoChatbubblesOutline} />
+            <InfoBox bgClass="#F57F17" title="Iklan" count={count_satupeta_iklan} Icon={IoPricetagOutline} />
+            <InfoBox bgClass="#F57F17" title="Satu Peta Visitor" count={count_satupeta_visitors} Icon={IoEyeOutline} />
+          
+          </>
+          )}
+         
           <InfoBox bgClass="#F57F17" title="Lokasi Peta" count={count_satupeta_locations} Icon={IoMapOutline} />
           <InfoBox bgClass="#F57F17" title="Titik Lokasi" count={count_satupeta_location_points} Icon={IoLocationOutline} />
+          <InfoBox bgClass="#F57F17" title="Geospasial" count={count_satupeta_location_geospasial} Icon={IoLocationOutline} />
           <InfoBox bgClass="#F57F17" title="Koleksi Peta" count={count_satupeta_location_maplist} Icon={FaMapLocationDot} />
           <InfoBox bgClass="#F57F17" title="Koleksi Download" count={count_satupeta_location_maplist_download} Icon={IoDownloadOutline} />
           <InfoBox bgClass="#F57F17" title="Koleksi Visitor" count={count_satupeta_location_maplist_visitors} Icon={IoEyeOutline} />

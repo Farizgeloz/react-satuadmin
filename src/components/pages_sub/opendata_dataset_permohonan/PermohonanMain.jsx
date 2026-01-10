@@ -324,25 +324,34 @@ const Datasetlist = () => {
         );
       }
     },
-    { 
-      field: "status", 
-      headerName: "Status", 
+    {
+      field: "status",
+      headerName: "Status",
       flex: 1,
       minWidth: 100,
       headerAlign: 'left',
-      headerClassName: "custom-header", // kelas custom
+      headerClassName: "custom-header",
       renderCell: (params) => {
-        const row = params.row;
+        const { status } = params.row;
+        const isSelesai = status === 'Selesai';
+
         return (
-          <div className="" style={{  width: "100%" }}>
-           
-            {row.status && (
-              <p className="textsize10">{row.status}</p>
-            )}
+          <div
+            style={{
+              width: "100%",
+              backgroundColor: isSelesai ? "#2E7D32" : "transparent",
+              color: isSelesai ? "#fff" : "#000",
+              padding: "4px 6px",
+              borderRadius: "4px",
+              textAlign: "center",
+            }}
+          >
+            <p className="textsize10 m-0">{status}</p>
           </div>
         );
-      }
+      },
     },
+
     {
       field: "aksi",
       headerName: "Aksi",

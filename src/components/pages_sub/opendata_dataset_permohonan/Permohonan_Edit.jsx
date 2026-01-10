@@ -100,7 +100,7 @@ function DatasetPengelolah() {
   const [loadingDetail, setLoadingDetail] = useState(false);  
   const [opd, setOpd] = useState("");
   const [pesan, setPesan] = useState("");
-  const [status, setStatus] = useState({ label: "Proses", value: "Proses" });
+  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
   
@@ -122,6 +122,8 @@ function DatasetPengelolah() {
       const tiket = res.data.tiket; // kalau butuh tiket juga
       
       setSelectedDetail(permohonan);
+     
+
       setTiketDetail(tiket);
       const res3 = await api_url_satudata.get("dataset?limit=1000");
       const allDataset = res3.data || [];
@@ -154,6 +156,28 @@ function DatasetPengelolah() {
       setSelectedDetail(null);
     } finally {
       setLoadingDetail(false);
+    }
+  };
+
+   useEffect(() => {
+    getStatus();
+
+  }, []);
+
+  const getStatus = async () => {
+    try {
+      const res = await api_url_satuadmin.get(`opendata/dataset_permohonan/detail/${id}`);
+      const permohonan = res.data.permohonan;
+    
+      setStatus({
+        value: res.data.permohonan.status,
+        label: res.data.permohonan.status
+      });
+
+      
+      
+    } catch (err) {
+      console.error("Gagal ambil detail:", err);
     }
   };
 
@@ -350,7 +374,7 @@ function convertDate(datePicker) {
                     )}
 
                     <div className="mt-0 mb-2 transisiku">
-                      <Autocomplete
+                      {/* <Autocomplete
                         className="tsize-110"
                         isOptionEqualToValue={(option, value) => option?.value === value?.value}
                         id="combo-box-location"
@@ -367,6 +391,38 @@ function convertDate(datePicker) {
                             {...params}
                             label="Status"
                             variant="outlined"
+                            sx={(theme) => textFieldStyle(theme)}
+                          />
+                        )}
+                        sx={{
+                          width: "100%",
+                          "& .MuiAutocomplete-popupIndicator": {
+                            color: "#1976d2",
+                            transition: "transform 0.3s",
+                          },
+                          "& .MuiAutocomplete-popupIndicatorOpen": {
+                            transform: "rotate(180deg)",
+                          },
+                        }}
+                      /> */}
+                      <Autocomplete
+                        className="tsize-110"
+                        isOptionEqualToValue={(option, value) => option?.value === value?.value}
+                        id="combo-box-visibilitas"
+                        options={[
+                          { label: "Proses", value: "Proses" },
+                          { label: "Selesai", value: "Selesai" }
+                        ]}
+                        getOptionLabel={(option) => option.label || ""}
+                        value={status}
+                        onChange={(event, newValue) => setStatus(newValue)}
+                        clearOnEscape
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="outlined"
+                            className="bg-input rad15 w-full"
+                            InputLabelProps={{ shrink: false }}
                             sx={(theme) => textFieldStyle(theme)}
                           />
                         )}

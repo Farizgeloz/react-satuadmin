@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
 import { Container, Row, Col,Tabs, Tab } from 'react-bootstrap';
+import { Button, Spinner } from "react-bootstrap";
 import Image from 'react-bootstrap/Image';
 import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
@@ -19,6 +20,7 @@ import Activity from "../log/Activity";
 
 import { MdDashboard, MdDataset, MdInfoOutline, MdEditSquare } from "react-icons/md";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 
 
@@ -65,6 +67,7 @@ const Datasetlist = () => {
   const userloginsatker = userlogin.opd_id || '';
   const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [dataku, setDatasetSearch] = useState([]);
   const [searchText, setSearchText] = React.useState("");
   const [kategoriku, setDatasetKategori] = useState([]);
@@ -110,33 +113,41 @@ const Datasetlist = () => {
     }
   };
 
+  const handleRefresh = () => {
+      fetchData();
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        /*const [searchRes, itemRes] = await Promise.all([
-          axios.get(apiurl + 'satupeta/map_data/admin')
-          //axios.get(apiurl + 'opendata/dataset_item')
-        ]);*/
-        //const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin");
-        const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin", {
-                  params: { search_satker:userloginsatker }
-                });
     
-        setDatasetSearch(searchRes.data?.resultgeospasial || []);
-        
-        
-        
-        //setDatasetSifatData(itemRes.data?.resultSifatData || []);
-        //setDatasetProdukData(itemRes.data?.resultSatker || []);
-        //setDatasetKategori(itemRes.data?.resultsektor || []);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setIsReloading(true);
+    try {
+      /*const [searchRes, itemRes] = await Promise.all([
+        axios.get(apiurl + 'satupeta/map_data/admin')
+        //axios.get(apiurl + 'opendata/dataset_item')
+      ]);*/
+      //const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin");
+      const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin", {
+                params: { search_satker:userloginsatker }
+              });
+  
+      setDatasetSearch(searchRes.data?.resultgeospasial || []);
+      
+      
+      
+      //setDatasetSifatData(itemRes.data?.resultSifatData || []);
+      //setDatasetProdukData(itemRes.data?.resultSatker || []);
+      //setDatasetKategori(itemRes.data?.resultsektor || []);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
+  };
 
   // Data untuk DataGrid
   const rowsku = Array.isArray(dataku)
@@ -341,7 +352,7 @@ const Datasetlist = () => {
           </p>
         </Col>
         {/* Download Buttons */}
-        <Col md={7} xs={12}>
+        <Col md={8} xs={12}>
           <Row className="g-4 drop-shadow-lg">
             <Col xs={3}>
               <Downloaddataku dataku={dataku} />
@@ -353,15 +364,31 @@ const Datasetlist = () => {
         </Col>
         {/* DatasetModa
         {/* DatasetModals */}
-        <Col md={5} xs={12} className="bg-blue">
-          <Row className="g-4 drop-shadow-lg px-3">
-            <Col md={5} xs={12}>
-              <DatasetModalTambah />
-            </Col>
-            <Col md={6} xs={6}>
-              <DatasetModalTambahFile />
-            </Col>
-          </Row>
+        <Col md={4} xs={8} className="bg-blue d-flex justify-end">
+              {!isReloading ? (
+                <DatasetModalTambah/>
+              ) : null}
+              {!isReloading ? (
+                <DatasetModalTambahFile />
+              ) : null}
+-
+          <Tooltip title="Refresh" arrow className="mx-2 mt-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </Col>
 
         
@@ -464,7 +491,9 @@ const Datasetlist = () => {
               </Tab>
 
               <Tab eventKey="aktivitas" title="Aktivitas">
+                {!isReloading ? (
                   <Activity kunci={'Satu Peta Geospasial'}/>
+                ) : null}
               </Tab>
             </Tabs>
             

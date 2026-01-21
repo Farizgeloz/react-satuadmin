@@ -83,9 +83,12 @@ function DatasetPengelolah() {
 
    
   useEffect(() => {
-    getDataById();
+    if(id){
+      getDataById();
+  
+      getDatasetItem();
 
-    getDatasetItem();
+    }
     
 
     

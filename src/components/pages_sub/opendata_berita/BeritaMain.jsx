@@ -10,12 +10,14 @@ import ModalTambah from "./BeritaModalTambah";
 import ModalDelete from "./BeritaModalDelete";
 import Activity from "../log/Activity";
 import { Col, Container, Row,Tabs, Tab } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import Image from 'react-bootstrap/Image';
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 const apiurl =  import.meta.env.VITE_API_URL;;
 
-const Spinner = () => <div className="loader"></div>;
 
 const theme = createTheme({
   components: {
@@ -29,9 +31,14 @@ const theme = createTheme({
 
 export default function Iklanlist() {
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [datasetku, setDatasetku] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [rowsFiltered, setRowsFiltered] = useState([]);
+
+  const handleRefresh = () => {
+      getIklanSearch();
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -39,12 +46,21 @@ export default function Iklanlist() {
     }, 1000);
   }, []);
 
+
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get("opendata/artikel_admin");
-    const data = res.data.data || [];
-    setDatasetku(data);
-    setRowsFiltered(data);
-    setLoading(false);
+    setIsReloading(true);
+    try {
+     const res = await api_url_satuadmin.get("opendata/artikel_admin");
+      const data = res.data.data || [];
+      setDatasetku(data);
+      setRowsFiltered(data);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
   };
 
   const handleSearch = (value) => {
@@ -244,7 +260,7 @@ export default function Iklanlist() {
       <NavSub title="Open Data Artikel" />
 
       <div className="col-span-3 grid grid-cols-1 md:grid-cols-6 gap-4">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
             <NavLink to="/Dashboard" className="textsize11 text-silver-a mr-2 flex">
               <MdDashboard className="mt-1" /> Dashboard
@@ -255,8 +271,28 @@ export default function Iklanlist() {
             </NavLink>
           </p>
         </div>
-        <div className="md:col-span-2 px-10 mt-2">
-          <ModalTambah />
+        <div className="col-span-2 d-flex justify-end mt-2">
+            {!isReloading ? (
+                <ModalTambah />
+            ) : null}
+
+          <Tooltip title="Refresh" arrow  className="mx-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </div>
       </div>
 
@@ -360,7 +396,10 @@ export default function Iklanlist() {
               </Tab>
 
               <Tab eventKey="aktivitas" title="Aktivitas">
+                  
+                {!isReloading ? (
                   <Activity kunci={'Open Data Artikel'}/>
+                ) : null}
               </Tab>
             </Tabs>
             

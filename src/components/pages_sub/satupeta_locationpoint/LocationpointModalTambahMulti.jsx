@@ -309,10 +309,10 @@ function ModalTambahMulti() {
 
   return (
     <>
-         <Link onClick={handleShow} className="col-span-1 max-[640px]:col-span-2 tsize-110 font-semibold text-white-a  mt-2">
+         <Link onClick={handleShow} className=" tsize-110 font-semibold text-white-a  mt-2 mx-2">
           <button 
             className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-3 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
+              <MdAddCircle className="mt-1 mx-1" /><span>Tambah</span>
           </button>
         </Link>
       

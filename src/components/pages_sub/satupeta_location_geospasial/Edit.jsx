@@ -118,14 +118,17 @@ function DatasetPengelolah() {
 
    
   useEffect(() => {
-    getDataById();
+    if(id){
+      getDataById();
+  
+      getDatasetItem();
 
-    getDatasetItem();
+    }
     
 
     
 
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (kecamatan) {

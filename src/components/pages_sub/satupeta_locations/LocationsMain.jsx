@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
-import { Container, Row, Col, Button,Modal,Tabs, Tab } from 'react-bootstrap';
+import { Container, Row, Col,Modal,Tabs, Tab } from 'react-bootstrap';
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import Image from 'react-bootstrap/Image';
 import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Tooltip from '@mui/material/Tooltip';
+
 
 import "../../../App.css";
 import NavSub from "../../NavSub";
 import DatasetModalTambah from "./LocationsModalTambahMulti";
 import DatasetModalTambahFile from "./LocationsModalTambahFile";
+import DatasetModalStatus from "./LocationsModalStatus";
 import Downloadku from "./Locations_Download";
 import DatasetModalDelete from "./LocationsModalDelete";
 import Activity from "../log/Activity";
@@ -19,6 +22,7 @@ import Activity from "../log/Activity";
 import { MdDashboard, MdDataset, MdInfoOutline, MdEditSquare, MdOutlineRemoveRedEye } from "react-icons/md";
 import { FaBuildingColumns } from "react-icons/fa6";
 import { api_url_satuadmin, api_url_satudata } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 
 
@@ -66,6 +70,7 @@ const Datasetlist = () => {
   const userloginsatker = userlogin.opd_id || '';
   const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [dataku, setDatasetSearch] = useState([]);
   const [datakustatus, setDatasetSearchStatus] = useState([]);
   const [searchText, setSearchText] = React.useState("");
@@ -141,23 +146,30 @@ const Datasetlist = () => {
     }
   };
 
+  const handleRefresh = () => {
+      fetchData();
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin", {
-          params: { search_satker:userloginsatker,search_role:rolelogin }
-        });
-        setDatasetSearch(searchRes.data?.resultlocation || []);
-        setDatasetSearchStatus(searchRes.data?.resultlocationstatus || []);
-        
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    
     fetchData();
   }, []);
+  const fetchData = async () => {
+    setIsReloading(true);
+    try {
+      const searchRes = await api_url_satuadmin.get("satupeta/map_data/admin", {
+        params: { search_satker:userloginsatker,search_role:rolelogin }
+      });
+      setDatasetSearch(searchRes.data?.resultlocation || []);
+      setDatasetSearchStatus(searchRes.data?.resultlocationstatus || []);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
+  };
 
   // Data untuk DataGrid
   const rowsku = Array.isArray(dataku)
@@ -299,7 +311,12 @@ const Datasetlist = () => {
       disableColumnMenu: true,
       renderCell: (params) => (
         <div>
-         
+         {(rolelogin === "Super Admin" || rolelogin === "Admin" || rolelogin === "Operator" || rolelogin === "Verifikator Opd") && (
+            <DatasetModalStatus 
+              id_location={params.row.id_location} 
+              title={`${params.row.nama_location}`}
+            />
+          )}
           <Tooltip title="Edit dataset" arrow>
             <Link to={`/Satupeta/Lokasi-Peta/Update/${params.row.id_location}`} className="flex items-center justify-center mb-[2px]">
               <button className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-3 rounded-xl flex items-center">
@@ -477,8 +494,31 @@ const Datasetlist = () => {
             </NavLink>
           </p>
         </div>
-        
-        <DatasetModalTambah />
+        <div className="col-span-2 d-flex justify-end">
+          {!isReloading ? (
+            (rolelogin === "Super Admin" || rolelogin === "Admin" || rolelogin === "Operator" || rolelogin === "Operator Opd") && (
+              <DatasetModalTambah />
+            )
+          ) : null}
+
+          <Tooltip title="Refresh" arrow  className="mx-2 mt-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
+        </div>
 
        {/*  <DatasetModalTambahFile />
 
@@ -672,7 +712,9 @@ const Datasetlist = () => {
                 </Row>  
               </Tab>                    
               <Tab eventKey="aktivitas" title="Aktivitas">
+                {!isReloading ? (
                   <Activity kunci={'Satu Peta Lokasi'}/>
+                ) : null}
               </Tab>
             </Tabs>
             

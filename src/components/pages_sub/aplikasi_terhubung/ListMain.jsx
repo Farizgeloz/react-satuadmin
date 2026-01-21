@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
 import {Container,Row,Col,Tabs, Tab} from 'react-bootstrap';
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import Image from 'react-bootstrap/Image';
 import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
@@ -25,10 +27,11 @@ import { MdDashboard,MdDataset,MdInfoOutline,
 import { FaBuildingColumns, FaCodeCommit, FaHospitalUser, FaMoneyBillTrendUp, FaTreeCity } from "react-icons/fa6";
 import { FaBuilding, FaEnvira, FaGraduationCap, FaPeopleArrows, FaUsers } from "react-icons/fa";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 //const apikey=process.env.REACT_APP_API_KEY
 
-const Spinner = () => <div className="loader "></div>;
+
 const theme = createTheme({
   components: {
     MuiTablePagination: {
@@ -44,6 +47,7 @@ const Satuportal_listlist = () => {
   
 
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [dataset, setdataset] = useState([]);
   const [dataku, setdata] = useState([]);
 
@@ -55,19 +59,22 @@ const Satuportal_listlist = () => {
 
   const [msg, setMsg] = useState("");
 
+  const handleRefresh = () => {
+      getSatuportal_listSearch();
+  };
+
   useEffect(() => {
     setTimeout(() => {
       getSatuportal_listSearch();
       
-      setLoading(false);
     }, 2000);
     
   }, []);
 
 
   const getSatuportal_listSearch = async () => {
+    setIsReloading(true);
     try {
-
       const response = await api_url_satuadmin.get('openitem/ekosistem_list');
 
       const res = response.data;
@@ -78,6 +85,9 @@ const Satuportal_listlist = () => {
       
     } catch (error) {
       console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
     }
   };
 
@@ -312,7 +322,7 @@ const Satuportal_listlist = () => {
       
 
       <div className="col-span-3 rounded grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-6 drop-shadow-lg">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
             <NavLink to="/Dashboard" className="text-silver-a mr-2 d-flex textsize10">
               <MdDashboard className="mt-1 textsize10"/>Dashboard
@@ -324,9 +334,28 @@ const Satuportal_listlist = () => {
         </div>
         
         
-        <div className="md:col-span-3 margin-0 px-10 mt-2">
-          <Satuportal_listModalTambah/>
-        
+        <div className="col-span-2 d-flex justify-end mt-2">
+            {!isReloading ? (
+                <Satuportal_listModalTambah />
+            ) : null}
+
+          <Tooltip title="Refresh" arrow  className="mx-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </div>
         
       </div>
@@ -451,7 +480,10 @@ const Satuportal_listlist = () => {
               </Tab>
 
               <Tab eventKey="profile" title="Aktivitas">
+                  
+                {!isReloading ? (
                   <Activity kunci={'Satu Portal List'}/>
+                ) : null}
               </Tab>
 
              

@@ -9,12 +9,14 @@ import NavSub from "../../NavSub";
 import IklanModalTambah from "./ModalTambah";
 import IklanModalDelete from "./ModalDelete";
 import { Col, Container, Row } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import Swal from 'sweetalert2';
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 
 
-const Spinner = () => <div className="loader"></div>;
 
 const theme = createTheme({
   components: {
@@ -32,11 +34,16 @@ export default function Iklanlist() {
   const userloginsatker = userlogin.opd_id || '';
   const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [datasetku, setDatasetku] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [rowsFiltered, setRowsFiltered] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+
+  const handleRefresh = () => {
+      getIklanSearch();
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -44,14 +51,23 @@ export default function Iklanlist() {
     }, 1000);
   }, []);
 
+
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`openitem/opendata_feedback`);
-    const data = res.data || [];
-    setDatasetku(data);
-    setRowsFiltered(data);
-    setLoading(false);
-    setSelectedIds([]); // reset selection on data load
-    setSelectAll(false);
+    setIsReloading(true);
+    try {
+      const res = await api_url_satuadmin.get(`openitem/opendata_feedback`);
+      const data = res.data || [];
+      setDatasetku(data);
+      setRowsFiltered(data);
+      setSelectedIds([]); // reset selection on data load
+      setSelectAll(false);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
   };
 
   const handleSearch = (value) => {
@@ -279,7 +295,7 @@ export default function Iklanlist() {
       <NavSub title="Open Data Feedback" />
 
       <div className="col-span-3 grid grid-cols-1 md:grid-cols-6 gap-4">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
             <NavLink to="/Dashboard" className="textsize10 text-silver-a mr-2 flex">
               <MdDashboard className="mt-1" /> Dashboard
@@ -289,6 +305,25 @@ export default function Iklanlist() {
               <MdDataset className="mt-1" /> Opendata Feedback
             </NavLink>
           </p>
+        </div>
+        <div className="col-span-2  d-flex justify-end mt-2">
+          <Tooltip title="Refresh" arrow  className="mx-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </div>
       </div>
 

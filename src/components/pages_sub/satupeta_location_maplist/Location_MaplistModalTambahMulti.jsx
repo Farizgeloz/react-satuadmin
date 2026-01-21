@@ -86,6 +86,9 @@ function ModalTambahMulti() {
   const [satkerku, setsatkerku] = useState([""]);
   const [locationku, setlocationku] = useState([""]);
   const [loading, setLoading] = useState(false);
+
+  const [loadingku, setLoadingku] = useState(true);
+  const [errorku, setErrorku] = useState(null);
   
 
   const [locations, setLocations] = useState([
@@ -163,7 +166,7 @@ function ModalTambahMulti() {
     const payloadLocations = locations.map((loc) => ({
       koleksi_data: loc.koleksi_data?.value ?? "",
       tipe: loc.tipe?.value ?? "",
-      location_id: loc.location_id?.value?.toString() ?? "",
+      location_id: loc.location_id?.value?.toString() ?? "0",
       title: loc.title?.trim() ?? "",
       satker_id: loc.satker_id?.value?.toString() ?? "",
       sektor_id: loc.sektor_id?.value?.toString() ?? "",
@@ -189,7 +192,7 @@ function ModalTambahMulti() {
     });
 
     try {
-      setLoading(true);
+        (true);
       // tampilkan loading swal
       Swal.fire({
         title: "Mohon Tunggu",
@@ -216,11 +219,29 @@ function ModalTambahMulti() {
 
   useEffect(() => {
     getDatasetItem();
-    
-
-    
-
   }, []);
+
+  const getDatasetItem = async () => {
+    try {
+      setLoadingku(true);
+
+      const response = await api_url_satuadmin.get("satupeta/map_item2", {
+        params: { search_satker: userloginsatker }
+      });
+
+      // pastikan data ada sebelum setState
+     setlocationku(response.data.resultlocation);
+      setsektorku(response.data.resultsektor);
+      setsatkerku(response.data.resultsatker);
+
+    } catch (err) {
+      console.error("Gagal load dataset:", err);
+      setErrorku("Data belum siap / server masih loading");
+    } finally {
+      setLoadingku(false);
+    }
+  };
+
   
   const navigate = useNavigate();
 
@@ -228,14 +249,7 @@ function ModalTambahMulti() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const getDatasetItem = async () => {
-    const response = await api_url_satuadmin.get("satupeta/map_item2", {
-      params: { search_satker:userloginsatker }
-    });
-    setlocationku(response.data.resultlocation);
-    setsektorku(response.data.resultsektor);
-    setsatkerku(response.data.resultsatker);
-  };
+  
 
   
 
@@ -424,7 +438,7 @@ function ModalTambahMulti() {
          <Link onClick={handleShow} className="col-span-3 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a mt-2">
           <button 
             className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
+              <MdAddCircle className="mt-1 mx-1" /><span>Tambah</span>
           </button>
         </Link>
       

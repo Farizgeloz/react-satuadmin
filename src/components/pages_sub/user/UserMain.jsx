@@ -7,6 +7,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import NavSub from "../../NavSub";
 import { Col, Container, Row,Tabs, Tab } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import qs from 'qs';
 
 import UserModalTambah from "./UserModalTambah";
@@ -14,6 +16,7 @@ import UserModalDelete from "./UserModalDelete";
 
 import Activity from "../log/Activity";
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 
 const theme = createTheme({
@@ -32,15 +35,19 @@ const Userlist = () => {
   const userloginsatker = userlogin.opd_id || '';
   const userloginadmin = userlogin.id || '';
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [userku, setUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [rowsFiltered, setRowsFiltered] = useState([]);
+
+  const handleRefresh = () => {
+      getUsers();
+  };
 
   useEffect(() => {
     
     setTimeout(() => {
       getUsers();
-      setLoading(false);
     }, 2000);
   }, []);
 
@@ -48,18 +55,28 @@ const Userlist = () => {
     const response = await api_url_satuadmin.get("http://localhost:5000/users2");
     setUsers(response.data);
   };*/
+ 
+
   const getUsers = async () => {
-    const response = await api_url_satuadmin.get('open-user/user', {
-      params: {
-        search_opd: userloginsatker,
-        search_role: rolelogin
-      },
-      paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' })
-    });
-    //console.log(response.data);
-    setUsers(response.data);
-    setRowsFiltered(response.data);
-    
+    setIsReloading(true);
+    try {
+      const response = await api_url_satuadmin.get('open-user/user', {
+        params: {
+          search_opd: userloginsatker,
+          search_role: rolelogin
+        },
+        paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' })
+      });
+      //console.log(response.data);
+      setUsers(response.data);
+      setRowsFiltered(response.data);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
   };
 
   const handleSearch = (value) => {
@@ -190,7 +207,7 @@ const Userlist = () => {
     <div className="bg-slate-100  max-h-screen sm:pt-0  max-[640px]:mt-12 ">
       <NavSub  title="Data USer" />
       <div className="col-span-3 rounded grid grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-6 drop-shadow-lg">
-        <div className="col-span-3">
+        <div className="col-span-4">
           <p className="font-semibold text-gray-300 flex pt-2 mt-2 mx-3 mb-0">
             <NavLink to="/Dashboard" className="text-silver-a mr-2 d-flex textsize10">
               <MdDashboard className="mt-1 textsize10"/>Dashboard
@@ -201,8 +218,28 @@ const Userlist = () => {
           </p>
         </div>
        
-        <div className="md:col-span-2 margin-0 px-10 mt-2">
-          <UserModalTambah/>
+        <div className="col-span-2 d-flex justify-end mt-2">
+            {!isReloading ? (
+                <UserModalTambah />
+            ) : null}
+
+          <Tooltip title="Refresh" arrow  className="mx-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </div>
       </div>
       <div className="drop-shadow-lg overflow-xx-auto mb-9 p-2">
@@ -303,7 +340,10 @@ const Userlist = () => {
               </Tab>
 
               <Tab eventKey="profile" title="Aktivitas">
-                  <Activity kunci={'Satu Admin Pengguna'}/>
+                 
+                {!isReloading ? (
+                   <Activity kunci={'Satu Admin Pengguna'}/>
+                ) : null}
               </Tab>
 
              

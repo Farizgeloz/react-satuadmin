@@ -11,6 +11,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams,Link, NavLink } from "react-router-dom";
 import {Row,Col,Image} from 'react-bootstrap';
+
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import Swal from 'sweetalert2';
 import { motion, useAnimation } from 'framer-motion';
 import TextField from '@mui/material/TextField';
@@ -21,7 +24,7 @@ import { MdDashboard,MdDataset,MdOutlineErrorOutline,
         MdOutlineMap,
         MdOutlinePerson4,
         MdOutlineArrowCircleLeft,
-        MdOutlineSave} from "react-icons/md";
+        MdOutlineSave,MdAccountCircle,MdManageAccounts  } from "react-icons/md";
 
 
 import _ from "lodash";
@@ -111,7 +114,11 @@ function DatasetPengelolah() {
    
   useEffect(() => {
     getDataById();
+  if (!navigator.onLine) return;
+    if (!tiketDetail) return;
 
+    
+    getDataById2();
   }, [tiketDetail]);
   
 
@@ -125,6 +132,24 @@ function DatasetPengelolah() {
      
 
       setTiketDetail(tiket);
+      
+      //console.log("selectdata:", res3.data);
+      
+    } catch (err) {
+      console.error("Gagal ambil detail:", err);
+      setSelectedDetail(null);
+    } finally {
+      setLoadingDetail(false);
+    }
+  };
+
+  const getDataById2 = async () => {
+    try {
+      const res = await api_url_satuadmin.get(`opendata/dataset_permohonan/detail/${id}`);
+      const permohonan = res.data.permohonan;
+      const tiket = res.data.tiket; // kalau butuh tiket juga
+      
+     
       const res3 = await api_url_satudata.get("dataset?limit=1000");
       const allDataset = res3.data || [];
 
@@ -153,9 +178,6 @@ function DatasetPengelolah() {
       
     } catch (err) {
       console.error("Gagal ambil detail:", err);
-      setSelectedDetail(null);
-    } finally {
-      setLoadingDetail(false);
     }
   };
 
@@ -266,7 +288,7 @@ function convertDate(datePicker) {
   const menit = String(selectedDate.getMinutes()).padStart(2, "0");
   const detik = String(selectedDate.getSeconds()).padStart(2, "0");
 
-  return `${day} ${monthName} ${year} Waktu : ${jam}:${menit}:${detik} WIB`;
+  return `${day} ${monthName} ${year} : ${jam}:${menit}:${detik} WIB`;
 }
 
 
@@ -373,6 +395,10 @@ function convertDate(datePicker) {
                       <p>Data tidak ditemukan</p>
                     )}
 
+                    
+
+                  </div>
+                  <div className="md:col-span-3 -mt-2">
                     <div className="mt-0 mb-2 transisiku">
                       {/* <Autocomplete
                         className="tsize-110"
@@ -472,103 +498,105 @@ function convertDate(datePicker) {
                       
                         
                     </div>
-                    <div className="flex justify-center mt-12">
-                        <button 
-                            type="button"
-                            className="bg-slate-500 hover:bg-slate-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-slate-700 hover:border-slate-500 rounded-xl d-flex mx-1">
-                            <MdOutlineArrowCircleLeft  className='mt-1 mx-1'  /><span>Clear</span>
-                        </button>
-                        <button 
-                            type="submit"
-                            className="bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
-                            <MdOutlineSave  className='mt-1 mx-1'  /><span>Kirim Pesan</span>
-                        </button>
-                      </div>
+                    <div className="flex justify-center mt-12 mb-5">
+                      <button 
+                          type="button"
+                          className="bg-slate-500 hover:bg-slate-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-slate-700 hover:border-slate-500 rounded-xl d-flex mx-1">
+                          <MdOutlineArrowCircleLeft  className='mt-1 mx-1'  /><span>Clear</span>
+                      </button>
+                      <button 
+                          type="submit"
+                          className="bg-green-500 hover:bg-green-400 text-white font-bold textsize10 py-1 px-4 border-b-4 border-green-700 hover:border-green-500 rounded-xl d-flex mx-1">
+                          <MdOutlineSave  className='mt-1 mx-1'  /><span>Kirim Pesan</span>
+                      </button>
+                    </div>
+                    {loadingDetail ? (
+                      <p>Sedang memuat data...</p>
+                    ) : selectedDetail ? (
+                      
+                      <div style={{ maxHeight: "70vh", }} className="py-2 px-3 overflow-yy-auto">
+                          
+                          {tiketDetail.map((message) => {
+                            const isPemohon = message.from === "Pemohon";
 
-                  </div>
-                  <div className="md:col-span-3 -mt-2">
-                      {loadingDetail ? (
-                        <p>Sedang memuat data...</p>
-                      ) : selectedDetail ? (
-                        
-                        <div style={{ maxHeight: "71vh", }} className="py-2 px-3 overflow-yy-auto">
-                            {tiketDetail.map((message) => (
-                              
-                              <div key={message.id_permohonan} className="p-1">
-                                {/* Info pengirim & tanggal */}
+                            return (
                                 <div
-                                  className={`d-flex ${
-                                    message.from === "Admin" ? "justify-content-end" : "justify-content-start"
-                                  }`}
+                                key={message.id_permohonan}
+                                className={`d-flex mb-3 ${
+                                    isPemohon ? "justify-content-end" : "justify-content-start"
+                                }`}
                                 >
-                                  {message.from === "Admin" ? (
-                                    <>
-                                      <p className="mb-0 italicku text-silver text-end px-5">
-                                        {convertDate(message.updated_at)}
-                                      </p>
-                                      <p className="mb-0 italicku text-body text-end">Anda</p>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <p className="mb-0 italicku text-body text-end">Pemohon</p>
-                                      <p className="mb-0 italicku text-silver text-end px-5">
-                                        {convertDate(message.updated_at)}
-                                      </p>
-                                    </>
-                                  )}
-                                </div>
+                                {/* Avatar Admin */}
+                                {!isPemohon && (
+                                    <div className="me-2">
+                                    <OverlayTrigger
+                                    placement="top"
+                                    overlay={<Tooltip id="tooltip-avatar">Anda</Tooltip>}
+                                    >
+                                    <div className="avatar-circle bg-primary text-white rad10">
+                                        <MdManageAccounts  size={30} />
+                                    </div>
+                                    </OverlayTrigger>
+                                    </div>
+                                )}
 
-                                {/* Pesan */}
+                                {/* Bubble */}
                                 <div
-                                  className={`rad10 py-2 pb-1 px-3 font_weight600 ${
-                                    message.from === "Admin"
-                                      ? "text-right"
-                                      : "text-left bg-border2"
-                                  } ${message.status === "read" ? "text-primary" : "text-body"}`}
-                                  style={{
-                                    backgroundColor: message.from === "Admin" ? "#94da828c" : "",
+                                    className="p-3 rad10"
+                                    style={{
+                                    width: "95%",
+                                    backgroundColor: isPemohon ? "#d1f0c4" : "#f1f1f1",
                                     whiteSpace: "pre-line",
                                     wordBreak: "break-word",
-                                    overflowWrap: "anywhere",
-                                    borderRadius: "10px",
-                                    pointerEvents: "auto",
-                                  }}
+                                    }}
                                 >
-                                  {message.pesan.split(/((?:https?:\/\/|www\.)[^\s]+)/g).map((part, index) => {
-                                    const isLink = /^(https?:\/\/|www\.)/.test(part);
-                                    if (!isLink) return part;
+                                    <div className="d-flex justify-content-between textsize10 font_weight600 mb-1">
+                                    {/* <span className=" font_weight800">{isPemohon ? "Anda:" : "Admin:"}</span> */}
+                                    <span className="px-2 italicku text-silver textsize8">{convertDate(message.updated_at)}</span>
+                                    </div>
 
-                                    const href = part.startsWith("http") ? part : `http://${part}`;
-
-                                    return (
-                                      <Link
-                                        to={`/Dashboard`}
-                                        target="_blank"
-                                        key={index}
-                                        rel="noopener noreferrer"
-                                        style={{
-                                          textDecoration: "underline",
-                                          color: "#007bff",
-                                          cursor: "pointer",
-                                          pointerEvents: "auto",
-                                          wordBreak: "break-all",
-                                          position: "relative",
-                                          zIndex: 10,
-                                        }}
-                                      >
-                                          {part}
-                                      </Link>
-                                    );
-                                  })}
+                                    <div className="textsize12">
+                                    {message.pesan
+                                        .split(/((?:https?:\/\/|www\.)[^\s]+)/g)
+                                        .map((part, idx) => {
+                                        if (!/^(https?:\/\/|www\.)/.test(part)) return part;
+                                        const href = part.startsWith("http") ? part : `http://${part}`;
+                                        return (
+                                            <a
+                                            key={idx}
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-primary text-decoration-underline"
+                                            >
+                                            {part}
+                                            </a>
+                                        );
+                                        })}
+                                    </div>
                                 </div>
-                              </div>
 
-
-                            ))}
-                        </div>
-                      ) : (
-                        <p>Data tidak ditemukan</p>
-                      )}
+                                {/* Avatar Anda */}
+                                {isPemohon && (
+                                    <div className="ms-2">
+                                        {/*  <div className="avatar-circle bg-success text-white">U</div> */}
+                                        <OverlayTrigger
+                                        placement="top"
+                                        overlay={<Tooltip id="tooltip-avatar">Pemohon</Tooltip>}
+                                        >
+                                        <div className="avatar-circle bg-success text-white rad10">
+                                           <MdAccountCircle size={30} />
+                                        </div>
+                                        </OverlayTrigger>
+                                    </div>
+                                )}
+                                </div>
+                            );
+                        })}
+                      </div>
+                    ) : (
+                      <p>Data tidak ditemukan</p>
+                    )}
                   </div>
                 </div>
               </div>

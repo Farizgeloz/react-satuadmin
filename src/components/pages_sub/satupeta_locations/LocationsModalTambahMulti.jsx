@@ -84,7 +84,8 @@ function ModalTambahMulti() {
     const payloadLocations = locations.map((loc) => ({
         nama_location: loc.nama_location.toString(),
         satker_id: loc.satker_id.value.toString(),
-        sektor_id: loc.sektor_id.value.toString()         // <-- pastikan string
+        sektor_id: loc.sektor_id.value.toString(),
+        visibilitas: "Draft"         // <-- pastikan string
     }));
 
 
@@ -104,7 +105,8 @@ function ModalTambahMulti() {
           locations: payloadLocations,
           admin : String(userloginadmin),
           jenis: "Satu Peta Lokasi",
-          komponen: "Tambah Lokasi Satu Peta" 
+          komponen: "Tambah Lokasi Satu Peta",
+          
         },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -219,10 +221,10 @@ function ModalTambahMulti() {
 
   return (
     <>
-         <Link onClick={handleShow} className="col-span-2 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right mt-2">
+         <Link onClick={handleShow} className="max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right mt-2">
           <button 
             className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-              <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
+              <MdAddCircle className="mt-1 mx-1" /><span>Tambah</span>
           </button>
         </Link>
       

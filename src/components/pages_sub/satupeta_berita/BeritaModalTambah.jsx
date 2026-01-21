@@ -344,7 +344,7 @@ function ModalTambahUser() {
       <Link onClick={handleShow} className="col-span-2 max-[640px]:col-span-2 tsize-130 font-semibold text-white-a flex-right ">
         <button 
           className="styles_button__u_d5l h-6v hover:bg-teal-600 text-white font-bold py-1 px-4 border-b-4 border-teal-600 hover:border-teal-500 rounded-xl d-flex">
-            <MdAddCircle className="mt-1 mx-1" /><span>Tambah Data</span>
+            <MdAddCircle className="mt-1 mx-1" /><span>Tambah</span>
         </button>
       </Link>
       
@@ -356,7 +356,7 @@ function ModalTambahUser() {
       >
           <form onSubmit={saveIklan}>
           <Modal.Header closeButton className="border-b ">
-              <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Satu Portal Artikel</h4>
+              <h4 className="text-sky-600 flex"><MdAddCircle  className="textsize10 text-sky-600 mt-1"  />Tambah Satupeta Artikel</h4>
               
           </Modal.Header>
           <Modal.Body className="mt-2 bg-silver-light p-0">

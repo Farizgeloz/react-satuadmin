@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, NavLink } from "react-router-dom";
-import { Container, Row, Col, Button,Modal,Tabs, Tab } from 'react-bootstrap';
+import { Container, Row, Col,Modal,Tabs, Tab } from 'react-bootstrap';
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import Image from 'react-bootstrap/Image';
 import { motion } from "framer-motion";
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Tooltip from '@mui/material/Tooltip';
 
 import "../../../App.css";
 import NavSub from "../../NavSub";
@@ -19,6 +20,7 @@ import Activity from "../log/Activity";
 
 import { MdDashboard, MdDataset, MdInfoOutline, MdEditSquare, MdOutlineRemoveRedEye, MdOutlineMessage } from "react-icons/md";
 import { api_url_satuadmin, api_url_satudata } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 const apiurl =  import.meta.env.VITE_API_URL;
 
@@ -60,6 +62,7 @@ function convertDate(datePicker) {
 
 const Datasetlist = () => {
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [dataku, setDatasetSearch] = useState([]);
   const [opd, setOpd] = useState("");
   const [searchText, setSearchText] = React.useState("");
@@ -112,6 +115,8 @@ const Datasetlist = () => {
       setLoading(false);
     }
   };
+
+  
 
   useEffect(() => {
     if (!dataku?.length) return;
@@ -194,29 +199,29 @@ const Datasetlist = () => {
     setSelectedRow(null);
   }; */
 
+  const handleRefresh = () => {
+   fetchData();
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        /*const [searchRes, itemRes] = await Promise.all([
-          axios.get(apiurl + 'satupeta/map_data/admin')
-          //axios.get(apiurl + 'opendata/dataset_item')
-        ]);*/
-        const searchRes = await api_url_satuadmin.get("opendata/dataset_permohonan");
     
-        setDatasetSearch(searchRes.data?.data || []);
-        
-        
-        //setDatasetSifatData(itemRes.data?.resultSifatData || []);
-        //setDatasetProdukData(itemRes.data?.resultSatker || []);
-        //setDatasetKategori(itemRes.data?.resultsektor || []);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setIsReloading(true);
+    try {
+      const searchRes = await api_url_satuadmin.get("opendata/dataset_permohonan");
+  
+      setDatasetSearch(searchRes.data?.data || []);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
+  };
 
   // Data untuk DataGrid
   const rowsku = Array.isArray(dataku)
@@ -427,7 +432,7 @@ const Datasetlist = () => {
       <NavSub title="Opendata Permohonan Dataset" />
       <Row className="rounded g-4 drop-shadow-lg">
         {/* Breadcrumb */}
-        <Col md={12} xs={12}>
+        <Col md={11} xs={8}>
           <p className="textsize10 font-semibold text-gray-300 d-flex pt-2 mt-2 mx-3 mb-0">
             <NavLink
               to="/Dashboard"
@@ -445,6 +450,25 @@ const Datasetlist = () => {
               Dataset Permohonan
             </NavLink>
           </p>
+        </Col>
+        <Col md={1} xs={4} className="d-flex justify-end">
+          <Tooltip title="Refresh" arrow className=" mx-2 mt-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </Col>
 
        
@@ -672,7 +696,10 @@ const Datasetlist = () => {
               </Tab>
 
               <Tab eventKey="aktivitas" title="Aktivitas">
+                  
+                {!isReloading ? (
                   <Activity kunci={'Permohonan Dataset'}/>
+                ) : null}
               </Tab>
 
             </Tabs>

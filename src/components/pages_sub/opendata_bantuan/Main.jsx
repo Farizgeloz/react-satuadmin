@@ -10,10 +10,12 @@ import IklanModalTambah from "./ModalTambah";
 import IklanModalDelete from "./ModalDelete";
 import Activity from "../log/Activity";
 import { Col, Container, Row,Tabs, Tab } from "react-bootstrap";
+import { Button, Spinner } from "react-bootstrap";
+import Tooltip from '@mui/material/Tooltip';
 import { api_url_satuadmin } from "../../../api/axiosConfig";
+import { IoReloadCircleSharp } from "react-icons/io5";
 
 
-const Spinner = () => <div className="loader"></div>;
 
 const theme = createTheme({
   components: {
@@ -27,9 +29,14 @@ const theme = createTheme({
 
 export default function Iklanlist() {
   const [loading, setLoading] = useState(true);
+  const [isReloading, setIsReloading] = useState(false);
   const [datasetku, setDatasetku] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [rowsFiltered, setRowsFiltered] = useState([]);
+
+  const handleRefresh = () => {
+      getIklanSearch();
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -37,15 +44,24 @@ export default function Iklanlist() {
     }, 1000);
   }, []);
 
+  
   const getIklanSearch = async () => {
-    const res = await api_url_satuadmin.get(`openitem/opendata-bantuan/admin`);
-    const data = res.data.resultWithUrls || [];
-    setDatasetku(data);
-    setRowsFiltered(data);
-    setLoading(false);
+    setIsReloading(true);
+    try {
+      const res = await api_url_satuadmin.get(`openitem/opendata-bantuan/admin`);
+      const data = res.data.resultWithUrls || [];
+      setDatasetku(data);
+      setRowsFiltered(data);
+      
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+      setIsReloading(false);
+    }
   };
 
-  const handleSearch = (value) => {
+  /* const handleSearch = (value) => {
     setSearchText(value);
     if (value === "") {
       setRowsFiltered(datasetku);
@@ -57,7 +73,7 @@ export default function Iklanlist() {
       );
       setRowsFiltered(filtered);
     }
-  };
+  }; */
 
   const rowsku = Array.isArray(rowsFiltered)
     ? rowsFiltered.map((row, index) => ({
@@ -221,8 +237,28 @@ export default function Iklanlist() {
             </NavLink>
           </p>
         </div>
-        <div className="md:col-span-2 px-10 mt-2">
-          <IklanModalTambah />
+        <div className="col-span-2 d-flex justify-end">
+            {!isReloading ? (
+                <IklanModalTambah />
+            ) : null}
+
+          <Tooltip title="Refresh" arrow  className="mx-2">
+            <Button onClick={handleRefresh} disabled={isReloading} variant="primary" style={{height:"45px"}}>
+              {isReloading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />{" "}
+                </>
+              ) : (
+                <IoReloadCircleSharp />
+              )}
+            </Button>
+          </Tooltip>
         </div>
       </div>
 
@@ -310,7 +346,10 @@ export default function Iklanlist() {
               </Tab>
 
               <Tab eventKey="aktivitas" title="Aktivitas">
+                  
+                {!isReloading ? (
                   <Activity kunci={'Open Data Bantuan'}/>
+                ) : null}
               </Tab>
             </Tabs>
             

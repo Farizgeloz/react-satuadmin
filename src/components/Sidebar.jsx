@@ -70,7 +70,7 @@ const Sidebar = ({ itemmenu, username, usernick, userrole }) => {
       setCollapsed_OpenData(true);
       setCollapsed_SatuPortal(true);
     }
-    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Aplikasi Terhubung" || itemmenu==="Bio Info" || itemmenu==="Log"){
+    if(itemmenu==="User" || itemmenu==="Dashboard" || itemmenu==="Komponen Statik" || itemmenu==="Aplikasi Terhubung" || itemmenu==="Bio Info" || itemmenu==="Log" || itemmenu==="Rule Informasi"){
       setCollapsed_SatuPeta(true);
       setCollapsed_OpenData(true);
       setCollapsed_SatuPortal(true);
